@@ -1,10 +1,9 @@
-# 2025-nextjs-template
+# THRIVE
 
 <h1 align="center">
   <br>
-    <img src="https://placehold.co/192x192" alt="Repository Banner" width="25%">  
+    <img width="25%" height="280" alt="thrive logo" src="https://github.com/user-attachments/assets/2a0d17be-c3cf-4fe6-8505-3b9ff3a4e8cf" />
   <br>
-    Repository Name
 </h1>
 
 ## Tech Lead Instructions
