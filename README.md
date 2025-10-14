@@ -75,3 +75,6 @@ feat: Add pending form submissions table
 
 The `.vscode/launch.json` file is configured to run Next.js in debug mode. This can let you step through your code line by line and inspect variables.
 To start debug mode, navigate to the `Run and Debug` tab in VSCode, select the mode, and click the green play button.
+
+### Credits
+README template originally created by Rudra Patel and adapted for this project.
