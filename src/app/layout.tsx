@@ -17,8 +17,8 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "Insert project title here",
-  description: "Insert project description here",
+  title: "thrive",
+  description: "Volunteer management system for Thrive",
 };
 
 type RootLayoutProps = {
