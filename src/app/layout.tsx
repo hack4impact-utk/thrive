@@ -5,7 +5,8 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import { ReactNode } from "react";
 
-import NextAuthProvider from "@/providers/next-auth-provider";
+import Header from "@/components/header";
+// import NextAuthProvider from "@/providers/next-auth-provider";
 import NotistackProvider from "@/providers/notistack-provider";
 import theme from "@/styles/theme";
 
@@ -32,10 +33,11 @@ export default function RootLayout({ children }: RootLayoutProps): ReactNode {
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <NotistackProvider>
-              <NextAuthProvider>
-                <CssBaseline />
-                {children}
-              </NextAuthProvider>
+              {/* <NextAuthProvider> */}
+              <CssBaseline />
+              <Header />
+              {children}
+              {/* </NextAuthProvider> */}
             </NotistackProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
