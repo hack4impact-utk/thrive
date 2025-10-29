@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
 
 export default function HomePage(): ReactNode {
-  return <h1>Empty Page</h1>;
+  return <h1>hello</h1>;
 }
