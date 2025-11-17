@@ -1,5 +1,9 @@
-import { ReactNode } from "react";
+import OutlinedCard from "@/components/account-creation/index";
 
-export default function HomePage(): ReactNode {
-  return <h1>hello</h1>;
+export default function AccountCreationPage() {
+  return (
+    <div>
+      <OutlinedCard />
+    </div>
+  );
 }
