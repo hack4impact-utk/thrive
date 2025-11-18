@@ -4,9 +4,10 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import InputBase from "@mui/material/InputBase";
-import { alpha, styled, ThemeProvider } from "@mui/material/styles";
+import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 import * as React from "react";
 
 const Search = styled("div")(({ theme }) => ({
@@ -72,7 +73,7 @@ export default function ButtonAppBar(): React.ReactElement {
                 alignItems: "center",
               }}
             >
-              <img src="/logo.svg" alt="Thrive logo" width="35" height="35" />
+              <Image src="/logo.svg" alt="Thrive logo" width={35} height={35} />
               <Typography
                 variant="h6"
                 noWrap

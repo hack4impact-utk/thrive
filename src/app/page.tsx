@@ -1,8 +1,8 @@
 "use client";
 import { ReactNode } from "react";
 
-import VolunteerEventCard from "@/components/VolunteerEventCard";
 import OutlinedCard from "@/components/account-creation/index";
+import VolunteerEventCard from "@/components/VolunteerEventCard";
 
 export default function HomePage(): ReactNode {
   return (
