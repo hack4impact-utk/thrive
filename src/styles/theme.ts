@@ -5,14 +5,14 @@ const theme = createTheme({
   typography: {
     fontFamily: "var(--font-roboto)",
   },
-    components: {
+  components: {
     MuiButton: {
       styleOverrides: {
         root: {
           textTransform: "none",
           fontFamily: "Helvetica",
           fontWeight: 600,
-          fontSize: "0.8rem"
+          fontSize: "0.8rem",
         },
       },
     },
