@@ -1,5 +1,13 @@
+"use client";
 import { ReactNode } from "react";
 
+import VolunteerEventCard from "@/components/VolunteerEventCard/index";
+
 export default function HomePage(): ReactNode {
-  return <h1>hello</h1>;
+  return (
+    <div>
+      <h1>hello</h1>
+      <VolunteerEventCard />
+    </div>
+  );
 }
