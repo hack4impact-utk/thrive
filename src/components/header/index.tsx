@@ -1,5 +1,4 @@
 "use client";
-import AdbIcon from "@mui/icons-material/Adb";
 import SearchIcon from "@mui/icons-material/Search";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -8,6 +7,7 @@ import InputBase from "@mui/material/InputBase";
 import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 import * as React from "react";
 
 const Search = styled("div")(({ theme }) => ({
@@ -55,39 +55,75 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function ButtonAppBar(): React.ReactElement {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" color="default">
         <Toolbar>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+          <Box
             sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
               flexGrow: 1,
+              ml: "10%",
             }}
           >
-            LOGO
-          </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Image src="/logo.svg" alt="Thrive logo" width={35} height={35} />
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                href="#app-bar-with-responsive-menu"
+                sx={{
+                  ml: 1,
+                  mr: 2,
+                  display: { xs: "none", md: "flex" },
+                  fontSize: ".9rem",
+                  fontWeight: 700,
+                  color: "#22305B",
+                  textDecoration: "none",
+                  flexGrow: 1,
+                }}
+              >
+                THRIVE
+              </Typography>
+            </Box>
+          </Box>
 
-          <Button color="inherit">Sign in</Button>
-          <Button color="inherit">Create account</Button>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
+          <Box sx={{ display: "flex", alignItems: "center", mr: "10%" }}>
+            <Box
+              sx={{
+                bgcolor: "#22A27E",
+                color: "#FFFFFF",
+                borderRadius: 1,
+              }}
+            >
+              <Button color="inherit">Sign in</Button>
+            </Box>
+
+            <Box
+              sx={{
+                color: "#22A27E",
+              }}
+            >
+              <Button color="inherit">Create account</Button>
+            </Box>
+
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>
