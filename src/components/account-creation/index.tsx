@@ -26,19 +26,19 @@ export default function OutlinedCard(): React.JSX.Element {
     setLocation(event.target.value as string);
   };
 
-  const handleChangeSMS = (event: SelectChangeEvent) => {
+  const handleChangeSMS = (event: SelectChangeEvent): void => {
     setSMS(event.target.value as string);
   };
 
-  const handleChangeGender = (event: SelectChangeEvent) => {
+  const handleChangeGender = (event: SelectChangeEvent): void => {
     setGender(event.target.value as string);
   };
 
-  const handleChangeStudent = (event: SelectChangeEvent) => {
+  const handleChangeStudent = (event: SelectChangeEvent): void => {
     setStudent(event.target.value as string);
   };
 
-  const handleChangeSize = (event: SelectChangeEvent) => {
+  const handleChangeSize = (event: SelectChangeEvent): void => {
     setSize(event.target.value as string);
   };
 
@@ -47,36 +47,32 @@ export default function OutlinedCard(): React.JSX.Element {
       <Card>
         <CardContent>
           <Box
-              sx={{
+            sx={{
               width: "50%",
               ml: "10%",
               pt: "5%",
-              }}
-            >
-              <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-                Mobile Phone
-              </Typography>
-            </Box>
+            }}
+          >
+            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+              Mobile Phone
+            </Typography>
+          </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                width: "60%",
-                ml: "10%",
-              }}
-            >
-              <div>
-                <TextField
-                  id="mobile-phone"
-                  fullWidth
-                  size="small"
-                />
-              </div>
-              <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
-            </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "60%",
+              ml: "10%",
+            }}
+          >
+            <div>
+              <TextField id="mobile-phone" fullWidth size="small" />
+            </div>
+            <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
+          </Box>
 
-            <Box
+          <Box
             sx={{
               width: "60%",
               ml: "10%",
@@ -91,7 +87,8 @@ export default function OutlinedCard(): React.JSX.Element {
               variant="caption"
               sx={{ fontSize: ".9rem", color: "#757575" }}
             >
-              May we send event reminders to your mobile phone? (carrier charges may apply)
+              May we send event reminders to your mobile phone? (carrier charges
+              may apply)
             </Typography>
 
             <Box
@@ -129,8 +126,11 @@ export default function OutlinedCard(): React.JSX.Element {
               variant="caption"
               sx={{ fontSize: ".8rem", color: "#757575" }}
             >
-              By opting in, you consent to receive text messages (for example, event reminders and updates) from VolunteerHib. Opting in is not required. Message & 
-              data rates may apply. Message frequency varies. Unsubscribe at any time by replying STOP or editing your profile. Privacy Policy.
+              By opting in, you consent to receive text messages (for example,
+              event reminders and updates) from VolunteerHib. Opting in is not
+              required. Message & data rates may apply. Message frequency
+              varies. Unsubscribe at any time by replying STOP or editing your
+              profile. Privacy Policy.
             </Typography>
           </Box>
 
@@ -176,54 +176,40 @@ export default function OutlinedCard(): React.JSX.Element {
               </FormControl>
             </Box>
           </Box>
-            <Box
-              sx={{
+          <Box
+            sx={{
               width: "50%",
               ml: "10%",
-              }}
-            >
-            </Box>
+            }}
+          ></Box>
 
-            <Box
-              sx={{
+          <Box
+            sx={{
               width: "50%",
               ml: "10%",
               pt: "5%",
-              }}
-            >
-              <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-                Date of Birth
-              </Typography>
-            </Box>
+            }}
+          >
+            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+              Date of Birth
+            </Typography>
+          </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                width: "60%",
-                ml: "10%",
-              
-              }}
-            >
-              <div style={{display: "flex", width: "60%", gap: "8px"}}>
-                <TextField
-                  placeholder="MM"
-                  fullWidth
-                  size="small"
-                />
-                <TextField
-                  placeholder="DD"
-                  fullWidth
-                  size="small"
-                />
-                <TextField
-                  placeholder="YYYY"
-                  fullWidth
-                  size="small"
-                />
-              </div>
-              <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
-            </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "60%",
+              ml: "10%",
+            }}
+          >
+            <div style={{ display: "flex", width: "60%", gap: "8px" }}>
+              <TextField placeholder="MM" fullWidth size="small" />
+              <TextField placeholder="DD" fullWidth size="small" />
+              <TextField placeholder="YYYY" fullWidth size="small" />
+            </div>
+            <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
+          </Box>
 
           <Box
             sx={{
@@ -268,66 +254,58 @@ export default function OutlinedCard(): React.JSX.Element {
               <EmergencyIcon sx={{ fontSize: "14px" }} color="error" />
             </Box>
           </Box>
-          
-            <Box
-              sx={{
+
+          <Box
+            sx={{
               width: "50%",
               ml: "10%",
               pt: "5%",
-              }}
-            >
-              <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-                If yes, name of school and grade?
-              </Typography>
-            </Box>
+            }}
+          >
+            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+              If yes, name of school and grade?
+            </Typography>
+          </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                width: "50%",
-                ml: "10%",
-              }}
-            >
-              <div>
-                <TextField
-                  id="high-school"
-                  fullWidth
-                  size="small"
-                />
-              </div>
-              <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
-            </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "50%",
+              ml: "10%",
+            }}
+          >
+            <div>
+              <TextField id="high-school" fullWidth size="small" />
+            </div>
+            <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
+          </Box>
 
-            <Box
-              sx={{
+          <Box
+            sx={{
               width: "50%",
               ml: "10%",
               pt: "5%",
-              }}
-            >
-              <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-                Occupation and Employer
-              </Typography>
-            </Box>
+            }}
+          >
+            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+              Occupation and Employer
+            </Typography>
+          </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                width: "50%",
-                ml: "10%",
-              }}
-            >
-              <div>
-                <TextField
-                  id="occupation"
-                  fullWidth
-                  size="small"
-                />
-              </div>
-              <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
-            </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              width: "50%",
+              ml: "10%",
+            }}
+          >
+            <div>
+              <TextField id="occupation" fullWidth size="small" />
+            </div>
+            <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
+          </Box>
           <Box
             sx={{
               width: "60%",
