@@ -38,6 +38,35 @@ export default function OutlinedCard() {
             }}
           >
             <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+              Occupation and Employer
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              width: "50%",
+              ml: "10%",
+            }}
+          >
+            <div>
+              <TextField
+                id="medical conditions"
+                multiline
+                rows={1}
+                defaultValue="N/A"
+                fullWidth
+              />
+            </div>
+          </Box>
+
+          <Box
+            sx={{
+              width: "50%",
+              ml: "10%",
+              pt: "5%",
+            }}
+          >
+            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
               Do you have a preference on which neighborhood you are placed in?
             </Typography>
 
