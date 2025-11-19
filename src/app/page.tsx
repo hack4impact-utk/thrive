@@ -7,6 +7,9 @@ import VolunteerEventCardHeader from "@/components/VolunteerEventCardHeader";
 import WelcomeCard from "@/components/WelcomeCard";
 
 export default function HomePage(): ReactNode {
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
   return (
     <div>
       <Box
@@ -23,6 +26,17 @@ export default function HomePage(): ReactNode {
       >
         <WelcomeCard />
         <VolunteerEventCardHeader />
+        <VolunteerEventCard />
+        <VolunteerEventCard />
+        <VolunteerEventCard />
+        <VolunteerEventCard />
+        <VolunteerEventCardHeader date={tomorrow} />
+        <VolunteerEventCard />
+        <VolunteerEventCard />
+        <VolunteerEventCard />
+        <VolunteerEventCard />
+        <VolunteerEventCard />
+        <VolunteerEventCard />
         <VolunteerEventCard />
       </Box>
     </div>
