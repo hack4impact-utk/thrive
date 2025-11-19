@@ -37,7 +37,7 @@ const card = (
         >
           <QueryBuilderIcon sx={{ fontSize: 18, color: "text.secondary" }} />
           <Typography sx={{ color: "text.secondary", fontSize: 14 }}>
-            Mon, October 20 at 3 PM - 6 PM (3 Hours)
+            Wed, November 19 at 3 PM - 6 PM (3 Hours)
           </Typography>
         </Box>
         <Box
