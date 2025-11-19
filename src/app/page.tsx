@@ -1,14 +1,13 @@
 "use client";
 import { ReactNode } from "react";
 
-import OutlinedCard from "@/components/account-creation/index";
-import SignUpCard from "@/components/sign-up-card";
-import VolunteerEventCard from "@/components/VolunteerEventCard";
+import BasicQuestionComponent from "@/components/text-field/index";
 
 export default function HomePage(): ReactNode {
   return (
     <div>
-      <OutlinedCard />
+      <h1>Empty Page</h1>
+      <BasicQuestionComponent />
     </div>
   );
 }
