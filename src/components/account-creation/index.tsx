@@ -225,7 +225,7 @@ export default function OutlinedCard() {
               <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
             </Box>
 
-<Box
+          <Box
             sx={{
               width: "60%",
               ml: "10%",
