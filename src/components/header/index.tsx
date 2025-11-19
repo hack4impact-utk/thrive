@@ -54,7 +54,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function ButtonAppBar(): React.ReactElement {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+      }}
+    >
       <AppBar position="static" color="default">
         <Toolbar>
           <Box

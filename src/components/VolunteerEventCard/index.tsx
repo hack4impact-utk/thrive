@@ -10,60 +10,58 @@ import * as React from "react";
 
 const card = (
   <React.Fragment>
-    <Box
-      sx={{
-        backgroundColor: "#000080",
-        color: "white",
-        px: 2,
-        py: 1.5,
-        borderTopLeftRadius: "6px",
-        borderTopRightRadius: "6px",
-      }}
-    >
-      <Typography variant="h6" sx={{ fontWeight: 600 }}>
-        Monday, October 20, 2025
-      </Typography>
-    </Box>
     <CardContent>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
           <Typography variant="h6" component="div">
             Main Campus All Day Volunteer
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, ml: 120 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
           <Button size="small" variant="contained">
             Sign Up
           </Button>
         </Box>
       </Box>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+      <Box
+        sx={{
+          width: "70%",
+          display: "flex",
+          flexWrap: "wrap",
+        }}
+      >
+        <Box
+          marginTop={1}
+          marginLeft={2}
+          sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+        >
           <QueryBuilderIcon sx={{ fontSize: 18, color: "text.secondary" }} />
           <Typography sx={{ color: "text.secondary", fontSize: 14 }}>
             Mon, October 20 at 3 PM - 6 PM (3 Hours)
           </Typography>
         </Box>
-
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, ml: 20 }}>
+        <Box
+          marginTop={1}
+          marginLeft={2}
+          sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+        >
           <PersonIcon sx={{ fontSize: 18, color: "text.secondary" }} />
           <Typography sx={{ color: "text.secondary", fontSize: 14 }}>
             5 slots remaining
           </Typography>
         </Box>
+        <Box
+          marginTop={1}
+          marginLeft={2}
+          sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+        >
+          <LocationPinIcon sx={{ fontSize: 18, color: "text.secondary" }} />
+          <Typography sx={{ color: "text.secondary", fontSize: 14 }}>
+            1317 Connecticut Avenue Knoxville Tennessee 37921
+          </Typography>
+        </Box>
       </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 1 }}>
-        <LocationPinIcon
-          sx={{
-            fontSize: 18,
-            color: "text.secondary",
-          }}
-        />
-        <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
-          1317 Connecticut Avenue Knoxville Tennessee 37921
-        </Typography>
-      </Box>
-      <Typography variant="body2">
+      <Typography variant="body2" paddingTop={2}>
         Join us for a fun-filled day of worship, Bible study, academic time,
         group games, and so much more!
       </Typography>
@@ -75,11 +73,10 @@ export default function VolunteerEventCard(): React.ReactElement {
   return (
     <Box
       sx={{
-        minHeight: "80vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
-        minWidth: 275,
+        width: "100%",
       }}
     >
       <Card variant="outlined">{card}</Card>
