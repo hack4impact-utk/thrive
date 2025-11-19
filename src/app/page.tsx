@@ -1,3 +1,4 @@
+"use client";
 import { ReactNode } from "react";
 
 import BasicQuestionComponent from "@/components/text-field/index";
