@@ -18,12 +18,27 @@ import * as React from "react";
 export default function OutlinedCard(): React.JSX.Element {
   const [location, setLocation] = React.useState("");
   const [size, setSize] = React.useState("");
+  const [SMS, setSMS] = React.useState("");
+  const [Gender, setGender] = React.useState("");
+  const [Student, setStudent] = React.useState("");
 
   const handleChangeLocation = (event: SelectChangeEvent): void => {
     setLocation(event.target.value as string);
   };
 
-  const handleChangeSize = (event: SelectChangeEvent): void => {
+  const handleChangeSMS = (event: SelectChangeEvent) => {
+    setSMS(event.target.value as string);
+  };
+
+  const handleChangeGender = (event: SelectChangeEvent) => {
+    setGender(event.target.value as string);
+  };
+
+  const handleChangeStudent = (event: SelectChangeEvent) => {
+    setStudent(event.target.value as string);
+  };
+
+  const handleChangeSize = (event: SelectChangeEvent) => {
     setSize(event.target.value as string);
   };
 
@@ -32,9 +47,292 @@ export default function OutlinedCard(): React.JSX.Element {
       <Card>
         <CardContent>
           <Box
-            sx={{
+              sx={{
               width: "50%",
               ml: "10%",
+              pt: "5%",
+              }}
+            >
+              <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+                Mobile Phone
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "60%",
+                ml: "10%",
+              }}
+            >
+              <div>
+                <TextField
+                  id="mobile-phone"
+                  fullWidth
+                  size="small"
+                />
+              </div>
+              <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
+            </Box>
+
+            <Box
+            sx={{
+              width: "60%",
+              ml: "10%",
+              pt: "5%",
+            }}
+          >
+            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+              SMS Opt-In
+            </Typography>
+
+            <Typography
+              variant="caption"
+              sx={{ fontSize: ".9rem", color: "#757575" }}
+            >
+              May we send event reminders to your mobile phone? (carrier charges may apply)
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                width: "60%",
+                alignItems: "center",
+              }}
+            >
+              <FormControl
+                sx={{ m: 1, minWidth: 120, color: "inherit" }}
+                size="small"
+                fullWidth
+              >
+                <InputLabel id="SMS">SMS</InputLabel>
+                <Select
+                  labelId="SMS"
+                  id="SMS"
+                  value={SMS}
+                  label="SMS"
+                  onChange={handleChangeSMS}
+                  sx={{
+                    "& .MuiSelect-icon": {
+                      color: "#22A27E",
+                    },
+                  }}
+                >
+                  <MenuItem value={"YES"}>Yes, you may text me</MenuItem>
+                  <MenuItem value={"NO"}>No, do not text me</MenuItem>
+                </Select>
+              </FormControl>
+              <EmergencyIcon sx={{ fontSize: "14px" }} color="error" />
+            </Box>
+            <Typography
+              variant="caption"
+              sx={{ fontSize: ".8rem", color: "#757575" }}
+            >
+              By opting in, you consent to receive text messages (for example, event reminders and updates) from VolunteerHib. Opting in is not required. Message & 
+              data rates may apply. Message frequency varies. Unsubscribe at any time by replying STOP or editing your profile. Privacy Policy.
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              width: "60%",
+              ml: "10%",
+              pt: "5%",
+            }}
+          >
+            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+              Gender
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                width: "60%",
+                alignItems: "center",
+              }}
+            >
+              <FormControl
+                sx={{ m: 1, minWidth: 120, color: "inherit" }}
+                size="small"
+                fullWidth
+              >
+                <InputLabel id="Gender">Gender</InputLabel>
+                <Select
+                  labelId="Gender"
+                  id="Gender"
+                  value={Gender}
+                  label="Gender"
+                  onChange={handleChangeGender}
+                  sx={{
+                    "& .MuiSelect-icon": {
+                      color: "#22A27E",
+                    },
+                  }}
+                >
+                  <MenuItem value={"Male"}>Male</MenuItem>
+                  <MenuItem value={"Female"}>Female</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
+            <Box
+              sx={{
+              width: "50%",
+              ml: "10%",
+              }}
+            >
+            </Box>
+
+            <Box
+              sx={{
+              width: "50%",
+              ml: "10%",
+              pt: "5%",
+              }}
+            >
+              <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+                Date of Birth
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "60%",
+                ml: "10%",
+              
+              }}
+            >
+              <div style={{display: "flex", width: "60%", gap: "8px"}}>
+                <TextField
+                  placeholder="MM"
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  placeholder="DD"
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  placeholder="YYYY"
+                  fullWidth
+                  size="small"
+                />
+              </div>
+              <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
+            </Box>
+
+          <Box
+            sx={{
+              width: "60%",
+              ml: "10%",
+              pt: "5%",
+            }}
+          >
+            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+              Are you a student?
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                width: "60%",
+                alignItems: "center",
+              }}
+            >
+              <FormControl
+                sx={{ m: 1, minWidth: 120, color: "inherit" }}
+                size="small"
+                fullWidth
+              >
+                <InputLabel id="Student">Student</InputLabel>
+                <Select
+                  labelId="Student"
+                  id="Student"
+                  value={Student}
+                  label="Student"
+                  onChange={handleChangeStudent}
+                  sx={{
+                    "& .MuiSelect-icon": {
+                      color: "#22A27E",
+                    },
+                  }}
+                >
+                  <MenuItem value={"YES"}>Yes</MenuItem>
+                  <MenuItem value={"NO"}>No</MenuItem>
+                </Select>
+              </FormControl>
+              <EmergencyIcon sx={{ fontSize: "14px" }} color="error" />
+            </Box>
+          </Box>
+          
+            <Box
+              sx={{
+              width: "50%",
+              ml: "10%",
+              pt: "5%",
+              }}
+            >
+              <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+                If yes, name of school and grade?
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "50%",
+                ml: "10%",
+              }}
+            >
+              <div>
+                <TextField
+                  id="high-school"
+                  fullWidth
+                  size="small"
+                />
+              </div>
+              <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
+            </Box>
+
+            <Box
+              sx={{
+              width: "50%",
+              ml: "10%",
+              pt: "5%",
+              }}
+            >
+              <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+                Occupation and Employer
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "50%",
+                ml: "10%",
+              }}
+            >
+              <div>
+                <TextField
+                  id="occupation"
+                  fullWidth
+                  size="small"
+                />
+              </div>
+              <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
+            </Box>
+          <Box
+            sx={{
+              width: "60%",
+              ml: "10%",
+              pt: "5%",
             }}
           >
             <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
