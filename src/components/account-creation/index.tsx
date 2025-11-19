@@ -15,15 +15,15 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 
-export default function OutlinedCard() {
+export default function OutlinedCard(): React.JSX.Element {
   const [location, setLocation] = React.useState("");
   const [size, setSize] = React.useState("");
 
-  const handleChangeLocation = (event: SelectChangeEvent) => {
+  const handleChangeLocation = (event: SelectChangeEvent): void => {
     setLocation(event.target.value as string);
   };
 
-  const handleChangeSize = (event: SelectChangeEvent) => {
+  const handleChangeSize = (event: SelectChangeEvent): void => {
     setSize(event.target.value as string);
   };
 
