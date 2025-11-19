@@ -67,7 +67,7 @@ export default function ButtonAppBar(): React.ReactElement {
               flexGrow: 1,
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "Arial",
+              fontFamily: "Merriweather",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
