@@ -1,19 +1,13 @@
 "use client";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import CardHeader from "@mui/material/CardHeader";
-import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
-import Input from "@mui/material/Input";
-import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
 import * as React from "react";
 
-export default function CreateAccountPage(): React.ReactElement {
-  const [showPassword, setShowPassword] = React.useState(false);
+import PasswordField from "./password-field";
+import UsernameField from "./username-field";
 
+export default function CreateAccountPage(): React.ReactElement {
   return (
     <Box
       sx={{
@@ -103,47 +97,9 @@ export default function CreateAccountPage(): React.ReactElement {
         </CardContent>
 
         <CardContent sx={{ width: "50%" }}>
-          {/* Username */}
-          <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
-            <InputLabel>Username</InputLabel>
-            <Input />
-          </FormControl>
-
-          {/* Password */}
-          <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
-            <InputLabel>Password</InputLabel>
-            <Input
-              type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowPassword((v) => !v)}
-                    onMouseDown={(e) => e.preventDefault()}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-
-          {/* Verify Password */}
-          <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
-            <InputLabel>Verify Password</InputLabel>
-            <Input
-              type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowPassword((v) => !v)}
-                    onMouseDown={(e) => e.preventDefault()}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
+          <UsernameField />
+          <PasswordField label="Password" />
+          <PasswordField label="Verify Password" />
           <Box
             sx={{
               bgcolor: "#22A27E",
