@@ -12,8 +12,7 @@ import InputLabel from "@mui/material/InputLabel";
 import * as React from "react";
 
 export default function CreateAccountPage(): React.ReactElement {
-  const [showPassword1, setShowPassword1] = React.useState(false);
-  const [showPassword2, setShowPassword2] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   return (
     <Box
@@ -104,7 +103,7 @@ export default function CreateAccountPage(): React.ReactElement {
         </CardContent>
 
         <CardContent sx={{ width: "50%" }}>
-          {/* Verify Password */}
+          {/* Username */}
           <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
             <InputLabel>Username</InputLabel>
             <Input />
@@ -114,14 +113,14 @@ export default function CreateAccountPage(): React.ReactElement {
           <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
             <InputLabel>Password</InputLabel>
             <Input
-              type={showPassword1 ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
-                    onClick={() => setShowPassword1((v) => !v)}
+                    onClick={() => setShowPassword((v) => !v)}
                     onMouseDown={(e) => e.preventDefault()}
                   >
-                    {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               }
@@ -132,14 +131,14 @@ export default function CreateAccountPage(): React.ReactElement {
           <FormControl sx={{ m: 1, width: "25ch" }} variant="standard">
             <InputLabel>Verify Password</InputLabel>
             <Input
-              type={showPassword2 ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
-                    onClick={() => setShowPassword2((v) => !v)}
+                    onClick={() => setShowPassword((v) => !v)}
                     onMouseDown={(e) => e.preventDefault()}
                   >
-                    {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               }
