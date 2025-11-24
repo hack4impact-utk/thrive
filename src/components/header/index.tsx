@@ -2,13 +2,14 @@
 import SearchIcon from "@mui/icons-material/Search";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import InputBase from "@mui/material/InputBase";
 import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import * as React from "react";
+
+import DefaultButton from "../DefaultButton";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -103,23 +104,13 @@ export default function ButtonAppBar(): React.ReactElement {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", mr: "10%" }}>
-            <Box
-              sx={{
-                bgcolor: "#22A27E",
-                color: "#FFFFFF",
-                borderRadius: 1,
-              }}
-            >
-              <Button color="inherit">Sign in</Button>
-            </Box>
-
-            <Box
-              sx={{
-                color: "#22A27E",
-              }}
-            >
-              <Button color="inherit">Create account</Button>
-            </Box>
+            <DefaultButton label="Sign in" href="/sign-in" />
+            <DefaultButton
+              label="Create account"
+              href="/create-account"
+              bgcolor="inherit"
+              color="primary"
+            />
 
             <Search>
               <SearchIconWrapper>

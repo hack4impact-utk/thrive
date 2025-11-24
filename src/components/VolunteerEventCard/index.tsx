@@ -2,11 +2,12 @@ import LocationPinIcon from "@mui/icons-material/LocationPin";
 import PersonIcon from "@mui/icons-material/Person";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+
+import DefaultButton from "../DefaultButton";
 
 const card = (
   <React.Fragment>
@@ -17,11 +18,7 @@ const card = (
             Main Campus All Day Volunteer
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-          <Button size="small" variant="contained">
-            Sign Up
-          </Button>
-        </Box>
+        <DefaultButton label="Sign up" href="/sign-in" />
       </Box>
       <Box
         sx={{
