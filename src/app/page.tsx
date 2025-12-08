@@ -2,6 +2,7 @@
 import Box from "@mui/material/Box";
 import { ReactNode } from "react";
 
+import Dropdown from "@/components/Dropdown";
 import VolunteerEventCard from "@/components/VolunteerEventCard";
 import VolunteerEventCardHeader from "@/components/VolunteerEventCardHeader";
 import WelcomeCard from "@/components/WelcomeCard";
@@ -24,6 +25,7 @@ export default function HomePage(): ReactNode {
         <WelcomeCard />
         <VolunteerEventCardHeader />
         <VolunteerEventCard />
+        <Dropdown />
       </Box>
     </div>
   );
