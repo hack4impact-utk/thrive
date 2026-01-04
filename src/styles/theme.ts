@@ -16,6 +16,13 @@ const theme = createTheme({
         },
       },
     },
+    MuiCssBaseline: {
+      styleOverrides: {
+        html: {
+          scrollBehavior: "smooth",
+        },
+      },
+    },
   },
   palette: {
     mode: "light",
