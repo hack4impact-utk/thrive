@@ -53,7 +53,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function ButtonAppBar(): React.ReactElement {
+export default function Header(): React.ReactElement {
   return (
     <Box
       sx={{
