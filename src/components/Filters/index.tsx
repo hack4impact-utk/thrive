@@ -3,10 +3,7 @@
     Has a few basic dropdowns, and a button that opens a card for more filter options.
 */
 "use client";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import MapIcon from "@mui/icons-material/Map";
-import { Box, Button, ButtonGroup, IconButton } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 
@@ -70,17 +67,6 @@ export default function Filters(): React.ReactElement {
             Filters
           </Button>
         </Box>
-        <ButtonGroup variant="outlined">
-          <IconButton>
-            <FormatListBulletedIcon sx={{ color: "#000000" }} />
-          </IconButton>
-          <IconButton>
-            <MapIcon sx={{ color: "#000000" }} />
-          </IconButton>
-          <IconButton>
-            <CalendarMonthIcon sx={{ color: "#000000" }} />
-          </IconButton>
-        </ButtonGroup>
       </Box>
       <FiltersModal open={open} setOpen={setOpen} />
     </Box>
