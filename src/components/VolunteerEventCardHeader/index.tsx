@@ -1,14 +1,8 @@
 import { Box, Typography } from "@mui/material";
 
-type Props = {
-  date?: Date;
-};
-
-export default function VolunteerEventCardHeader({
-  date = new Date(),
-}: Props): React.ReactElement {
-  const weekday = date.toLocaleString("en-US", { weekday: "long" });
-  const formattedDate = date.toLocaleDateString("en-US");
+export default function VolunteerEventCardHeader(): React.ReactElement {
+  const weekday = "Tuesday";
+  const formattedDate = "1/2/2026";
 
   return (
     <Box
