@@ -23,7 +23,7 @@
     "@neondatabase/serverless": "^1.0.1",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.4",
-    "next": "15.4.6",
+    "next": "15.4.10",
     "next-auth": "^4.24.11",
     "notistack": "^3.0.2",
     "react": "19.1.0",
