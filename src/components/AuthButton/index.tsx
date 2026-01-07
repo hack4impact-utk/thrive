@@ -1,6 +1,6 @@
 "use client";
 import { Box, Button } from "@mui/material";
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 type Props = {
   label: string;
@@ -13,6 +13,7 @@ export default function AuthButton({
   bgcolor = "primary.main",
   color = "white",
 }: Props): React.ReactElement {
+  const { status } = useSession();
   return (
     <Box
       sx={{
@@ -24,9 +25,15 @@ export default function AuthButton({
         width: "fit-content",
       }}
     >
-      <Button onClick={() => signIn("google")} sx={{ color: color }}>
-        {label}
-      </Button>
+      {status === "authenticated" ? (
+        <Button onClick={() => signOut()} sx={{ color: color }}>
+          {label}
+        </Button>
+      ) : (
+        <Button onClick={() => signIn("google")} sx={{ color: color }}>
+          {label}
+        </Button>
+      )}
     </Box>
   );
 }

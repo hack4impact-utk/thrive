@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 
-import DefaultButton from "../DefaultButton";
+import AuthButton from "../AuthButton";
 
 const card = (
   <React.Fragment>
@@ -18,7 +18,7 @@ const card = (
             Main Campus All Day Volunteer
           </Typography>
         </Box>
-        <DefaultButton label="Sign up" href="/sign-in" />
+        <AuthButton label="Sign In" />
       </Box>
       <Box
         sx={{

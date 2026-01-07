@@ -7,8 +7,11 @@ import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import * as React from "react";
 
+import AuthButton from "../AuthButton";
 import DefaultButton from "../DefaultButton";
 
 const Search = styled("div")(({ theme }) => ({
@@ -54,6 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function ButtonAppBar(): React.ReactElement {
+  const { data: session, status } = useSession();
   return (
     <Box
       sx={{
@@ -81,7 +85,22 @@ export default function ButtonAppBar(): React.ReactElement {
                 alignItems: "center",
               }}
             >
-              <Image src="/logo.svg" alt="Thrive logo" width={35} height={35} />
+              <Link href="/">
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    src="/logo.svg"
+                    alt="Thrive logo"
+                    width={35}
+                    height={35}
+                  />
+                </Box>
+              </Link>
               <Typography
                 variant="h6"
                 noWrap
@@ -104,14 +123,6 @@ export default function ButtonAppBar(): React.ReactElement {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", mr: "10%" }}>
-            <DefaultButton label="Sign in" href="/sign-in" />
-            <DefaultButton
-              label="Create account"
-              href="/create-account"
-              bgcolor="inherit"
-              color="primary"
-            />
-
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -121,6 +132,40 @@ export default function ButtonAppBar(): React.ReactElement {
                 inputProps={{ "aria-label": "search" }}
               />
             </Search>
+            {status === "authenticated" ? (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    border: 2,
+                    borderColor: "primary.main",
+                    cursor: "pointer",
+                  }}
+                >
+                  {session?.user?.image && (
+                    <Image
+                      src={session.user.image}
+                      width={32}
+                      height={32}
+                      alt="google image"
+                    />
+                  )}
+                </Box>
+              </>
+            ) : (
+              <>
+                <AuthButton label="Sign In" />
+                <DefaultButton
+                  label="Create account"
+                  href="/create-account"
+                  bgcolor="inherit"
+                  color="primary"
+                />
+              </>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
