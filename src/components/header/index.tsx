@@ -58,7 +58,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function ButtonAppBar(): React.ReactElement {
+export default function Header(): React.ReactElement {
   const { data: session, status } = useSession();
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
