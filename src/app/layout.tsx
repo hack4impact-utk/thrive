@@ -5,10 +5,11 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import { ReactNode } from "react";
 
-import Header from "@/components/Header";
 import NextAuthProvider from "@/providers/next-auth-provider";
 import NotistackProvider from "@/providers/notistack-provider";
 import theme from "@/styles/theme";
+
+import Header from "../components/Header";
 
 const roboto = Roboto({
   variable: "--font-roboto",
