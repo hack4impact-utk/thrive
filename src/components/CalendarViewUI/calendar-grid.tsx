@@ -110,21 +110,22 @@ export default function CalendarGrid({
         sx={{ width: "100%", bgcolor: "lightgray" }}
       >
         {/* Empty cells for offset */}
-        {Array.from({ length: dayOffset }).map((_, index) => (
-          <Grid key={`offset-${index}`} size={1}>
-            <Box />
-          </Grid>
-        ))}
+        {Array.from({ length: dayOffset })
+          .fill("")
+          .map((_, index) => (
+            <Grid size={1}>
+              <Box key={index}></Box>
+            </Grid>
+          ))}
+
         {/* Day cells */}
-        {Array.from({ length: daysInMonth }).map((_, index) => (
-          <Grid
-            key={`day-${index + 1}`}
-            size={1}
-            sx={{ border: "1px solid gray" }}
-          >
-            <DayCell day={index + 1} />
-          </Grid>
-        ))}
+        {Array.from({ length: daysInMonth })
+          .fill("")
+          .map((_, index) => (
+            <Grid sx={{ border: "1px solid gray" }} size={1}>
+              <DayCell key={index + 1} day={index + 1}></DayCell>
+            </Grid>
+          ))}
       </Grid>
     </div>
   );
