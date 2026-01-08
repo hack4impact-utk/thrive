@@ -20,7 +20,7 @@
     "@mui/material": "^7.3.6",
     "@mui/material-nextjs": "^7.3.6",
     "@mui/x-data-grid": "^8.22.0",
-    "@mui/x-date-pickers": "^8.22.0",
+    "@mui/x-date-pickers": "^8.24.0",
     "@neondatabase/serverless": "^1.0.2",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
