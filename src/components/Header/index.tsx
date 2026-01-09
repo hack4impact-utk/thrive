@@ -1,20 +1,19 @@
 "use client";
 import SearchIcon from "@mui/icons-material/Search";
-import { MenuItem } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
-import Popover from "@mui/material/Popover";
 import { alpha, styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import * as React from "react";
 
 import AuthButton from "../AuthButton";
 import DefaultButton from "../DefaultButton";
+import ProfileDropdown from "../ProfileDropdown";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -58,20 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Header(): React.ReactElement {
-  const { data: session, status } = useSession();
-
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = (): void => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  const { status } = useSession();
 
   return (
     <Box
@@ -148,57 +134,7 @@ export default function Header(): React.ReactElement {
               />
             </Search>
             {status === "authenticated" ? (
-              <>
-                <Box
-                  aria-describedby={id}
-                  onClick={handleClick}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    borderRadius: "50%",
-                    overflow: "hidden",
-                    border: 2,
-                    borderColor: "primary.main",
-                    cursor: "pointer",
-                    ml: 1,
-
-                    "&:hover": {
-                      borderColor: "primary.dark",
-                    },
-                  }}
-                >
-                  {session?.user?.image && (
-                    <Image
-                      src={session.user.image}
-                      width={32}
-                      height={32}
-                      alt="User avatar"
-                    />
-                  )}
-                </Box>
-                <Popover
-                  open={open}
-                  anchorEl={anchorEl}
-                  onClose={handleClose}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                >
-                  <MenuItem
-                    onClick={async () => {
-                      handleClose();
-                      await signOut({ callbackUrl: "/" });
-                    }}
-                  >
-                    Log out
-                  </MenuItem>
-                </Popover>
-              </>
+              <ProfileDropdown />
             ) : (
               <>
                 <AuthButton label="Sign In" />
