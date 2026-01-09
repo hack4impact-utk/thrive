@@ -1,8 +1,10 @@
 "use client";
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import CardHeader from "@mui/material/CardHeader";
 import Grid from "@mui/material/Grid";
 import * as React from "react";
+
+import { DefaultButton } from "@/components/Button";
 
 import PasswordField from "./password-field";
 import UsernameField from "./username-field";
@@ -102,17 +104,13 @@ export default function CreateAccountPage(): React.ReactElement {
           <PasswordField label="Verify Password" />
           <Box
             sx={{
-              bgcolor: "#22A27E",
-              color: "#FFFFFF",
-              borderRadius: 1,
               display: "flex",
               justifyContent: "center",
               width: "fit-content",
               marginTop: 2,
-              marginLeft: 1,
             }}
           >
-            <Button color="inherit">Next</Button>
+            <DefaultButton label="Next" href="/create-account/basic-info" />
           </Box>
         </CardContent>
       </Card>

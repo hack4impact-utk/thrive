@@ -33,6 +33,16 @@ export default tseslint.config(
       "unicorn/prevent-abbreviations": "off",
       "unicorn/no-null": "off",
 
+      "unicorn/filename-case": [
+        "error",
+        {
+          cases: {
+            kebabCase: true,
+            pascalCase: true,
+          },
+        },
+      ],
+
       // Next.js rules
       ...pluginNext.configs.recommended.rules,
       ...pluginNext.configs["core-web-vitals"].rules,
