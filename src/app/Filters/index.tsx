@@ -7,8 +7,8 @@ import { Box, Button } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 
-import Dropdown from "./dropdown-menu";
-import FiltersModal from "./modal";
+import Dropdown from "./FiltersDropdown";
+import FiltersModal from "./FiltersModal";
 
 export default function Filters(): React.ReactElement {
   const [open, setOpen] = React.useState(false);

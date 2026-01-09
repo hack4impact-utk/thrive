@@ -1,18 +1,22 @@
 "use client";
 import { Box, Button } from "@mui/material";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   label: string;
+  href: string;
   color?: string;
   bgcolor?: string;
 };
 
-export default function AuthButton({
+export function DefaultButton({
   label,
+  href,
   bgcolor = "primary.main",
   color = "white",
 }: Props): React.ReactElement {
+  const router = useRouter();
+
   return (
     <Box
       sx={{
@@ -24,7 +28,7 @@ export default function AuthButton({
         width: "fit-content",
       }}
     >
-      <Button onClick={() => signIn("google")} sx={{ color: color }}>
+      <Button onClick={() => router.push(href)} sx={{ color: color }}>
         {label}
       </Button>
     </Box>

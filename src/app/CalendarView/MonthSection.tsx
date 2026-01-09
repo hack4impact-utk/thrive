@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 
-import CalendarGrid from "./calendar-grid";
+import CalendarGrid from "./CalendarGrid";
 
 export default function MonthSection({
   monthName,

@@ -17,9 +17,9 @@ import {
 import { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 
-import CheckboxesGroup from "./check-boxes";
-import DatePickerValue from "./date-picker";
-import Dropdown from "./dropdown-menu";
+import CheckboxesGroup from "./CheckBoxes";
+import DatePickerValue from "./DateRangePicker";
+import Dropdown from "./FiltersDropdown";
 
 type FiltersModalProps = {
   open: boolean;

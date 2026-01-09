@@ -11,9 +11,8 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
-import AuthButton from "../AuthButton";
-import DefaultButton from "../DefaultButton";
-import ProfileDropdown from "../ProfileDropdown";
+import ProfileDropdown from "@/app/Header/ProfileDropdown";
+import { AuthButton, DefaultButton } from "@/components/Button";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -106,7 +105,6 @@ export default function Header(): React.ReactElement {
                 variant="h6"
                 noWrap
                 component="a"
-                href="#app-bar-with-responsive-menu"
                 sx={{
                   ml: 1,
                   mr: 2,

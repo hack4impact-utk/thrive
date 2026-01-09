@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-import EventItem from "./event-item";
+import EventItem from "./EventItem";
 
 export default function DayCell({ day }: { day: number }): React.ReactElement {
   return (

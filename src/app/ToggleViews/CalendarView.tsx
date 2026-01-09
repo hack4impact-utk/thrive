@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import * as React from "react";
 
-import type { View } from "../ToggleViews/view-types";
+import type { View } from "./view-types";
 
 type CalendarViewProps = {
   activeView: View;

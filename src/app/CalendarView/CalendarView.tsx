@@ -1,4 +1,4 @@
-import MonthSection from "./month-section";
+import MonthSection from "./MonthSection";
 
 export default function CalendarView(): React.ReactElement {
   return (

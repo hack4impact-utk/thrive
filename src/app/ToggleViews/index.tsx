@@ -5,9 +5,9 @@ import MapIcon from "@mui/icons-material/Map";
 import { Box, ButtonGroup, IconButton } from "@mui/material";
 import * as React from "react";
 
-import CalendarView from "./calendar-view";
-import ListView from "./list-view";
-import MapView from "./map-view";
+import CalendarView from "./CalendarView";
+import ListView from "./ListView";
+import MapView from "./MapView";
 import { View } from "./view-types";
 
 export default function ToggleViews(): React.ReactElement {

@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 
-import DayCell from "./day-cell";
+import DayCell from "./DayCell";
 
 export default function CalendarGrid({
   daysInMonth,

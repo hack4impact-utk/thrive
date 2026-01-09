@@ -4,7 +4,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Grid from "@mui/material/Grid";
 import * as React from "react";
 
-import DefaultButton from "@/components/DefaultButton";
+import { DefaultButton } from "@/components/Button";
 
 import PasswordField from "./password-field";
 import UsernameField from "./username-field";

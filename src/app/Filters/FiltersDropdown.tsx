@@ -35,7 +35,7 @@ type DropdownProps = {
   onChange: (event: SelectChangeEvent) => void;
 };
 
-export default function Dropdown({
+export default function FiltersDropdown({
   label,
   value,
   options,

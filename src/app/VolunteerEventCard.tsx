@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
-import DefaultButton from "../DefaultButton";
+import { DefaultButton } from "@/components/Button";
 
 export default function VolunteerEventCard(): React.ReactElement {
   const { status } = useSession();

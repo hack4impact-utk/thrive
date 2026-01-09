@@ -2,9 +2,9 @@
 import Box from "@mui/material/Box";
 import { ReactNode } from "react";
 
-import VolunteerEventCard from "@/components/VolunteerEventCard";
-import VolunteerEventCardHeader from "@/components/VolunteerEventCardHeader";
-import WelcomeCard from "@/components/WelcomeCard";
+import VolunteerEventCard from "@/app/VolunteerEventCard";
+import VolunteerEventCardHeader from "@/app/VolunteerEventCardHeader";
+import WelcomeCard from "@/app/WelcomeCard";
 
 export default function HomePage(): ReactNode {
   return (

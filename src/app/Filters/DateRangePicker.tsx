@@ -9,7 +9,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Dayjs } from "dayjs";
 import * as React from "react";
 
-export default function DatePickerValue(): React.ReactElement {
+export default function DateRangePicker(): React.ReactElement {
   const [start, setStart] = React.useState<Dayjs | null>(null);
   const [end, setEnd] = React.useState<Dayjs | null>(null);
 

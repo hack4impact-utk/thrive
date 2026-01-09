@@ -43,14 +43,14 @@ type CheckboxOption<T extends string> = {
   label: string;
 };
 
-type CheckboxesGroupProps<T extends Record<string, boolean>> = {
+type CheckboxGroupProps<T extends Record<string, boolean>> = {
   checked: T;
   setChecked: React.Dispatch<React.SetStateAction<T>>;
   options: readonly CheckboxOption<Extract<keyof T, string>>[];
 };
 
-export default function CheckboxesGroup<T extends Record<string, boolean>>(
-  props: CheckboxesGroupProps<T>,
+export default function CheckboxGroup<T extends Record<string, boolean>>(
+  props: CheckboxGroupProps<T>,
 ): React.ReactElement {
   const { checked, setChecked, options } = props;
 
