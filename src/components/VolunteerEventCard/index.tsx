@@ -32,7 +32,7 @@ export default function VolunteerEventCard(): React.ReactElement {
             </Box>
 
             {status === "authenticated" && (
-              <DefaultButton label="Sign Up" href="/" />
+              <DefaultButton label="Register" href="/" />
             )}
           </Box>
 

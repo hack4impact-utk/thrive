@@ -47,6 +47,7 @@ export default function ProfileDropdown(): React.ReactElement {
             width={32}
             height={32}
             alt="User avatar"
+            draggable={false}
           />
         )}
       </Box>
@@ -65,7 +66,7 @@ export default function ProfileDropdown(): React.ReactElement {
       >
         <MenuItem
           onClick={() => {
-            void router.push("/update-profile");
+            void router.push("/account/update-profile");
             handleClose();
           }}
         >
@@ -73,7 +74,7 @@ export default function ProfileDropdown(): React.ReactElement {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            void router.push("/change-password");
+            void router.push("/account/change-password");
             handleClose();
           }}
         >
@@ -81,7 +82,7 @@ export default function ProfileDropdown(): React.ReactElement {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            void router.push("/manage-affiliations");
+            void router.push("/account/manage-affiliations");
             handleClose();
           }}
         >
@@ -89,7 +90,7 @@ export default function ProfileDropdown(): React.ReactElement {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            void router.push("/view-hours");
+            void router.push("/account/view-hours");
             handleClose();
           }}
         >
@@ -97,19 +98,11 @@ export default function ProfileDropdown(): React.ReactElement {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            void router.push("/notification-settings");
+            void router.push("/account/notification-settings");
             handleClose();
           }}
         >
           Notification Settings
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            void router.push("/language");
-            handleClose();
-          }}
-        >
-          Language
         </MenuItem>
         <MenuItem
           onClick={() => {
