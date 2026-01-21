@@ -29,7 +29,7 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps): ReactNode {
   return (
     <html lang="en" className={roboto.variable}>
-      <body>
+      <body suppressHydrationWarning>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <NotistackProvider>

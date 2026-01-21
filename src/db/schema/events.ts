@@ -1,8 +1,10 @@
 import {
+  date,
   integer,
   numeric,
   pgTable,
   text,
+  time,
   timestamp,
   uuid,
   varchar,
@@ -13,8 +15,9 @@ export const events = pgTable("events", {
 
   title: varchar("title", { length: 256 }).notNull(),
 
-  startTime: timestamp("start_time", { mode: "date" }).notNull(),
-  endTime: timestamp("end_time", { mode: "date" }).notNull(),
+  eventDate: date("event_date", { mode: "string" }).notNull(),
+  startTime: time("start_time").notNull(),
+  endTime: time("end_time").notNull(),
 
   capacity: integer("capacity"),
 
@@ -28,4 +31,10 @@ export const events = pgTable("events", {
   longitude: numeric("longitude", { precision: 9, scale: 6 }),
 
   description: text("description").notNull(),
+
+  createdAt: timestamp("created_at", {
+    withTimezone: true,
+  })
+    .defaultNow()
+    .notNull(),
 });
