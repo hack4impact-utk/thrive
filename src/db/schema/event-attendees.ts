@@ -14,7 +14,7 @@ export const eventAttendees = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
 
-    role: text("role").default("attendee"),
+    role: text("role").notNull().default("attendee"),
   },
   (table) => ({
     pk: primaryKey({

@@ -1,0 +1,1 @@
+ALTER TABLE "event_attendee" ALTER COLUMN "role" SET NOT NULL;
