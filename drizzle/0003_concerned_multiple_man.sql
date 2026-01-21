@@ -1,0 +1,1 @@
+ALTER TABLE "event_attendee" ADD COLUMN "role" text DEFAULT 'attendee';
