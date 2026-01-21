@@ -16,7 +16,7 @@ export const events = pgTable("events", {
   startTime: timestamp("start_time", { mode: "date" }).notNull(),
   endTime: timestamp("end_time", { mode: "date" }).notNull(),
 
-  capacity: integer("capacity").notNull(),
+  capacity: integer("capacity"),
 
   streetLine: text("street_line").notNull(),
   city: text("city").notNull(),
