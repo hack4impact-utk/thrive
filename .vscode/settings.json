@@ -1,6 +1,6 @@
 {
   "explorer.compactFolders": false,
-  "eslint.experimental.useFlatConfig": true,
+  "eslint.useFlatConfig": true,
   "eslint.format.enable": true,
 
   "[javascript]": {
