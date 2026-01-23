@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import { useSession } from "next-auth/react";
 import { ReactNode } from "react";
 
-import VolunteerEventCard from "@/app/VolunteerEventCard";
 import VolunteerEventCardHeader from "@/app/VolunteerEventCardHeader";
 import WelcomeCard from "@/app/WelcomeCard";
 import { DefaultButton } from "@/components/Button/DefaultButton";
@@ -26,7 +25,6 @@ export default function HomePage(): ReactNode {
       >
         <WelcomeCard />
         <VolunteerEventCardHeader />
-        <VolunteerEventCard />
         {/* Temporary event creation form */}
         {status === "authenticated" && (
           <DefaultButton

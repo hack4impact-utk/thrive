@@ -1,3 +1,5 @@
+"use client";
+
 import LocationPinIcon from "@mui/icons-material/LocationPin";
 import PersonIcon from "@mui/icons-material/Person";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
@@ -10,7 +12,14 @@ import * as React from "react";
 
 import { DefaultButton } from "@/components/Button";
 
-export default function VolunteerEventCard(): React.ReactElement {
+type VolunteerEventCardProps = {
+  key: string;
+  title: string;
+};
+
+export default function VolunteerEventCard(
+  event: VolunteerEventCardProps,
+): React.ReactElement {
   const { status } = useSession();
 
   return (
@@ -27,7 +36,7 @@ export default function VolunteerEventCard(): React.ReactElement {
           <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
               <Typography variant="h6" component="div">
-                Main Campus All Day Volunteer
+                {event.title}
               </Typography>
             </Box>
 
