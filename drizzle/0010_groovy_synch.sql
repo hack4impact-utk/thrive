@@ -1,0 +1,1 @@
+ALTER TABLE "event_attendee" DROP COLUMN "role";

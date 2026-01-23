@@ -71,6 +71,13 @@
       "when": 1768971051075,
       "tag": "0009_dashing_vermin",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1769200723858,
+      "tag": "0010_groovy_synch",
+      "breakpoints": true
     }
   ]
 }
