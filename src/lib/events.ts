@@ -1,10 +1,10 @@
-import { and, gte, lte } from "drizzle-orm";
+import { and, asc, gte, lte } from "drizzle-orm";
 
 import db from "@/db";
 import { events } from "@/db/schema";
 
 export async function getAllEvents(): Promise<(typeof events.$inferSelect)[]> {
-  return db.select().from(events);
+  return db.select().from(events).orderBy(asc(events.eventDate));
 }
 
 // Gets upcoming events up to 1 year from now
@@ -23,5 +23,6 @@ export async function getUpcomingEvents(): Promise<
     .from(events)
     .where(
       and(gte(events.eventDate, todayStr), lte(events.eventDate, oneYearStr)),
-    );
+    )
+    .orderBy(asc(events.eventDate));
 }

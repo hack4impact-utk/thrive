@@ -12,15 +12,28 @@ import * as React from "react";
 
 import { DefaultButton } from "@/components/Button";
 
+import getTimeRange from "./helpers";
+
 type VolunteerEventCardProps = {
   key: string;
   title: string;
+  eventDate: string;
+  startTime: string;
+  endTime: string;
+  capacity: number | null;
+  streetLine: string;
+  description: string;
 };
 
 export default function VolunteerEventCard(
   event: VolunteerEventCardProps,
 ): React.ReactElement {
   const { status } = useSession();
+  const finalString = getTimeRange(
+    event.eventDate,
+    event.startTime,
+    event.endTime,
+  );
 
   return (
     <Box
@@ -61,7 +74,7 @@ export default function VolunteerEventCard(
                 sx={{ fontSize: 18, color: "text.secondary" }}
               />
               <Typography sx={{ color: "text.secondary", fontSize: 14 }}>
-                Wed, November 19 at 3 PM - 6 PM (3 Hours)
+                {finalString}
               </Typography>
             </Box>
 
@@ -72,7 +85,7 @@ export default function VolunteerEventCard(
             >
               <PersonIcon sx={{ fontSize: 18, color: "text.secondary" }} />
               <Typography sx={{ color: "text.secondary", fontSize: 14 }}>
-                5 slots remaining
+                {event.capacity} slots remaining
               </Typography>
             </Box>
 
@@ -83,14 +96,13 @@ export default function VolunteerEventCard(
             >
               <LocationPinIcon sx={{ fontSize: 18, color: "text.secondary" }} />
               <Typography sx={{ color: "text.secondary", fontSize: 14 }}>
-                1317 Connecticut Avenue Knoxville Tennessee 37921
+                {event.streetLine}
               </Typography>
             </Box>
           </Box>
 
           <Typography variant="body2" pt={2}>
-            Join us for a fun-filled day of worship, Bible study, academic time,
-            group games, and so much more!
+            {event.description}
           </Typography>
         </CardContent>
       </Card>

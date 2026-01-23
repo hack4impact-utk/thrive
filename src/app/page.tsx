@@ -1,14 +1,14 @@
-"use client";
 import Box from "@mui/material/Box";
-import { useSession } from "next-auth/react";
-import { ReactNode } from "react";
 
 import VolunteerEventCardHeader from "@/app/VolunteerEventCardHeader";
 import WelcomeCard from "@/app/WelcomeCard";
-import { DefaultButton } from "@/components/Button/DefaultButton";
+import { getUpcomingEvents } from "@/lib/events";
 
-export default function HomePage(): ReactNode {
-  const { status } = useSession();
+import HomePageClient from "./HomePageClient";
+
+export default async function HomePage(): Promise<React.ReactElement> {
+  const events = await getUpcomingEvents();
+
   return (
     <div>
       <Box
@@ -25,13 +25,7 @@ export default function HomePage(): ReactNode {
       >
         <WelcomeCard />
         <VolunteerEventCardHeader />
-        {/* Temporary event creation form */}
-        {status === "authenticated" && (
-          <DefaultButton
-            label="temporary one time event creation button"
-            href="/admin/one-time-event-creation"
-          />
-        )}
+        <HomePageClient events={events} />
       </Box>
     </div>
   );
