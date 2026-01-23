@@ -7,22 +7,24 @@ export async function getAllEvents(): Promise<(typeof events.$inferSelect)[]> {
   return db.select().from(events).orderBy(asc(events.eventDate));
 }
 
-// Gets upcoming events up to 1 year from now
 export async function getUpcomingEvents(): Promise<
   (typeof events.$inferSelect)[]
 > {
   const today = new Date();
-  const oneYearFromNow = new Date(today);
-  oneYearFromNow.setFullYear(today.getFullYear() + 1);
+  const threeMonthsFromNow = new Date(today);
+  threeMonthsFromNow.setMonth(today.getMonth() + 3);
 
   const todayStr = today.toISOString().split("T")[0];
-  const oneYearStr = oneYearFromNow.toISOString().split("T")[0];
+  const threeMonthsStr = threeMonthsFromNow.toISOString().split("T")[0];
 
   return db
     .select()
     .from(events)
     .where(
-      and(gte(events.eventDate, todayStr), lte(events.eventDate, oneYearStr)),
+      and(
+        gte(events.eventDate, todayStr),
+        lte(events.eventDate, threeMonthsStr),
+      ),
     )
     .orderBy(asc(events.eventDate));
 }
