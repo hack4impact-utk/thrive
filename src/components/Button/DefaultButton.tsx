@@ -1,10 +1,12 @@
 "use client";
+
 import { Box, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 
 type Props = {
   label: string;
   href: string;
+  onClick?: () => void;
   color?: string;
   bgcolor?: string;
 };
@@ -12,15 +14,25 @@ type Props = {
 export function DefaultButton({
   label,
   href,
+  onClick,
   bgcolor = "primary.main",
   color = "white",
 }: Props): React.ReactElement {
   const router = useRouter();
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    } else {
+      router.push(href);
+    }
+  };
+
   return (
     <Box
       sx={{
-        bgcolor: bgcolor,
+        bgcolor,
         borderRadius: 1,
         ml: 1,
         display: "flex",
@@ -28,7 +40,7 @@ export function DefaultButton({
         width: "fit-content",
       }}
     >
-      <Button onClick={() => router.push(href)} sx={{ color: color }}>
+      <Button onClick={handleClick} sx={{ color }}>
         {label}
       </Button>
     </Box>

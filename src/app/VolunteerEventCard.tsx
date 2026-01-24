@@ -10,12 +10,13 @@ import Typography from "@mui/material/Typography";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
+import { attendEvent } from "@/actions/attend-event";
 import { DefaultButton } from "@/components/Button";
 
 import getTimeRange from "./helpers";
 
 type VolunteerEventCardProps = {
-  key: string;
+  id: string;
   title: string;
   eventDate: string;
   startTime: string;
@@ -54,7 +55,11 @@ export default function VolunteerEventCard(
             </Box>
 
             {status === "authenticated" && (
-              <DefaultButton label="Register" href="/" />
+              <DefaultButton
+                label="Register"
+                onClick={() => attendEvent(event.id)}
+                href="/"
+              />
             )}
           </Box>
 

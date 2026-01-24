@@ -27,6 +27,7 @@ export default function HomePageClient({
       {events.map((event) => (
         <VolunteerEventCard
           key={event.id}
+          id={event.id}
           title={event.title}
           eventDate={event.eventDate}
           startTime={event.startTime}
