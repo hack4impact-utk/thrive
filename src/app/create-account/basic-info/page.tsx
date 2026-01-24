@@ -1,127 +1,96 @@
 "use client";
+
 import EmergencyIcon from "@mui/icons-material/Emergency";
-import { Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Checkbox from "@mui/material/Checkbox";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 
 export default function BasicInfoForm(): React.JSX.Element {
   const [newsletter, setNewsletter] = React.useState(true);
   const [location, setLocation] = React.useState("");
   const [size, setSize] = React.useState("");
-  const [Gender, setGender] = React.useState("");
-  const [Student, setStudent] = React.useState("");
+  const [gender, setGender] = React.useState("");
+  const [student, setStudent] = React.useState("");
 
-  const handleChangeLocation = (event: SelectChangeEvent): void => {
-    setLocation(event.target.value as string);
-  };
-
-  const handleChangeGender = (event: SelectChangeEvent): void => {
-    setGender(event.target.value as string);
-  };
-
-  const handleChangeStudent = (event: SelectChangeEvent): void => {
-    setStudent(event.target.value as string);
-  };
-
-  const handleChangeSize = (event: SelectChangeEvent): void => {
-    setSize(event.target.value as string);
-  };
+  const handleSelect =
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (event: SelectChangeEvent): void =>
+      setter(event.target.value);
 
   return (
-    <Box sx={{ ml: "20%", mr: "20%", pt: "5%" }}>
-      <Card>
-        <CardContent sx={{ marginBottom: 5 }}>
-          <Box
-            component="form"
-            sx={{
-              "& .MuiTextField-root": { m: 1 },
-              marginTop: 4,
-              maxWidth: "800px",
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <Typography variant="h5">Complete the form below.</Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
+    <Box sx={{ display: "flex", justifyContent: "center", pt: 6 }}>
+      <Card sx={{ width: "100%", maxWidth: 900 }}>
+        <CardContent sx={{ px: 6, pb: 6 }}>
+          <Box component="form" autoComplete="off">
+            <Typography variant="h5" gutterBottom>
+              Complete the form below
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary">
               <span style={{ color: "red" }}>*</span> indicates required field
             </Typography>
 
-            {/* Full Name */}
-            <TextField required label="first name" sx={{ width: "35%" }} />
-
-            <TextField label="M" sx={{ width: "7vh" }} />
-
-            <TextField required label="last name" sx={{ width: "35%" }} />
+            {/* Name */}
+            <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
+              <TextField required label="First name" fullWidth />
+              <TextField label="M" sx={{ width: 80 }} />
+              <TextField required label="Last name" fullWidth />
+            </Box>
 
             {/* Email */}
-            <Typography variant="h6" sx={{ mt: 3 }}>
+            <Typography variant="h6" sx={{ mt: 4 }}>
               Email
             </Typography>
-            <TextField
-              required
-              label="Email Address"
-              fullWidth
-              sx={{ mt: 1, fontStyle: "italic" }}
-            />
+            <TextField required label="Email Address" fullWidth />
 
-            {/* Home Address */}
-            <Typography variant="h6" sx={{ mt: 3 }}>
+            {/* Address */}
+            <Typography variant="h6" sx={{ mt: 4 }}>
               Home Address
             </Typography>
 
             <TextField
               required
               label="Street Address"
-              sx={{ mt: 1, fontStyle: "italic", width: "75%" }}
+              fullWidth
+              sx={{ mt: 1 }}
             />
-
             <TextField
               label="Apartment / Unit (optional)"
-              sx={{ mt: 1, fontStyle: "italic", width: "75%" }}
+              fullWidth
+              sx={{ mt: 1 }}
             />
 
-            <TextField label="City" sx={{ fontStyle: "italic" }} />
+            <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
+              <TextField label="City" fullWidth />
+              <TextField label="State" sx={{ width: 120 }} />
+              <TextField label="Zip" sx={{ width: 120 }} />
+            </Box>
 
-            <TextField label="State" sx={{ fontStyle: "italic" }} />
-
-            <TextField label="Zip" sx={{ fontStyle: "italic" }} />
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+            {/* Phone */}
+            <Typography variant="h6" sx={{ mt: 4 }}>
               Mobile Phone
             </Typography>
-          </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              width: "60%",
-              ml: "10%",
-            }}
-          >
-            <div>
-              <TextField id="mobile-phone" fullWidth size="small" />
-            </div>
-            <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
-          </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <TextField fullWidth size="small" />
+              <EmergencyIcon fontSize="small" color="error" />
+            </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              pt: "5%",
-            }}
-          >
             <FormControlLabel
+              sx={{ mt: 2 }}
               control={
                 <Checkbox
                   checked={newsletter}
@@ -129,298 +98,122 @@ export default function BasicInfoForm(): React.JSX.Element {
                 />
               }
               label="Send event reminders to my phone"
-              sx={{
-                "& .MuiFormControlLabel-label": {
-                  fontSize: "0.9rem",
-                  fontWeight: 500,
-                },
-              }}
             />
-          </Box>
 
-          <Box
-            sx={{
-              width: "50%",
-              ml: "10%",
-            }}
-          ></Box>
-
-          <Box
-            sx={{
-              width: "50%",
-              ml: "10%",
-              pt: "5%",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+            {/* DOB */}
+            <Typography variant="h6" sx={{ mt: 4 }}>
               Date of Birth
             </Typography>
-          </Box>
 
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              width: "60%",
-              ml: "10%",
-            }}
-          >
-            <div style={{ display: "flex", width: "60%", gap: "8px" }}>
-              <TextField placeholder="MM" fullWidth size="small" />
-              <TextField placeholder="DD" fullWidth size="small" />
-              <TextField placeholder="YYYY" fullWidth size="small" />
-            </div>
-            <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
-          </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box sx={{ display: "flex", gap: 1, flexGrow: 1 }}>
+                <TextField placeholder="MM" size="small" />
+                <TextField placeholder="DD" size="small" />
+                <TextField placeholder="YYYY" size="small" />
+              </Box>
+              <EmergencyIcon fontSize="small" color="error" />
+            </Box>
 
-          <Box
-            sx={{
-              width: "60%",
-              ml: "10%",
-              pt: "5%",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+            {/* Student */}
+            <Typography variant="h6" sx={{ mt: 4 }}>
               Are you a student?
             </Typography>
 
-            <Box
-              sx={{
-                display: "flex",
-                width: "60%",
-                alignItems: "center",
-              }}
-            >
-              <FormControl
-                sx={{ m: 1, minWidth: 120, color: "inherit" }}
-                size="small"
-                fullWidth
-              >
-                <InputLabel id="Student">Student</InputLabel>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <FormControl size="small" fullWidth>
+                <InputLabel>Student</InputLabel>
                 <Select
-                  labelId="Student"
-                  id="Student"
-                  value={Student}
+                  value={student}
                   label="Student"
-                  onChange={handleChangeStudent}
-                  sx={{
-                    "& .MuiSelect-icon": {
-                      color: "#22A27E",
-                    },
-                  }}
+                  onChange={handleSelect(setStudent)}
                 >
-                  <MenuItem value={"YES"}>Yes</MenuItem>
-                  <MenuItem value={"NO"}>No</MenuItem>
+                  <MenuItem value="YES">Yes</MenuItem>
+                  <MenuItem value="NO">No</MenuItem>
                 </Select>
               </FormControl>
-              <EmergencyIcon sx={{ fontSize: "14px" }} color="error" />
+              <EmergencyIcon fontSize="small" color="error" />
             </Box>
-          </Box>
 
-          <Box
-            sx={{
-              width: "50%",
-              ml: "10%",
-              pt: "5%",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-              Do you have a preference on which neighborhood you are placed in?
+            {/* Neighborhood */}
+            <Typography variant="h6" sx={{ mt: 4 }}>
+              Neighborhood preference
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              We will place based on site needs, but preferences help.
             </Typography>
 
-            <Typography
-              variant="caption"
-              sx={{ fontSize: ".9rem", color: "#757575" }}
-            >
-              * We will ultimately place based on needs of the site but would
-              love to know your preference!
-            </Typography>
-
-            <Box
-              sx={{
-                display: "flex",
-                width: "60%",
-                alignItems: "center",
-              }}
-            >
-              <FormControl
-                sx={{ m: 1, minWidth: 120, color: "inherit" }}
-                size="small"
-                fullWidth
+            <FormControl size="small" fullWidth sx={{ mt: 1 }}>
+              <InputLabel>Location</InputLabel>
+              <Select
+                value={location}
+                label="Location"
+                onChange={handleSelect(setLocation)}
               >
-                <InputLabel id="location">Location</InputLabel>
-                <Select
-                  labelId="location"
-                  id="location"
-                  value={location}
-                  label="Location"
-                  onChange={handleChangeLocation}
-                  sx={{
-                    "& .MuiSelect-icon": {
-                      color: "#22A27E",
-                    },
-                  }}
-                >
-                  <MenuItem value={"Lonsdale"}>Lonsdale</MenuItem>
-                  <MenuItem value={"Parkridge"}>Parkridge</MenuItem>
-                  <MenuItem value={"New Hopewell"}>New Hopewell</MenuItem>
-                  <MenuItem value={"Papermill"}>Papermill</MenuItem>
-                  <MenuItem value={"West View"}>West View</MenuItem>
-                  <MenuItem value={"Westland"}>Westland</MenuItem>
-                </Select>
-              </FormControl>
-              <EmergencyIcon sx={{ fontSize: "14px" }} color="error" />
-            </Box>
-          </Box>
+                {[
+                  "Lonsdale",
+                  "Parkridge",
+                  "New Hopewell",
+                  "Papermill",
+                  "West View",
+                  "Westland",
+                ].map((loc) => (
+                  <MenuItem key={loc} value={loc}>
+                    {loc}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-          <Box
-            sx={{
-              width: "60%",
-              ml: "10%",
-              pt: "5%",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+            {/* Gender */}
+            <Typography variant="h6" sx={{ mt: 4 }}>
               Gender
             </Typography>
 
-            <Box
-              sx={{
-                display: "flex",
-                width: "60%",
-                alignItems: "center",
-              }}
-            >
-              <FormControl
-                sx={{ m: 1, minWidth: 120, color: "inherit" }}
-                size="small"
-                fullWidth
+            <FormControl size="small" fullWidth>
+              <InputLabel>Gender</InputLabel>
+              <Select
+                value={gender}
+                label="Gender"
+                onChange={handleSelect(setGender)}
               >
-                <InputLabel id="Gender">Gender</InputLabel>
-                <Select
-                  labelId="Gender"
-                  id="Gender"
-                  value={Gender}
-                  label="Gender"
-                  onChange={handleChangeGender}
-                  sx={{
-                    "& .MuiSelect-icon": {
-                      color: "#22A27E",
-                    },
-                  }}
-                >
-                  <MenuItem value={"Male"}>Male</MenuItem>
-                  <MenuItem value={"Female"}>Female</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-          </Box>
+                <MenuItem value="Male">Male</MenuItem>
+                <MenuItem value="Female">Female</MenuItem>
+              </Select>
+            </FormControl>
 
-          <Box
-            sx={{
-              pt: "3%",
-              width: "50%",
-              ml: "10%",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-              Please select your shirt size:
+            {/* Shirt size */}
+            <Typography variant="h6" sx={{ mt: 4 }}>
+              Shirt size
             </Typography>
 
-            <Box
-              sx={{
-                width: "60%",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <FormControl
-                sx={{ m: 1, minWidth: 120, color: "inherit" }}
-                size="small"
-                fullWidth
+            <FormControl size="small" fullWidth>
+              <InputLabel>Size</InputLabel>
+              <Select
+                value={size}
+                label="Size"
+                onChange={handleSelect(setSize)}
               >
-                <InputLabel id="size">Size</InputLabel>
-                <Select
-                  labelId="size"
-                  id="size"
-                  value={size}
-                  label="Size"
-                  onChange={handleChangeSize}
-                  sx={{
-                    "& .MuiSelect-icon": {
-                      color: "#22A27E",
-                    },
-                  }}
-                >
-                  <MenuItem value={"Small"}>Small</MenuItem>
-                  <MenuItem value={"Medium"}>Medium</MenuItem>
-                  <MenuItem value={"New Large"}>Large</MenuItem>
-                </Select>
-              </FormControl>
-              <EmergencyIcon sx={{ fontSize: "14px" }} color="error" />
-            </Box>
+                <MenuItem value="Small">Small</MenuItem>
+                <MenuItem value="Medium">Medium</MenuItem>
+                <MenuItem value="Large">Large</MenuItem>
+              </Select>
+            </FormControl>
 
-            <Box
-              sx={{
-                pt: "5%",
-              }}
-            >
-              <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-                Do you have any medical conditions we should be aware of?
-              </Typography>
-            </Box>
+            {/* Medical */}
+            <Typography variant="h6" sx={{ mt: 4 }}>
+              Medical conditions
+            </Typography>
 
-            <Box
-              sx={{
-                width: "60%",
-                ml: "1.3%",
-              }}
-            >
-              <div>
-                <TextField
-                  id="medical conditions"
-                  multiline
-                  rows={4}
-                  defaultValue="N/A"
-                  fullWidth
-                />
-              </div>
-            </Box>
+            <TextField multiline rows={4} fullWidth placeholder="N/A" />
 
-            <Box
-              sx={{
-                display: "flex",
-                gap: 2,
-                pt: "3%",
-              }}
-            >
-              <Box
-                sx={{
-                  bgcolor: "#757575",
-                  borderRadius: 1,
-                  width: "35%",
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "center",
-                  color: "#FFF",
-                }}
-              >
-                <Button color="inherit">Previous</Button>
-              </Box>
-
-              <Box
-                sx={{
-                  bgcolor: "#22A27E",
-                  borderRadius: 1,
-                  width: "35%",
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "center",
-                  color: "#FFF",
-                }}
-              >
-                <Button color="inherit">Next</Button>
-              </Box>
+            {/* Actions */}
+            <Box sx={{ display: "flex", gap: 2, mt: 5 }}>
+              <Button variant="contained" color="inherit" sx={{ flex: 1 }}>
+                Previous
+              </Button>
+              <Button variant="contained" sx={{ flex: 1, bgcolor: "#22A27E" }}>
+                Next
+              </Button>
             </Box>
           </Box>
         </CardContent>
