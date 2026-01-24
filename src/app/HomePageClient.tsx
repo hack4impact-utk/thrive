@@ -1,4 +1,5 @@
 "use client";
+import { Box } from "@mui/material";
 import { useSession } from "next-auth/react";
 
 import { DefaultButton } from "@/components/Button/DefaultButton";
@@ -39,10 +40,20 @@ export default function HomePageClient({
       ))}
       {/* Temporary event creation form */}
       {status === "authenticated" && (
-        <DefaultButton
-          label="temporary one time event creation button"
-          href="/admin/one-time-event-creation"
-        />
+        <Box
+          sx={{
+            display: "flex",
+          }}
+        >
+          <DefaultButton
+            label="temporary one time event creation button"
+            href="/admin/one-time-event-creation"
+          />
+          <DefaultButton
+            label="user info form"
+            href="/create-account/basic-info"
+          />
+        </Box>
       )}
     </>
   );

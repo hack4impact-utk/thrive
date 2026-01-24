@@ -5,11 +5,9 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
 import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -20,16 +18,11 @@ export default function BasicInfoForm(): React.JSX.Element {
   const [newsletter, setNewsletter] = React.useState(true);
   const [location, setLocation] = React.useState("");
   const [size, setSize] = React.useState("");
-  const [SMS, setSMS] = React.useState("");
   const [Gender, setGender] = React.useState("");
   const [Student, setStudent] = React.useState("");
 
   const handleChangeLocation = (event: SelectChangeEvent): void => {
     setLocation(event.target.value as string);
-  };
-
-  const handleChangeSMS = (event: SelectChangeEvent): void => {
-    setSMS(event.target.value as string);
   };
 
   const handleChangeGender = (event: SelectChangeEvent): void => {
@@ -47,53 +40,6 @@ export default function BasicInfoForm(): React.JSX.Element {
   return (
     <Box sx={{ ml: "20%", mr: "20%", pt: "5%" }}>
       <Card>
-        <CardContent>
-          <CardHeader
-            title="Account"
-            sx={{
-              bgcolor: "primary.secondary",
-              color: "secondary.main",
-              textAlign: "center",
-              paddingTop: 5,
-            }}
-          ></CardHeader>
-          <Grid
-            sx={{
-              width: "50%",
-              alignContent: "center",
-              margin: "auto",
-              borderRadius: 2,
-              border: 1,
-            }}
-            container
-            spacing={0}
-          >
-            <Grid sx={{ width: "50%" }}>
-              <Box
-                component="section"
-                sx={{
-                  bgcolor: "secondary.main",
-                  p: 1.5,
-                  width: "100%",
-                  borderTopLeftRadius: 8,
-                  borderBottomLeftRadius: 8,
-                }}
-              ></Box>
-            </Grid>
-            <Grid sx={{ width: "50%" }}>
-              <Box
-                component="section"
-                sx={{
-                  bgcolor: "white",
-                  p: 1.5,
-                  width: "100%",
-                  borderTopRightRadius: 8,
-                  borderBottomRightRadius: 8,
-                }}
-              ></Box>
-            </Grid>
-          </Grid>
-        </CardContent>
         <CardContent sx={{ marginBottom: 5 }}>
           <Box
             component="form"
@@ -111,26 +57,12 @@ export default function BasicInfoForm(): React.JSX.Element {
             </Typography>
 
             {/* Full Name */}
-            <Select
-              labelId="prefix-label"
-              aria-label="Prefix"
-              sx={{ width: "9vh", mt: 1 }}
-              defaultValue=""
-            >
-              <MenuItem value="">
-                <em>-</em>
-              </MenuItem>
-              <MenuItem value="Miss">Miss</MenuItem>
-              <MenuItem value="Mr.">Mr.</MenuItem>
-              <MenuItem value="Mrs.">Mrs.</MenuItem>
-              <MenuItem value="Ms.">Ms.</MenuItem>
-            </Select>
-
-            <TextField required label="First Name" sx={{ width: "35%" }} />
+            <TextField required label="first name" sx={{ width: "35%" }} />
 
             <TextField label="M" sx={{ width: "7vh" }} />
 
-            <TextField required label="Last Name" sx={{ width: "35%" }} />
+            <TextField required label="last name" sx={{ width: "35%" }} />
+
             {/* Email */}
             <Typography variant="h6" sx={{ mt: 3 }}>
               Email
@@ -184,108 +116,28 @@ export default function BasicInfoForm(): React.JSX.Element {
 
           <Box
             sx={{
-              width: "60%",
-              ml: "10%",
+              display: "flex",
+              flexDirection: "column",
               pt: "5%",
             }}
           >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-              SMS Opt-In
-            </Typography>
-
-            <Typography
-              variant="caption"
-              sx={{ fontSize: ".9rem", color: "#757575" }}
-            >
-              May we send event reminders to your mobile phone? (carrier charges
-              may apply)
-            </Typography>
-
-            <Box
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={newsletter}
+                  onChange={(e) => setNewsletter(e.target.checked)}
+                />
+              }
+              label="Send event reminders to my phone"
               sx={{
-                display: "flex",
-                width: "60%",
-                alignItems: "center",
+                "& .MuiFormControlLabel-label": {
+                  fontSize: "0.9rem",
+                  fontWeight: 500,
+                },
               }}
-            >
-              <FormControl
-                sx={{ m: 1, minWidth: 120, color: "inherit" }}
-                size="small"
-                fullWidth
-              >
-                <InputLabel id="SMS">SMS</InputLabel>
-                <Select
-                  labelId="SMS"
-                  id="SMS"
-                  value={SMS}
-                  label="SMS"
-                  onChange={handleChangeSMS}
-                  sx={{
-                    "& .MuiSelect-icon": {
-                      color: "#22A27E",
-                    },
-                  }}
-                >
-                  <MenuItem value={"YES"}>Yes, you may text me</MenuItem>
-                  <MenuItem value={"NO"}>No, do not text me</MenuItem>
-                </Select>
-              </FormControl>
-              <EmergencyIcon sx={{ fontSize: "14px" }} color="error" />
-            </Box>
-            <Typography
-              variant="caption"
-              sx={{ fontSize: ".8rem", color: "#757575" }}
-            >
-              By opting in, you consent to receive text messages (for example,
-              event reminders and updates) from VolunteerHib. Opting in is not
-              required. Message & data rates may apply. Message frequency
-              varies. Unsubscribe at any time by replying STOP or editing your
-              profile. Privacy Policy.
-            </Typography>
+            />
           </Box>
 
-          <Box
-            sx={{
-              width: "60%",
-              ml: "10%",
-              pt: "5%",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-              Gender
-            </Typography>
-
-            <Box
-              sx={{
-                display: "flex",
-                width: "60%",
-                alignItems: "center",
-              }}
-            >
-              <FormControl
-                sx={{ m: 1, minWidth: 120, color: "inherit" }}
-                size="small"
-                fullWidth
-              >
-                <InputLabel id="Gender">Gender</InputLabel>
-                <Select
-                  labelId="Gender"
-                  id="Gender"
-                  value={Gender}
-                  label="Gender"
-                  onChange={handleChangeGender}
-                  sx={{
-                    "& .MuiSelect-icon": {
-                      color: "#22A27E",
-                    },
-                  }}
-                >
-                  <MenuItem value={"Male"}>Male</MenuItem>
-                  <MenuItem value={"Female"}>Female</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-          </Box>
           <Box
             sx={{
               width: "50%",
@@ -373,86 +225,6 @@ export default function BasicInfoForm(): React.JSX.Element {
             }}
           >
             <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-              If yes, name of school and grade?
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              width: "50%",
-              ml: "10%",
-            }}
-          >
-            <div>
-              <TextField id="high-school" fullWidth size="small" />
-            </div>
-            <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
-          </Box>
-
-          <Box
-            sx={{
-              width: "50%",
-              ml: "10%",
-              pt: "5%",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-              Occupation and Employer
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              width: "50%",
-              ml: "10%",
-            }}
-          >
-            <div>
-              <TextField id="occupation" fullWidth size="small" />
-            </div>
-            <EmergencyIcon sx={{ ml: 1, fontSize: "14px" }} color="error" />
-          </Box>
-          <Box
-            sx={{
-              width: "60%",
-              ml: "10%",
-              pt: "5%",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
-              Occupation and Employer
-            </Typography>
-          </Box>
-
-          <Box
-            sx={{
-              width: "50%",
-              ml: "10%",
-            }}
-          >
-            <div>
-              <TextField
-                id="medical conditions"
-                multiline
-                rows={1}
-                defaultValue="N/A"
-                fullWidth
-              />
-            </div>
-          </Box>
-
-          <Box
-            sx={{
-              width: "50%",
-              ml: "10%",
-              pt: "5%",
-            }}
-          >
-            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
               Do you have a preference on which neighborhood you are placed in?
             </Typography>
 
@@ -498,6 +270,49 @@ export default function BasicInfoForm(): React.JSX.Element {
                 </Select>
               </FormControl>
               <EmergencyIcon sx={{ fontSize: "14px" }} color="error" />
+            </Box>
+          </Box>
+
+          <Box
+            sx={{
+              width: "60%",
+              ml: "10%",
+              pt: "5%",
+            }}
+          >
+            <Typography variant="h6" sx={{ fontSize: ".9rem" }} gutterBottom>
+              Gender
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                width: "60%",
+                alignItems: "center",
+              }}
+            >
+              <FormControl
+                sx={{ m: 1, minWidth: 120, color: "inherit" }}
+                size="small"
+                fullWidth
+              >
+                <InputLabel id="Gender">Gender</InputLabel>
+                <Select
+                  labelId="Gender"
+                  id="Gender"
+                  value={Gender}
+                  label="Gender"
+                  onChange={handleChangeGender}
+                  sx={{
+                    "& .MuiSelect-icon": {
+                      color: "#22A27E",
+                    },
+                  }}
+                >
+                  <MenuItem value={"Male"}>Male</MenuItem>
+                  <MenuItem value={"Female"}>Female</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
           </Box>
 
@@ -570,30 +385,6 @@ export default function BasicInfoForm(): React.JSX.Element {
                   fullWidth
                 />
               </div>
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                pt: "5%",
-              }}
-            >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={newsletter}
-                    onChange={(e) => setNewsletter(e.target.checked)}
-                  />
-                }
-                label="Would you like to receive monthly newsletters?"
-                sx={{
-                  "& .MuiFormControlLabel-label": {
-                    fontSize: "0.9rem",
-                    fontWeight: 500,
-                  },
-                }}
-              />
             </Box>
 
             <Box

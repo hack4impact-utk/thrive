@@ -85,6 +85,20 @@
       "when": 1769282594244,
       "tag": "0011_perpetual_wallow",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1769284707138,
+      "tag": "0012_skinny_black_crow",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1769284802451,
+      "tag": "0013_fearless_rattler",
+      "breakpoints": true
     }
   ]
 }
