@@ -8,7 +8,6 @@ export const userInfo = pgTable("user_info", {
     .references(() => users.id, { onDelete: "cascade" }),
 
   firstName: varchar("first_name", { length: 50 }).notNull(),
-  middleName: varchar("middle_name", { length: 50 }),
   lastName: varchar("last_name", { length: 50 }).notNull(),
 
   email: text("email").notNull(),

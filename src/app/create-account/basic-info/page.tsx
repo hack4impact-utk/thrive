@@ -19,7 +19,7 @@ import type { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 
 export default function BasicInfoForm(): React.JSX.Element {
-  const [newsletter, setNewsletter] = React.useState(true);
+  const [newsletter, setNewsletter] = React.useState(false);
   const [location, setLocation] = React.useState("");
   const [size, setSize] = React.useState("");
   const [gender, setGender] = React.useState("");
@@ -46,7 +46,6 @@ export default function BasicInfoForm(): React.JSX.Element {
             {/* Name */}
             <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
               <TextField required label="First name" fullWidth />
-              <TextField label="M" sx={{ width: 80 }} />
               <TextField required label="Last name" fullWidth />
             </Box>
 

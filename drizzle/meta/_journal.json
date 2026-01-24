@@ -99,6 +99,13 @@
       "when": 1769284802451,
       "tag": "0013_fearless_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1769288293368,
+      "tag": "0014_tiny_thunderbolt",
+      "breakpoints": true
     }
   ]
 }

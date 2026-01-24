@@ -1,10 +1,31 @@
 "use client";
 
-import { Box, Button, TextField } from "@mui/material";
-import { useState } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from "@mui/material";
+import * as React from "react";
+
+type CreateEventFormState = {
+  title: string;
+  eventDate: string;
+  startTime: string;
+  endTime: string;
+  capacity: string;
+  streetLine: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  description: string;
+};
 
 export default function CreateEventForm(): React.ReactElement {
-  const [form, setForm] = useState({
+  const [form, setForm] = React.useState<CreateEventFormState>({
     title: "",
     eventDate: "",
     startTime: "",
@@ -14,17 +35,15 @@ export default function CreateEventForm(): React.ReactElement {
     city: "",
     state: "",
     postalCode: "",
-    country: "",
+    country: "US",
     description: "",
   });
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ): void {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(
@@ -45,14 +64,13 @@ export default function CreateEventForm(): React.ReactElement {
         city: form.city,
         state: form.state,
         postalCode: form.postalCode,
-        country: "US",
+        country: form.country,
         description: form.description,
       }),
     });
 
-    const text = await res.text();
-
     if (!res.ok) {
+      const text = await res.text();
       console.error("Create event failed:", res.status, text);
       return;
     }
@@ -69,126 +87,162 @@ export default function CreateEventForm(): React.ReactElement {
       city: "",
       state: "",
       postalCode: "",
-      country: "",
+      country: "US",
       description: "",
     });
   }
 
   return (
     <Box
-      component="form"
-      onSubmit={handleSubmit}
       sx={{
         display: "flex",
-        flexDirection: "column",
-        paddingTop: "5%",
-        gap: 2,
-        width: "100%",
-        maxWidth: 500,
-        margin: "0 auto",
+        justifyContent: "center",
+        mt: 6,
+        px: 2,
       }}
     >
-      <TextField
-        name="title"
-        label="Title"
-        required
-        value={form.title}
-        onChange={handleChange}
-      />
+      <Card sx={{ width: "100%", maxWidth: 600 }}>
+        <CardContent sx={{ px: 5, py: 4 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <Typography variant="h5">Create Event</Typography>
 
-      <TextField
-        name="eventDate"
-        type="date"
-        label="Event Date"
-        required
-        value={form.eventDate}
-        onChange={handleChange}
-        slotProps={{ inputLabel: { shrink: true } }}
-      />
+            <Typography variant="body2" color="text.secondary">
+              Fill out the details below to create a new event.
+            </Typography>
 
-      <TextField
-        name="startTime"
-        type="time"
-        label="Start Time"
-        required
-        value={form.startTime}
-        onChange={handleChange}
-        slotProps={{
-          inputLabel: { shrink: true },
-          htmlInput: {
-            step: 900,
-          },
-        }}
-      />
+            {/* Basic info */}
+            <TextField
+              name="title"
+              label="Title"
+              required
+              fullWidth
+              value={form.title}
+              onChange={handleChange}
+            />
 
-      <TextField
-        name="endTime"
-        type="time"
-        label="End Time"
-        required
-        value={form.endTime}
-        onChange={handleChange}
-        slotProps={{
-          inputLabel: { shrink: true },
-          htmlInput: {
-            step: 900,
-          },
-        }}
-      />
+            <TextField
+              name="eventDate"
+              type="date"
+              label="Event Date"
+              required
+              fullWidth
+              value={form.eventDate}
+              onChange={handleChange}
+              slotProps={{ inputLabel: { shrink: true } }}
+            />
 
-      <TextField
-        name="capacity"
-        type="number"
-        label="Capacity"
-        value={form.capacity}
-        onChange={handleChange}
-      />
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <TextField
+                name="startTime"
+                type="time"
+                label="Start Time"
+                required
+                fullWidth
+                value={form.startTime}
+                onChange={handleChange}
+                slotProps={{
+                  inputLabel: { shrink: true },
+                  htmlInput: { step: 900 },
+                }}
+              />
 
-      <TextField
-        name="streetLine"
-        label="Street Address"
-        required
-        value={form.streetLine}
-        onChange={handleChange}
-      />
+              <TextField
+                name="endTime"
+                type="time"
+                label="End Time"
+                required
+                fullWidth
+                value={form.endTime}
+                onChange={handleChange}
+                slotProps={{
+                  inputLabel: { shrink: true },
+                  htmlInput: { step: 900 },
+                }}
+              />
+            </Box>
 
-      <TextField
-        name="city"
-        label="City"
-        required
-        value={form.city}
-        onChange={handleChange}
-      />
+            <TextField
+              name="capacity"
+              type="number"
+              label="Capacity"
+              fullWidth
+              value={form.capacity}
+              onChange={handleChange}
+            />
 
-      <TextField
-        name="state"
-        label="State"
-        required
-        value={form.state}
-        onChange={handleChange}
-      />
+            {/* Location */}
+            <Typography variant="h6" sx={{ mt: 2 }}>
+              Location
+            </Typography>
 
-      <TextField
-        name="postalCode"
-        label="Postal Code"
-        required
-        value={form.postalCode}
-        onChange={handleChange}
-      />
+            <TextField
+              name="streetLine"
+              label="Street Address"
+              required
+              fullWidth
+              value={form.streetLine}
+              onChange={handleChange}
+            />
 
-      <TextField
-        name="description"
-        label="Description"
-        multiline
-        rows={3}
-        required
-        value={form.description}
-        onChange={handleChange}
-      />
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <TextField
+                name="city"
+                label="City"
+                required
+                fullWidth
+                value={form.city}
+                onChange={handleChange}
+              />
 
-      <Button type="submit" variant="contained">
-        Create Event
-      </Button>
+              <TextField
+                name="state"
+                label="State"
+                required
+                sx={{ width: 120 }}
+                value={form.state}
+                onChange={handleChange}
+              />
+
+              <TextField
+                name="postalCode"
+                label="Postal Code"
+                required
+                sx={{ width: 140 }}
+                value={form.postalCode}
+                onChange={handleChange}
+              />
+            </Box>
+
+            {/* Description */}
+            <Typography variant="h6" sx={{ mt: 2 }}>
+              Description
+            </Typography>
+
+            <TextField
+              name="description"
+              multiline
+              rows={3}
+              required
+              fullWidth
+              value={form.description}
+              onChange={handleChange}
+            />
+
+            {/* Submit */}
+            <Button type="submit" variant="contained" sx={{ mt: 3 }}>
+              Create Event
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
     </Box>
   );
 }
