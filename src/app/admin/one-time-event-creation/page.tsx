@@ -1,14 +1,9 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, TextField, Typography } from "@mui/material";
 import * as React from "react";
+
+import SubmitFormButton from "@/components/Button/SubmitFormButton";
 
 type CreateEventFormState = {
   title: string;
@@ -213,7 +208,7 @@ export default function CreateEventForm(): React.ReactElement {
 
               <TextField
                 name="postalCode"
-                label="Postal Code"
+                label="Zip"
                 required
                 sx={{ width: 140 }}
                 value={form.postalCode}
@@ -237,9 +232,7 @@ export default function CreateEventForm(): React.ReactElement {
             />
 
             {/* Submit */}
-            <Button type="submit" variant="contained" sx={{ mt: 3 }}>
-              Create Event
-            </Button>
+            <SubmitFormButton label="Create Event" />
           </Box>
         </CardContent>
       </Card>
