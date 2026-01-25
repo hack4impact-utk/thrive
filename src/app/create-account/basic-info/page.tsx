@@ -3,7 +3,6 @@
 import EmergencyIcon from "@mui/icons-material/Emergency";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Checkbox,
@@ -18,23 +17,104 @@ import {
 import type { SelectChangeEvent } from "@mui/material/Select";
 import * as React from "react";
 
-export default function BasicInfoForm(): React.JSX.Element {
-  const [newsletter, setNewsletter] = React.useState(false);
-  const [location, setLocation] = React.useState("");
-  const [size, setSize] = React.useState("");
-  const [gender, setGender] = React.useState("");
-  const [student, setStudent] = React.useState("");
+import { addUserInfo } from "@/actions/add-user-info";
+import SubmitFormButton from "@/components/Button/SubmitFormButton";
 
-  const handleSelect =
-    (setter: React.Dispatch<React.SetStateAction<string>>) =>
-    (event: SelectChangeEvent): void =>
-      setter(event.target.value);
+type BasicInfoFormState = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  phoneNumber: string;
+  isTextOptedIn: boolean;
+  birthMonth: string;
+  birthDay: string;
+  birthYear: string;
+  preferredNeighborhood?: string;
+  gender?: string;
+  shirtSize?: string;
+  medicalNotes?: string;
+};
+
+export default function BasicInfoForm(): React.ReactElement {
+  const [form, setForm] = React.useState<BasicInfoFormState>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+    phoneNumber: "",
+    isTextOptedIn: false,
+    birthMonth: "",
+    birthDay: "",
+    birthYear: "",
+    preferredNeighborhood: "",
+    gender: "",
+    shirtSize: "",
+    medicalNotes: "",
+  });
+
+  function handleChange(
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>,
+  ): void {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>,
+  ): Promise<void> {
+    e.preventDefault();
+
+    await addUserInfo({
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      email: form.email.trim(),
+
+      addressLine1: form.addressLine1.trim(),
+      addressLine2: form.addressLine2 || null,
+      city: form.city.trim(),
+      state: form.state.trim(),
+      postalCode: form.postalCode.trim(),
+      country: "US",
+
+      phoneNumber: form.phoneNumber.trim(),
+      isTextOptedIn: form.isTextOptedIn,
+
+      birthMonth: Number(form.birthMonth),
+      birthDay: Number(form.birthDay),
+      birthYear: Number(form.birthYear),
+
+      preferredNeighborhood: form.preferredNeighborhood || null,
+      gender: form.gender || null,
+      shirtSize: form.shirtSize || null,
+      medicalNotes: form.medicalNotes || null,
+    });
+  }
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", pt: 6 }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        pt: { sm: 0, md: 6 },
+        pb: { sm: 0, md: 6 },
+      }}
+    >
       <Card sx={{ width: "100%", maxWidth: 900 }}>
         <CardContent sx={{ px: 6, pb: 6 }}>
-          <Box component="form" autoComplete="off">
+          <Box component="form" autoComplete="off" onSubmit={handleSubmit}>
             <Typography variant="h5" gutterBottom>
               Complete the form below
             </Typography>
@@ -45,15 +125,36 @@ export default function BasicInfoForm(): React.JSX.Element {
 
             {/* Name */}
             <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-              <TextField required label="First name" fullWidth />
-              <TextField required label="Last name" fullWidth />
+              <TextField
+                name="firstName"
+                value={form.firstName}
+                onChange={handleChange}
+                required
+                label="First name"
+                fullWidth
+              />
+              <TextField
+                name="lastName"
+                value={form.lastName}
+                onChange={handleChange}
+                required
+                label="Last name"
+                fullWidth
+              />
             </Box>
 
             {/* Email */}
             <Typography variant="h6" sx={{ mt: 4 }}>
               Email
             </Typography>
-            <TextField required label="Email Address" fullWidth />
+            <TextField
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              label="Email Address"
+              fullWidth
+            />
 
             {/* Address */}
             <Typography variant="h6" sx={{ mt: 4 }}>
@@ -61,21 +162,48 @@ export default function BasicInfoForm(): React.JSX.Element {
             </Typography>
 
             <TextField
+              name="addressLine1"
+              value={form.addressLine1}
+              onChange={handleChange}
               required
               label="Street Address"
               fullWidth
               sx={{ mt: 1 }}
             />
             <TextField
+              name="addressLine2"
+              value={form.addressLine2}
+              onChange={handleChange}
               label="Apartment / Unit (optional)"
               fullWidth
               sx={{ mt: 1 }}
             />
 
             <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
-              <TextField label="City" fullWidth />
-              <TextField label="State" sx={{ width: 120 }} />
-              <TextField label="Zip" sx={{ width: 120 }} />
+              <TextField
+                name="city"
+                value={form.city}
+                onChange={handleChange}
+                required
+                label="City"
+                fullWidth
+              />
+              <TextField
+                name="state"
+                value={form.state}
+                onChange={handleChange}
+                required
+                label="State"
+                sx={{ width: 140 }}
+              />
+              <TextField
+                name="postalCode"
+                value={form.postalCode}
+                onChange={handleChange}
+                required
+                label="Zip"
+                sx={{ width: 140 }}
+              />
             </Box>
 
             {/* Phone */}
@@ -84,7 +212,13 @@ export default function BasicInfoForm(): React.JSX.Element {
             </Typography>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <TextField fullWidth size="small" />
+              <TextField
+                name="phoneNumber"
+                value={form.phoneNumber}
+                onChange={handleChange}
+                fullWidth
+                size="small"
+              />
               <EmergencyIcon fontSize="small" color="error" />
             </Box>
 
@@ -92,8 +226,14 @@ export default function BasicInfoForm(): React.JSX.Element {
               sx={{ mt: 2 }}
               control={
                 <Checkbox
-                  checked={newsletter}
-                  onChange={(e) => setNewsletter(e.target.checked)}
+                  name="isTextOptedIn"
+                  checked={form.isTextOptedIn}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      isTextOptedIn: e.target.checked,
+                    }))
+                  }
                 />
               }
               label="Send event reminders to my phone"
@@ -104,32 +244,52 @@ export default function BasicInfoForm(): React.JSX.Element {
               Date of Birth
             </Typography>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Box sx={{ display: "flex", gap: 1, flexGrow: 1 }}>
-                <TextField placeholder="MM" size="small" />
-                <TextField placeholder="DD" size="small" />
-                <TextField placeholder="YYYY" size="small" />
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                width: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  flex: 1,
+                }}
+              >
+                <TextField
+                  name="birthMonth"
+                  value={form.birthMonth}
+                  onChange={handleChange}
+                  required
+                  placeholder="MM"
+                  size="small"
+                  sx={{ flex: 1 }}
+                />
+
+                <TextField
+                  name="birthDay"
+                  value={form.birthDay}
+                  onChange={handleChange}
+                  required
+                  placeholder="DD"
+                  size="small"
+                  sx={{ flex: 1 }}
+                />
+
+                <TextField
+                  name="birthYear"
+                  value={form.birthYear}
+                  onChange={handleChange}
+                  required
+                  placeholder="YYYY"
+                  size="small"
+                  sx={{ flex: 1 }}
+                />
               </Box>
-              <EmergencyIcon fontSize="small" color="error" />
-            </Box>
 
-            {/* Student */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Are you a student?
-            </Typography>
-
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <FormControl size="small" fullWidth>
-                <InputLabel>Student</InputLabel>
-                <Select
-                  value={student}
-                  label="Student"
-                  onChange={handleSelect(setStudent)}
-                >
-                  <MenuItem value="YES">Yes</MenuItem>
-                  <MenuItem value="NO">No</MenuItem>
-                </Select>
-              </FormControl>
               <EmergencyIcon fontSize="small" color="error" />
             </Box>
 
@@ -144,9 +304,10 @@ export default function BasicInfoForm(): React.JSX.Element {
             <FormControl size="small" fullWidth sx={{ mt: 1 }}>
               <InputLabel>Location</InputLabel>
               <Select
-                value={location}
+                name="preferredNeighborhood"
+                value={form.preferredNeighborhood}
+                onChange={handleChange}
                 label="Location"
-                onChange={handleSelect(setLocation)}
               >
                 {[
                   "Lonsdale",
@@ -171,12 +332,13 @@ export default function BasicInfoForm(): React.JSX.Element {
             <FormControl size="small" fullWidth>
               <InputLabel>Gender</InputLabel>
               <Select
-                value={gender}
+                name="gender"
+                value={form.gender}
+                onChange={handleChange}
                 label="Gender"
-                onChange={handleSelect(setGender)}
               >
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
+                <MenuItem value="male">Male</MenuItem>
+                <MenuItem value="female">Female</MenuItem>
               </Select>
             </FormControl>
 
@@ -188,13 +350,14 @@ export default function BasicInfoForm(): React.JSX.Element {
             <FormControl size="small" fullWidth>
               <InputLabel>Size</InputLabel>
               <Select
-                value={size}
+                name="shirtSize"
+                value={form.shirtSize}
+                onChange={handleChange}
                 label="Size"
-                onChange={handleSelect(setSize)}
               >
-                <MenuItem value="Small">Small</MenuItem>
-                <MenuItem value="Medium">Medium</MenuItem>
-                <MenuItem value="Large">Large</MenuItem>
+                <MenuItem value="small">Small</MenuItem>
+                <MenuItem value="medium">Medium</MenuItem>
+                <MenuItem value="large">Large</MenuItem>
               </Select>
             </FormControl>
 
@@ -203,17 +366,16 @@ export default function BasicInfoForm(): React.JSX.Element {
               Medical conditions
             </Typography>
 
-            <TextField multiline rows={4} fullWidth placeholder="N/A" />
+            <TextField
+              name="medicalNotes"
+              value={form.medicalNotes}
+              onChange={handleChange}
+              multiline
+              rows={4}
+              fullWidth
+            />
 
-            {/* Actions */}
-            <Box sx={{ display: "flex", gap: 2, mt: 5 }}>
-              <Button variant="contained" color="inherit" sx={{ flex: 1 }}>
-                Previous
-              </Button>
-              <Button variant="contained" sx={{ flex: 1, bgcolor: "#22A27E" }}>
-                Next
-              </Button>
-            </Box>
+            <SubmitFormButton label="Submit" />
           </Box>
         </CardContent>
       </Card>
