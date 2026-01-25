@@ -28,7 +28,7 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps): ReactNode {
   return (
-    <html lang="en" className={roboto.variable}>
+    <html lang="en" data-scroll-behavior="smooth" className={roboto.variable}>
       <body suppressHydrationWarning>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>

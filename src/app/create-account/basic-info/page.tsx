@@ -1,6 +1,5 @@
 "use client";
 
-import EmergencyIcon from "@mui/icons-material/Emergency";
 import {
   Box,
   Card,
@@ -77,30 +76,61 @@ export default function BasicInfoForm(): React.ReactElement {
   ): Promise<void> {
     e.preventDefault();
 
-    await addUserInfo({
-      firstName: form.firstName.trim(),
-      lastName: form.lastName.trim(),
-      email: form.email.trim(),
+    try {
+      await addUserInfo({
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim(),
 
-      addressLine1: form.addressLine1.trim(),
-      addressLine2: form.addressLine2 || null,
-      city: form.city.trim(),
-      state: form.state.trim(),
-      postalCode: form.postalCode.trim(),
-      country: "US",
+        addressLine1: form.addressLine1.trim(),
+        addressLine2: form.addressLine2 || null,
+        city: form.city.trim(),
+        state: form.state.trim(),
+        postalCode: form.postalCode.trim(),
+        country: "US",
 
-      phoneNumber: form.phoneNumber.trim(),
-      isTextOptedIn: form.isTextOptedIn,
+        phoneNumber: form.phoneNumber.trim(),
+        isTextOptedIn: form.isTextOptedIn,
 
-      birthMonth: Number(form.birthMonth),
-      birthDay: Number(form.birthDay),
-      birthYear: Number(form.birthYear),
+        birthMonth: Number(form.birthMonth),
+        birthDay: Number(form.birthDay),
+        birthYear: Number(form.birthYear),
 
-      preferredNeighborhood: form.preferredNeighborhood || null,
-      gender: form.gender || null,
-      shirtSize: form.shirtSize || null,
-      medicalNotes: form.medicalNotes || null,
-    });
+        preferredNeighborhood: form.preferredNeighborhood || null,
+        gender: form.gender || null,
+        shirtSize: form.shirtSize || null,
+        medicalNotes: form.medicalNotes || null,
+      });
+
+      alert("Information added successfully.");
+
+      setForm({
+        firstName: "",
+        lastName: "",
+        email: "",
+        addressLine1: "",
+        addressLine2: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        country: "",
+        phoneNumber: "",
+        isTextOptedIn: false,
+        birthMonth: "",
+        birthDay: "",
+        birthYear: "",
+        preferredNeighborhood: "",
+        gender: "",
+        shirtSize: "",
+        medicalNotes: "",
+      });
+    } catch (error) {
+      console.error(
+        "add user info failed likely because already exists in user info table",
+        error,
+      );
+      alert("Error in adding information.");
+    }
   }
 
   return (
@@ -216,10 +246,10 @@ export default function BasicInfoForm(): React.ReactElement {
                 name="phoneNumber"
                 value={form.phoneNumber}
                 onChange={handleChange}
+                required
+                label="Phone number"
                 fullWidth
-                size="small"
               />
-              <EmergencyIcon fontSize="small" color="error" />
             </Box>
 
             <FormControlLabel
@@ -244,53 +274,33 @@ export default function BasicInfoForm(): React.ReactElement {
               Date of Birth
             </Typography>
 
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                width: "100%",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                  flex: 1,
-                }}
-              >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box sx={{ display: "flex", gap: 2 }}>
                 <TextField
                   name="birthMonth"
                   value={form.birthMonth}
                   onChange={handleChange}
                   required
-                  placeholder="MM"
-                  size="small"
-                  sx={{ flex: 1 }}
+                  label="MM"
+                  sx={{ width: 140 }}
                 />
-
                 <TextField
                   name="birthDay"
                   value={form.birthDay}
                   onChange={handleChange}
                   required
-                  placeholder="DD"
-                  size="small"
-                  sx={{ flex: 1 }}
+                  label="DD"
+                  sx={{ width: 140 }}
                 />
-
                 <TextField
                   name="birthYear"
                   value={form.birthYear}
                   onChange={handleChange}
                   required
-                  placeholder="YYYY"
-                  size="small"
-                  sx={{ flex: 1 }}
+                  label="YYYY"
+                  sx={{ width: 180 }}
                 />
               </Box>
-
-              <EmergencyIcon fontSize="small" color="error" />
             </Box>
 
             {/* Neighborhood */}
@@ -301,7 +311,7 @@ export default function BasicInfoForm(): React.ReactElement {
               We will place based on site needs, but preferences help.
             </Typography>
 
-            <FormControl size="small" fullWidth sx={{ mt: 1 }}>
+            <FormControl fullWidth sx={{ mt: 1 }}>
               <InputLabel>Location</InputLabel>
               <Select
                 name="preferredNeighborhood"
@@ -329,7 +339,7 @@ export default function BasicInfoForm(): React.ReactElement {
               Gender
             </Typography>
 
-            <FormControl size="small" fullWidth>
+            <FormControl fullWidth>
               <InputLabel>Gender</InputLabel>
               <Select
                 name="gender"
@@ -347,7 +357,7 @@ export default function BasicInfoForm(): React.ReactElement {
               Shirt size
             </Typography>
 
-            <FormControl size="small" fullWidth>
+            <FormControl fullWidth>
               <InputLabel>Size</InputLabel>
               <Select
                 name="shirtSize"
@@ -370,6 +380,7 @@ export default function BasicInfoForm(): React.ReactElement {
               name="medicalNotes"
               value={form.medicalNotes}
               onChange={handleChange}
+              label="Please list any conditions we should know about"
               multiline
               rows={4}
               fullWidth
