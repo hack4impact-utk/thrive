@@ -31,8 +31,8 @@ export default function MapComponent() {
   return (
     // Entire map container details
     <MapContainer center={[center.lat, center.lng]} zoom={14} style={{ width: "100%", height: "100%" }}>
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap contributors" />
-      <Marker position={[center.lat, center.lng]} />
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap contributors" />
+        <Marker position={[center.lat, center.lng]} />
     </MapContainer>
   );
 }

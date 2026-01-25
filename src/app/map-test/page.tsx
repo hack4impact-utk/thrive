@@ -8,10 +8,10 @@ const MapComponent = dynamic(() => import("../../components/MapComp"), { ssr: fa
 export default function MapTestPage() {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
-      <div style={{ width: "70%" }} />
-      <div style={{ width: "30%", height: "100%" }}>
-        <MapComponent />
-      </div>
-    </div>
+            <div style={{ width: "70%" }} />
+            <div style={{ width: "30%", height: "100%" }}>
+              <MapComponent />
+            </div>
+            </div>
   );
 }
