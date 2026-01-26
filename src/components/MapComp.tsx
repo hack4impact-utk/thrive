@@ -10,13 +10,13 @@ type LatitudeLongitudeStore = { lat: number; lng: number };
 
 // For future use, making it exportable (use mapComponent))
 export default function MapComponent() {
-  const [center, setCenter] = useState<LatitudeLongitudeStore | null>(null);
+     const [center, setCenter] = useState<LatitudeLongitudeStore | null>(null);
 
   useEffect(() => {
     if (!navigator.geolocation) {
         // Using New York location as default
-      setCenter({ lat: 40.7128, lng: -74.0060 }); 
-      return;
+            setCenter({ lat: 40.7128, lng: -74.0060 }); 
+        return;
     }
 
     navigator.geolocation.getCurrentPosition(
@@ -35,7 +35,7 @@ export default function MapComponent() {
     // Entire map container details
     <MapContainer 
     center={[center.lat, center.lng]} 
-    zoom={14} 
+             zoom={14} 
     style={{ width: "100%", height: "100%" }}>
         <TileLayer 
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
