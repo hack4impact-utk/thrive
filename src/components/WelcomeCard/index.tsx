@@ -10,6 +10,7 @@ export default function WelcomeCard(): React.ReactElement {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        mb: 4,
       }}
     >
       <Card
