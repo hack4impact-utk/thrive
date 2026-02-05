@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 const MapComponent = dynamic(() => import("../../components/MapComp"), { ssr: false });
 
 // Making it fit 30 percent of the page
-export default function MapTestPage() {
+export default function MapTestPage(): React.ReactElement {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
             <div style={{ width: "70%" }} />
