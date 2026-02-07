@@ -39,6 +39,23 @@ export async function POST(req: Request): Promise<Response> {
       );
     }
 
+    const url = new URL("https://geocode.maps.co/search");
+    const api = process.env.GEOCODING_API_KEY!;
+    const params = {
+      street: streetLine,
+      city: city,
+      state: state,
+      country: country,
+      postalcode: postalCode,
+      api_key: api,
+    };
+    url.search = new URLSearchParams(params).toString();
+
+    const result = await fetch(url).then((response) => response.json());
+
+    const longitude = result[0].lon;
+    const latitude = result[0].lat;
+
     if (endTime <= startTime) {
       return NextResponse.json(
         { error: "End time must be after start time" },
@@ -57,6 +74,8 @@ export async function POST(req: Request): Promise<Response> {
       state,
       postalCode,
       country,
+      latitude,
+      longitude,
       description,
     });
 
@@ -70,3 +89,9 @@ export async function POST(req: Request): Promise<Response> {
     );
   }
 }
+
+/*
+  - need to get the address from database
+  - GET lng and lat from ex https://geocode.maps.co/search?street=555+5th+Ave&city=New+York&state=NY&postalcode=10017&country=US&api_key=YOUR_SECRET_API_KEY
+  - POST to database
+  */
