@@ -53,8 +53,9 @@ export async function POST(req: Request): Promise<Response> {
 
     const result = await fetch(url).then((response) => response.json());
 
-    const longitude = result[0].lon;
-    const latitude = result[0].lat;
+    const firstResult = Array.isArray(result) ? result[0] : undefined;
+    const latitude = firstResult?.lat ?? null;
+    const longitude = firstResult?.lon ?? null;
 
     if (endTime <= startTime) {
       return NextResponse.json(
