@@ -40,6 +40,10 @@ export default function VolunteerEventCard(
     event.isRegistered ?? false,
   );
 
+  React.useEffect(() => {
+    setIsRegistered(event.isRegistered ?? false);
+  }, [event.isRegistered]);
+
   const [isPending, setIsPending] = React.useState(false);
 
   return (

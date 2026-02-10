@@ -16,6 +16,7 @@ type HomePageClientProps = {
     capacity: number | null;
     streetLine: string;
     description: string;
+    isRegistered?: boolean;
   }[];
 };
 
@@ -36,6 +37,7 @@ export default function HomePageClient({
           capacity={event.capacity}
           streetLine={event.streetLine}
           description={event.description}
+          isRegistered={event.isRegistered}
         />
       ))}
       {/* Temporary event creation form */}
