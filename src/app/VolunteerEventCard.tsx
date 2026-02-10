@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import * as React from "react";
 
 import { attendEvent } from "@/actions/attend-event";
+import { leaveEvent } from "@/actions/leave-event";
 import { DefaultButton } from "@/components/Button";
 
 import getTimeRange from "./helpers";
@@ -21,6 +22,7 @@ type VolunteerEventCardProps = {
   capacity: number | null;
   streetLine: string;
   description: string;
+  isRegistered?: boolean;
 };
 
 export default function VolunteerEventCard(
@@ -33,6 +35,12 @@ export default function VolunteerEventCard(
     event.startTime,
     event.endTime,
   );
+
+  const [isRegistered, setIsRegistered] = React.useState(
+    event.isRegistered ?? false,
+  );
+
+  const [isPending, setIsPending] = React.useState(false);
 
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>
@@ -50,9 +58,28 @@ export default function VolunteerEventCard(
 
           {status === "authenticated" && (
             <DefaultButton
-              label="Register"
-              onClick={() => attendEvent(event.id)}
+              label={isRegistered ? "Unregister" : "Register"}
               href="/"
+              onClick={async () => {
+                if (isPending) return;
+
+                setIsPending(true);
+                try {
+                  if (isRegistered) {
+                    await leaveEvent(event.id);
+                    setIsRegistered(false);
+                  } else {
+                    await attendEvent(event.id);
+                    setIsRegistered(true);
+                  }
+                } catch (error) {
+                  console.error(error);
+                } finally {
+                  setIsPending(false);
+                }
+              }}
+              bgcolor={isRegistered ? "grey.400" : "primary.main"}
+              color={isRegistered ? "text.primary" : "white"}
             />
           )}
         </Box>
