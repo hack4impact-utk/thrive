@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
@@ -22,10 +22,12 @@ export async function leaveEvent(eventId: string): Promise<void> {
   if (!event) {
     throw new Error("Event not found");
   }
+  const attendeeCount = await db
+    .select({ count: count() })
+    .from(eventAttendees)
+    .where(eq(eventAttendees.eventId, eventId));
 
-  let newCount = event.registeredUsers ?? 0;
-
-  newCount--;
+  const newCount = attendeeCount[0].count - 1;
 
   await db
     .update(events)
