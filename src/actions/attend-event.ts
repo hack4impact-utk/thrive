@@ -30,7 +30,7 @@ export async function attendEvent(eventId: string): Promise<void> {
     .from(eventAttendees)
     .where(eq(eventAttendees.eventId, eventId));
 
-  if (attendeeCount[0].count >= capacity) {
+  if (attendeeCount[0].count > capacity) {
     throw new Error("Event capacity reached");
   }
 
