@@ -14,6 +14,7 @@ type HomePageClientProps = {
     startTime: string;
     endTime: string;
     capacity: number | null;
+    registeredUsers: number | null;
     streetLine: string;
     description: string;
   }[];
@@ -34,6 +35,7 @@ export default function HomePageClient({
           startTime={event.startTime}
           endTime={event.endTime}
           capacity={event.capacity}
+          registeredUsers={event.registeredUsers}
           streetLine={event.streetLine}
           description={event.description}
         />

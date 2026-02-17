@@ -20,6 +20,7 @@ type VolunteerEventCardProps = {
   startTime: string;
   endTime: string;
   capacity: number | null;
+  registeredUsers: number | null;
   streetLine: string;
   description: string;
   isRegistered?: boolean;
@@ -38,6 +39,10 @@ export default function VolunteerEventCard(
 
   const [isRegistered, setIsRegistered] = React.useState(
     event.isRegistered ?? false,
+  );
+
+  const [registeredUsers, setRegisteredUsers] = React.useState(
+    event.registeredUsers ?? 0,
   );
 
   const [isPending, setIsPending] = React.useState(false);
@@ -68,12 +73,20 @@ export default function VolunteerEventCard(
                   if (isRegistered) {
                     await leaveEvent(event.id);
                     setIsRegistered(false);
+                    setRegisteredUsers((prev) => Math.max(prev - 1, 0));
                   } else {
                     await attendEvent(event.id);
                     setIsRegistered(true);
+                    setRegisteredUsers((prev) => prev + 1);
                   }
                 } catch (error) {
-                  console.error(error);
+                  if (error instanceof Error) {
+                    if (error.message === "Event capacity reached") {
+                      alert("Sorry, this event is full! You cannot register.");
+                    } else {
+                      console.error(error.message);
+                    }
+                  }
                 } finally {
                   setIsPending(false);
                 }
@@ -101,7 +114,7 @@ export default function VolunteerEventCard(
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <PersonIcon fontSize="small" />
             <Typography variant="body2">
-              {event.capacity} slots remaining
+              {(event.capacity ?? 0) - registeredUsers} slots remaining
             </Typography>
           </Box>
 
