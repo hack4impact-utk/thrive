@@ -5,6 +5,8 @@ import { Fragment } from "react";
 
 import { DefaultButton } from "@/components/Button/DefaultButton";
 
+import VolunteerEventCard from "./VolunteerEventCard";
+
 type HomePageClientProps = {
   events: {
     id: string;
@@ -76,6 +78,7 @@ export default function HomePageClient({
                 startTime={event.startTime}
                 endTime={event.endTime}
                 capacity={event.capacity}
+                registeredUsers={event.registeredUsers}
                 streetLine={event.streetLine}
                 description={event.description}
                 isRegistered={event.isRegistered}
