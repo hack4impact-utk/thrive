@@ -79,6 +79,7 @@ export default function HomePageClient({
                 capacity={event.capacity}
                 streetLine={event.streetLine}
                 description={event.description}
+                isRegistered={event.isRegistered}
               />
             ))}
           </Fragment>
