@@ -44,7 +44,6 @@ export default async function HomePage(): Promise<React.ReactElement> {
         }}
       >
         <WelcomeCard />
-        <VolunteerEventCardHeader />
         <HomePageClient events={eventsWithState} />
       </Box>
     </div>
