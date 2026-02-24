@@ -4,7 +4,7 @@ import Popover from "@mui/material/Popover";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function ProfileDropdown(): React.ReactElement {
   const router = useRouter();
@@ -17,13 +17,17 @@ export default function ProfileDropdown(): React.ReactElement {
 
   const handleClose = (): void => {
     setAnchorEl(null);
+    triggerRef.current?.focus();
   };
+
+  const triggerRef = useRef<HTMLDivElement | null>(null);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   return (
     <>
       <Box
+        ref={triggerRef}
         aria-describedby={id}
         onClick={handleClick}
         sx={{

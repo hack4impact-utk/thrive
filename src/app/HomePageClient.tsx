@@ -17,6 +17,7 @@ type HomePageClientProps = {
     capacity: number | null;
     streetLine: string;
     description: string;
+    isRegistered?: boolean;
   }[];
 };
 
