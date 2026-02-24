@@ -7,11 +7,11 @@ const MapComponent = dynamic(() => import("../../components/MapComp"), { ssr: fa
 // Making it fit 30 percent of the page
 export default function MapTestPage(): React.ReactElement {
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-            <div style={{ width: "70%" }} />
-            <div style={{ width: "30%", height: "100%" }}>
-              <MapComponent />
-            </div>
-            </div>
+    <div style={{ display: "flex", height: "100%" }}>
+      <div style={{ width: "70%" }} />
+      <div style={{ width: "30%", height: "calc(100vh - 64px)", minHeight: 0 }}>
+        <MapComponent />
+      </div>
+    </div>
   );
 }
