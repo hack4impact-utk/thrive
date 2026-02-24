@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 
-import VolunteerEventCardHeader from "@/app/VolunteerEventCardHeader";
 import WelcomeCard from "@/app/WelcomeCard";
 import { getUpcomingEvents } from "@/lib/events";
 
@@ -24,7 +23,6 @@ export default async function HomePage(): Promise<React.ReactElement> {
         }}
       >
         <WelcomeCard />
-        <VolunteerEventCardHeader />
         <HomePageClient events={events} />
       </Box>
     </div>
