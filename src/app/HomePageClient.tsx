@@ -1,6 +1,7 @@
 "use client";
 import { Box, Typography } from "@mui/material";
 import { useSession } from "next-auth/react";
+import { Fragment } from "react";
 
 import { DefaultButton } from "@/components/Button/DefaultButton";
 
@@ -24,7 +25,6 @@ export default function HomePageClient({
 }: HomePageClientProps): React.ReactElement {
   const { status } = useSession();
 
-  // Group events using a standard loop
   const groups: Record<string, typeof events> = {};
 
   for (const event of events) {
@@ -35,13 +35,11 @@ export default function HomePageClient({
     groups[date].push(event);
   }
 
-  // Sort the dates
   const sortedDates = Object.keys(groups).sort();
 
   return (
     <>
       {sortedDates.map((dateString) => {
-        // Convert "2026-01-02" to "1/2/2026"
         const [year, month, day] = dateString.split("-").map(Number);
         const dateObj = new Date(year, month - 1, day);
 
@@ -49,24 +47,26 @@ export default function HomePageClient({
           weekday: "long",
         });
         const displayDate = `${weekday}, ${month}/${day}/${year}`;
+
         return (
-          <>
+          <Fragment key={dateString}>
             <Box
-              key={dateString}
               sx={{
                 backgroundColor: "secondary.main",
                 color: "white",
                 position: "sticky",
                 top: 56.8,
                 zIndex: 1,
-                padding: 3,
+                padding: 2,
                 width: "100%",
+                mt: 2,
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
                 {displayDate}
               </Typography>
             </Box>
+
             {groups[dateString].map((event) => (
               <VolunteerEventCard
                 key={event.id}
@@ -80,16 +80,12 @@ export default function HomePageClient({
                 description={event.description}
               />
             ))}
-          </>
+          </Fragment>
         );
       })}
-      {/* Temporary event creation form */}
+
       {status === "authenticated" && (
-        <Box
-          sx={{
-            display: "flex",
-          }}
-        >
+        <Box sx={{ display: "flex" }}>
           <DefaultButton
             label="temporary one time event creation button"
             href="/admin/one-time-event-creation"
