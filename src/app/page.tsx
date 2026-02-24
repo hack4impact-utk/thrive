@@ -1,7 +1,6 @@
 import Box from "@mui/material/Box";
 import { eq } from "drizzle-orm";
 
-import VolunteerEventCardHeader from "@/app/VolunteerEventCardHeader";
 import WelcomeCard from "@/app/WelcomeCard";
 import db from "@/db";
 import { eventAttendees } from "@/db/schema";
