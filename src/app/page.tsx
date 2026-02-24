@@ -1,13 +1,34 @@
 import Box from "@mui/material/Box";
+import { eq } from "drizzle-orm";
 
 import VolunteerEventCardHeader from "@/app/VolunteerEventCardHeader";
 import WelcomeCard from "@/app/WelcomeCard";
+import db from "@/db";
+import { eventAttendees } from "@/db/schema";
+import { auth } from "@/lib/auth";
 import { getUpcomingEvents } from "@/lib/events";
 
 import HomePageClient from "./HomePageClient";
 
 export default async function HomePage(): Promise<React.ReactElement> {
   const events = await getUpcomingEvents();
+
+  const session = await auth();
+  const userId = session?.user?.id ?? null;
+
+  const registrations = userId
+    ? await db
+        .select({ eventId: eventAttendees.eventId })
+        .from(eventAttendees)
+        .where(eq(eventAttendees.userId, userId))
+    : [];
+
+  const registeredSet = new Set(registrations.map((r) => r.eventId));
+
+  const eventsWithState = events.map((e) => ({
+    ...e,
+    isRegistered: userId ? registeredSet.has(e.id) : false,
+  }));
 
   return (
     <div>
@@ -25,7 +46,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
       >
         <WelcomeCard />
         <VolunteerEventCardHeader />
-        <HomePageClient events={events} />
+        <HomePageClient events={eventsWithState} />
       </Box>
     </div>
   );
