@@ -44,9 +44,6 @@ importers:
       '@react-google-maps/api':
         specifier: ^2.20.8
         version: 2.20.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@types/leaflet':
-        specifier: ^1.9.21
-        version: 1.9.21
       dayjs:
         specifier: ^1.11.19
         version: 1.11.19
@@ -93,6 +90,9 @@ importers:
       '@next/eslint-plugin-next':
         specifier: ^15.4.6
         version: 15.4.6
+      '@types/leaflet':
+        specifier: ^1.9.21
+        version: 1.9.21
       '@types/node':
         specifier: ^20
         version: 20.19.10
