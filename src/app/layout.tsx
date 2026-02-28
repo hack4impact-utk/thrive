@@ -10,6 +10,7 @@ import { ReactNode } from "react";
 import Header from "@/app/Header";
 import db from "@/db";
 import { users } from "@/db/schema";
+import { userInfo } from "@/db/schema/user-info";
 import { auth } from "@/lib/auth";
 import NextAuthProvider from "@/providers/next-auth-provider";
 import NotistackProvider from "@/providers/notistack-provider";
@@ -41,7 +42,12 @@ export default async function RootLayout({
       .from(users)
       .where(eq(users.id, session.user.id))
       .limit(1);
-    if (user && user.info_filled && !user.name) {
+    const [user_info] = await db
+      .select()
+      .from(userInfo)
+      .where(eq(userInfo.userId, session.user.id))
+      .limit(1);
+    if (user && user.info_filled && (!user_info || user_info?.firstName)) {
       await db
         .update(users)
         .set({ info_filled: false })

@@ -16,13 +16,13 @@ export async function addUserInfo(data: Payload): Promise<void> {
     throw new Error("Unauthorized");
   }
 
-  await db
-    .update(users)
-    .set({ info_filled: true })
-    .where(eq(users.id, session.user.id));
-
   await db.insert(userInfo).values({
     userId: session.user.id,
     ...data,
   });
+
+  await db
+    .update(users)
+    .set({ info_filled: true })
+    .where(eq(users.id, session.user.id));
 }
