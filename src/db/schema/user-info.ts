@@ -32,5 +32,8 @@ export const userInfo = pgTable("user_info", {
 
   shirtSize: varchar("shirt_size", { length: 10 }),
 
+  howDidYouHear: varchar("how_did_you_hear", { length: 20 }),
+  howDidYouHearOther: text("how_did_you_hear_other"),
+
   medicalNotes: text("medical_notes"),
 });
