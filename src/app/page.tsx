@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 
 import WelcomeCard from "@/app/WelcomeCard";
 import db from "@/db";
-import { eventAttendees } from "@/db/schema";
+import { eventAttendees, users } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { getUpcomingEvents } from "@/lib/events";
 
@@ -14,6 +14,20 @@ export default async function HomePage(): Promise<React.ReactElement> {
 
   const session = await auth();
   const userId = session?.user?.id ?? null;
+
+  let infoFilled = true;
+
+  if (session?.user) {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, session.user.id))
+      .limit(1);
+
+    if (user) {
+      infoFilled = user.info_filled;
+    }
+  }
 
   const registrations = userId
     ? await db
@@ -44,7 +58,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
         }}
       >
         <WelcomeCard />
-        <HomePageClient events={eventsWithState} />
+        <HomePageClient events={eventsWithState} infoFilled={infoFilled} />
       </Box>
     </div>
   );

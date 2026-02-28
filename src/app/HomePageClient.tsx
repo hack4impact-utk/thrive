@@ -1,7 +1,8 @@
 "use client";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 import { DefaultButton } from "@/components/Button/DefaultButton";
 
@@ -20,12 +21,21 @@ type HomePageClientProps = {
     description: string;
     isRegistered?: boolean;
   }[];
+  infoFilled: boolean;
 };
 
 export default function HomePageClient({
   events,
+  infoFilled,
 }: HomePageClientProps): React.ReactElement {
-  const { status } = useSession();
+  const { status, data: sessionData } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated" && sessionData?.user && !infoFilled) {
+      router.replace("/create-account/basic-info");
+    }
+  }, [status, sessionData, router, events]);
 
   const groups: Record<string, typeof events> = {};
 
@@ -98,6 +108,7 @@ export default function HomePageClient({
             label="user info form"
             href="/create-account/basic-info"
           />
+          <Button variant="text">Testing redirects</Button>
         </Box>
       )}
     </>
