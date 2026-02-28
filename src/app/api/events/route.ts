@@ -56,6 +56,7 @@ export async function POST(req: Request): Promise<Response> {
     const firstResult = Array.isArray(result) ? result[0] : undefined;
     const latitude = firstResult?.lat ?? null;
     const longitude = firstResult?.lon ?? null;
+    const registeredUsers = 0;
 
     if (endTime <= startTime) {
       return NextResponse.json(
@@ -70,6 +71,7 @@ export async function POST(req: Request): Promise<Response> {
       startTime,
       endTime,
       capacity: capacity ?? null,
+      registeredUsers,
       streetLine,
       city,
       state,
