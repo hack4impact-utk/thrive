@@ -7,6 +7,7 @@ import { eventAttendees } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { getUpcomingEvents } from "@/lib/events";
 
+import Filters from "./Filters";
 import HomePageClient from "./HomePageClient";
 
 export default async function HomePage(): Promise<React.ReactElement> {
@@ -44,6 +45,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
         }}
       >
         <WelcomeCard />
+        <Filters />
         <HomePageClient events={eventsWithState} />
       </Box>
     </div>

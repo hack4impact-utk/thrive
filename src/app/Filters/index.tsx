@@ -29,20 +29,24 @@ export default function Filters(): React.ReactElement {
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        width: "100%",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          width: "70%",
+          width: "100%",
           justifySelf: "center",
         }}
       >
         <Box
           sx={{
             display: "flex",
-            width: "60%",
+            width: "100%",
             alignItems: "center",
           }}
         >
