@@ -37,6 +37,8 @@ type BasicInfoFormState = {
   preferredNeighborhood?: string;
   gender?: string;
   shirtSize?: string;
+  howDidYouHear?: string;
+  howDidYouHearOther?: string;
   medicalNotes?: string;
 };
 
@@ -59,6 +61,8 @@ export default function BasicInfoForm(): React.ReactElement {
     preferredNeighborhood: "",
     gender: "",
     shirtSize: "",
+    howDidYouHear: "",
+    howDidYouHearOther: "",
     medicalNotes: "",
   });
 
@@ -99,6 +103,8 @@ export default function BasicInfoForm(): React.ReactElement {
         preferredNeighborhood: form.preferredNeighborhood || null,
         gender: form.gender || null,
         shirtSize: form.shirtSize || null,
+        howDidYouHear: form.howDidYouHear || null,
+        howDidYouHearOther: form.howDidYouHearOther || null,
         medicalNotes: form.medicalNotes || null,
       });
 
@@ -122,6 +128,8 @@ export default function BasicInfoForm(): React.ReactElement {
         preferredNeighborhood: "",
         gender: "",
         shirtSize: "",
+        howDidYouHear: "",
+        howDidYouHearOther: "",
         medicalNotes: "",
       });
     } catch (error) {
@@ -369,6 +377,35 @@ export default function BasicInfoForm(): React.ReactElement {
                 <MenuItem value="medium">Medium</MenuItem>
                 <MenuItem value="large">Large</MenuItem>
               </Select>
+            </FormControl>
+
+            {/* How'd You Hear About Us */}
+            <Typography variant="h6" sx={{ mt: 4 }}>
+              How did you hear about Thrive
+            </Typography>
+
+            <FormControl fullWidth>
+              <InputLabel>How did you hear about us?</InputLabel>
+              <Select
+                name="howDidYouHear"
+                value={form.howDidYouHear}
+                onChange={handleChange}
+                label="How did you hear about us?"
+              >
+                <MenuItem value="socialMedia">Social Media</MenuItem>
+                <MenuItem value="friend">Friend</MenuItem>
+                <MenuItem value="website">Website</MenuItem>
+                <MenuItem value="other">Other</MenuItem>
+              </Select>
+              {form.howDidYouHear === "other" && <Typography variant="caption" color="text.secondary">
+                Please specify how you heard about us.
+              </Typography>}
+              {form.howDidYouHear === "other" && <TextField
+                name="howDidYouHearOther"
+                value={form.howDidYouHearOther || ""}
+                onChange={handleChange}
+                fullWidth
+              />}
             </FormControl>
 
             {/* Medical */}

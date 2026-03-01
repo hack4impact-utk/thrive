@@ -1,0 +1,1 @@
+ALTER TABLE "user_info" ADD COLUMN "hello" varchar(10);
