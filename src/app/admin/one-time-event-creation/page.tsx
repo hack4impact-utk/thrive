@@ -1,9 +1,74 @@
 "use client";
 
-import { Box, Card, CardContent, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
+  Typography,
+} from "@mui/material";
 import * as React from "react";
 
 import SubmitFormButton from "@/components/Button/SubmitFormButton";
+
+const US_STATES = [
+  { value: "AL", label: "AL" },
+  { value: "AK", label: "AK" },
+  { value: "AZ", label: "AZ" },
+  { value: "AR", label: "AR" },
+  { value: "CA", label: "CA" },
+  { value: "CO", label: "CO" },
+  { value: "CT", label: "CT" },
+  { value: "DE", label: "DE" },
+  { value: "FL", label: "FL" },
+  { value: "GA", label: "GA" },
+  { value: "HI", label: "HI" },
+  { value: "ID", label: "ID" },
+  { value: "IL", label: "IL" },
+  { value: "IN", label: "IN" },
+  { value: "IA", label: "IA" },
+  { value: "KS", label: "KS" },
+  { value: "KY", label: "KY" },
+  { value: "LA", label: "LA" },
+  { value: "ME", label: "ME" },
+  { value: "MD", label: "MD" },
+  { value: "MA", label: "MA" },
+  { value: "MI", label: "MI" },
+  { value: "MN", label: "MN" },
+  { value: "MS", label: "MS" },
+  { value: "MO", label: "MO" },
+  { value: "MT", label: "MT" },
+  { value: "NE", label: "NE" },
+  { value: "NV", label: "NV" },
+  { value: "NH", label: "NH" },
+  { value: "NJ", label: "NJ" },
+  { value: "NM", label: "NM" },
+  { value: "NY", label: "NY" },
+  { value: "NC", label: "NC" },
+  { value: "ND", label: "ND" },
+  { value: "OH", label: "OH" },
+  { value: "OK", label: "OK" },
+  { value: "OR", label: "OR" },
+  { value: "PA", label: "PA" },
+  { value: "RI", label: "RI" },
+  { value: "SC", label: "SC" },
+  { value: "SD", label: "SD" },
+  { value: "TN", label: "TN" },
+  { value: "TX", label: "TX" },
+  { value: "UT", label: "UT" },
+  { value: "VT", label: "VT" },
+  { value: "VA", label: "VA" },
+  { value: "WA", label: "WA" },
+  { value: "WV", label: "WV" },
+  { value: "WI", label: "WI" },
+  { value: "WY", label: "WY" },
+];
 
 type CreateEventFormState = {
   title: string;
@@ -34,17 +99,67 @@ export default function CreateEventForm(): React.ReactElement {
     description: "",
   });
 
+  const [errors, setErrors] = React.useState<
+    Partial<Record<keyof CreateEventFormState, string>>
+  >({});
+
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>,
   ): void {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: undefined,
+    }));
   }
 
   async function handleSubmit(
     e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> {
     e.preventDefault();
+
+    const newErrors: Partial<Record<keyof CreateEventFormState, string>> = {};
+
+    // Required fields
+    if (!form.title.trim()) newErrors.title = "Title is required.";
+    if (!form.eventDate) newErrors.eventDate = "Event date is required.";
+    if (!form.startTime) newErrors.startTime = "Start time is required.";
+    if (!form.endTime) newErrors.endTime = "End time is required.";
+    if (!form.streetLine.trim())
+      newErrors.streetLine = "Street address is required.";
+    if (!form.city.trim()) newErrors.city = "City is required.";
+    if (!form.state.trim()) newErrors.state = "State is required.";
+    if (!form.postalCode.trim()) newErrors.postalCode = "Zip is required.";
+    if (!form.description.trim())
+      newErrors.description = "Description is required.";
+
+    // Value-based validations
+    if (
+      form.eventDate &&
+      form.eventDate < new Date().toISOString().split("T")[0]
+    ) {
+      newErrors.eventDate = "Event date cannot be in the past.";
+    }
+
+    if (form.startTime && form.endTime && form.startTime >= form.endTime) {
+      newErrors.startTime = "Start time must be before end time.";
+      newErrors.endTime = "End time must be after start time.";
+    }
+
+    if (form.capacity && Number(form.capacity) <= 0) {
+      newErrors.capacity = "Capacity must be a positive number.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
 
     const res = await fetch("/api/events", {
       method: "POST",
@@ -105,6 +220,7 @@ export default function CreateEventForm(): React.ReactElement {
               display: "flex",
               flexDirection: "column",
               gap: 2,
+              height: "2000px",
             }}
           >
             <Typography variant="h5">Create Event</Typography>
@@ -121,6 +237,8 @@ export default function CreateEventForm(): React.ReactElement {
               fullWidth
               value={form.title}
               onChange={handleChange}
+              error={Boolean(errors.title)}
+              helperText={errors.title}
             />
 
             <TextField
@@ -132,6 +250,8 @@ export default function CreateEventForm(): React.ReactElement {
               value={form.eventDate}
               onChange={handleChange}
               slotProps={{ inputLabel: { shrink: true } }}
+              error={Boolean(errors.eventDate)}
+              helperText={errors.eventDate}
             />
 
             <Box sx={{ display: "flex", gap: 2 }}>
@@ -147,6 +267,8 @@ export default function CreateEventForm(): React.ReactElement {
                   inputLabel: { shrink: true },
                   htmlInput: { step: 900 },
                 }}
+                error={Boolean(errors.startTime)}
+                helperText={errors.startTime}
               />
 
               <TextField
@@ -161,6 +283,8 @@ export default function CreateEventForm(): React.ReactElement {
                   inputLabel: { shrink: true },
                   htmlInput: { step: 900 },
                 }}
+                error={Boolean(errors.endTime)}
+                helperText={errors.endTime}
               />
             </Box>
 
@@ -171,6 +295,8 @@ export default function CreateEventForm(): React.ReactElement {
               fullWidth
               value={form.capacity}
               onChange={handleChange}
+              error={Boolean(errors.capacity)}
+              helperText={errors.capacity}
             />
 
             {/* Location */}
@@ -185,6 +311,8 @@ export default function CreateEventForm(): React.ReactElement {
               fullWidth
               value={form.streetLine}
               onChange={handleChange}
+              error={Boolean(errors.streetLine)}
+              helperText={errors.streetLine}
             />
 
             <Box sx={{ display: "flex", gap: 2 }}>
@@ -195,27 +323,55 @@ export default function CreateEventForm(): React.ReactElement {
                 fullWidth
                 value={form.city}
                 onChange={handleChange}
+                sx={{ flex: 1, minWidth: 0 }}
+                error={Boolean(errors.city)}
+                helperText={errors.city}
               />
-
-              <TextField
-                name="state"
-                label="State"
-                required
-                sx={{ width: 120 }}
-                value={form.state}
-                onChange={handleChange}
-              />
-
+              <FormControl
+                sx={{ width: 120, flexShrink: 0 }}
+                error={Boolean(errors.state)}
+              >
+                <InputLabel id="state-select-label">State *</InputLabel>
+                <Select
+                  labelId="state-select-label"
+                  id="state-select"
+                  name="state"
+                  required
+                  value={form.state}
+                  sx={{ width: 120 }}
+                  label="State"
+                  onChange={handleChange}
+                  MenuProps={{
+                    disablePortal: true,
+                    anchorOrigin: {
+                      vertical: "bottom",
+                      horizontal: "left",
+                    },
+                    transformOrigin: {
+                      vertical: "top",
+                      horizontal: "left",
+                    },
+                  }}
+                >
+                  {US_STATES.map((s) => (
+                    <MenuItem key={s.value} value={s.value}>
+                      {s.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText>{errors.state}</FormHelperText>
+              </FormControl>
               <TextField
                 name="postalCode"
                 label="Zip"
                 required
-                sx={{ width: 140 }}
+                sx={{ width: 140, flexShrink: 0 }}
                 value={form.postalCode}
                 onChange={handleChange}
+                error={Boolean(errors.postalCode)}
+                helperText={errors.postalCode}
               />
             </Box>
-
             {/* Description */}
             <Typography variant="h6" sx={{ mt: 2 }}>
               Description
@@ -229,6 +385,8 @@ export default function CreateEventForm(): React.ReactElement {
               fullWidth
               value={form.description}
               onChange={handleChange}
+              error={Boolean(errors.description)}
+              helperText={errors.description}
             />
 
             {/* Submit */}
