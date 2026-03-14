@@ -22,7 +22,6 @@ import SubmitFormButton from "@/components/Button/SubmitFormButton";
 type BasicInfoFormState = {
   firstName: string;
   lastName: string;
-  email: string;
   addressLine1: string;
   addressLine2?: string;
   city: string;
@@ -46,7 +45,6 @@ export default function BasicInfoForm(): React.ReactElement {
   const [form, setForm] = React.useState<BasicInfoFormState>({
     firstName: "",
     lastName: "",
-    email: "",
     addressLine1: "",
     addressLine2: "",
     city: "",
@@ -84,7 +82,6 @@ export default function BasicInfoForm(): React.ReactElement {
       await addUserInfo({
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
-        email: form.email.trim(),
 
         addressLine1: form.addressLine1.trim(),
         addressLine2: form.addressLine2 || null,
@@ -113,7 +110,6 @@ export default function BasicInfoForm(): React.ReactElement {
       setForm({
         firstName: "",
         lastName: "",
-        email: "",
         addressLine1: "",
         addressLine2: "",
         city: "",
@@ -180,19 +176,6 @@ export default function BasicInfoForm(): React.ReactElement {
                 fullWidth
               />
             </Box>
-
-            {/* Email */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Email
-            </Typography>
-            <TextField
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              label="Email Address"
-              fullWidth
-            />
 
             {/* Address */}
             <Typography variant="h6" sx={{ mt: 4 }}>

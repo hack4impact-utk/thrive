@@ -10,8 +10,6 @@ export const userInfo = pgTable("user_info", {
   firstName: varchar("first_name", { length: 50 }).notNull(),
   lastName: varchar("last_name", { length: 50 }).notNull(),
 
-  email: text("email").notNull(),
-
   addressLine1: text("address_line_1").notNull(),
   addressLine2: varchar("address_line_2", { length: 50 }),
   city: varchar("city", { length: 100 }).notNull(),
