@@ -94,10 +94,7 @@ export default function HomePageClient({
             label="temporary one time event creation button"
             href="/admin/one-time-event-creation"
           />
-          <DefaultButton
-            label="user info form"
-            href="/create-account/basic-info"
-          />
+          <DefaultButton label="user info form" href="/info" />
         </Box>
       )}
     </>
