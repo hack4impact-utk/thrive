@@ -127,6 +127,13 @@
       "when": 1773690385501,
       "tag": "0017_misty_the_stranger",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1773691470167,
+      "tag": "0018_third_patriot",
+      "breakpoints": true
     }
   ]
 }
