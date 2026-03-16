@@ -1,0 +1,1 @@
+ALTER TABLE "events" ADD COLUMN "registered_users" integer DEFAULT 0 NOT NULL;

@@ -20,7 +20,7 @@ export const events = pgTable("events", {
   endTime: time("end_time").notNull(),
 
   capacity: integer("capacity"),
-  registeredUsers: integer("registered_users"),
+  registeredUsers: integer("registered_users").default(0).notNull(),
 
   streetLine: text("street_line").notNull(),
   city: text("city").notNull(),
