@@ -14,6 +14,8 @@ import {
   Typography,
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import * as React from "react";
 
 import { addUserInfo } from "@/actions/add-user-info";
@@ -62,6 +64,9 @@ export default function BasicInfoForm(): React.ReactElement {
     medicalNotes: "",
   });
 
+  const { update } = useSession();
+  const router = useRouter();
+
   function handleChange(
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -102,28 +107,8 @@ export default function BasicInfoForm(): React.ReactElement {
         medicalNotes: form.medicalNotes || null,
       });
 
-      alert("Information added successfully.");
-
-      setForm({
-        firstName: "",
-        lastName: "",
-        email: "",
-        addressLine1: "",
-        addressLine2: "",
-        city: "",
-        state: "",
-        postalCode: "",
-        country: "",
-        phoneNumber: "",
-        isTextOptedIn: false,
-        birthMonth: "",
-        birthDay: "",
-        birthYear: "",
-        preferredNeighborhood: "",
-        gender: "",
-        shirtSize: "",
-        medicalNotes: "",
-      });
+      await update();
+      router.push("/");
     } catch (error) {
       console.error(
         "add user info failed likely because already exists in user info table",
