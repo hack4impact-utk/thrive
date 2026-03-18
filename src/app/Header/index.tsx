@@ -106,8 +106,6 @@ export default function Header(): React.ReactElement {
                 noWrap
                 component="a"
                 sx={{
-                  ml: 1,
-                  mr: 2,
                   display: { xs: "none", md: "flex" },
                   fontSize: ".9rem",
                   fontWeight: 700,
