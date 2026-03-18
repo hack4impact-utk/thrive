@@ -10,8 +10,13 @@
     "lint:fix": "next lint --fix",
     "check": "concurrently --kill-others-on-fail 'pnpm lint' 'tsc --noEmit'"
   },
+  "pnpm": {
+    "overrides": {
+      "@auth/core": "0.41.1"
+    }
+  },
   "dependencies": {
-    "@auth/drizzle-adapter": "^1.10.0",
+    "@auth/drizzle-adapter": "^1.11.1",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
