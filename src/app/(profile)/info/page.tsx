@@ -19,7 +19,7 @@ import { useSession } from "next-auth/react";
 import * as React from "react";
 
 import { addUserInfo } from "@/actions/add-user-info";
-import SubmitFormButton from "@/components/Button/SubmitFormButton";
+import SubmitFormButton from "@/components/ui/Button/SubmitFormButton";
 
 type BasicInfoFormState = {
   firstName: string;

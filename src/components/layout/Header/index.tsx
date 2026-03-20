@@ -11,8 +11,8 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
-import ProfileDropdown from "@/app/Header/ProfileDropdown";
-import { AuthButton, DefaultButton } from "@/components/Button";
+import ProfileDropdown from "@/components/layout/Header/ProfileDropdown";
+import { AuthButton, DefaultButton } from "@/components/ui/Button";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",

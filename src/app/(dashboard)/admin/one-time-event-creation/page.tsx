@@ -3,7 +3,7 @@
 import { Box, Card, CardContent, TextField, Typography } from "@mui/material";
 import * as React from "react";
 
-import SubmitFormButton from "@/components/Button/SubmitFormButton";
+import SubmitFormButton from "@/components/ui/Button/SubmitFormButton";
 
 type CreateEventFormState = {
   title: string;

@@ -1,15 +1,15 @@
 import Box from "@mui/material/Box";
 import { eq } from "drizzle-orm";
 
-import WelcomeCard from "@/app/WelcomeCard";
 import db from "@/db";
 import { eventAttendees } from "@/db/schema";
+import Events from "@/features/home/components/Events";
+import WelcomeCard from "@/features/home/components/WelcomeCard";
+import ToggleViews from "@/features/toggles/ToggleViews";
 import { auth } from "@/lib/auth";
 import { getUpcomingEvents } from "@/lib/events";
 
-import Filters from "./Filters";
-import HomePageClient from "./HomePageClient";
-import ToggleViews from "./ToggleViews";
+import Filters from "../features/filters";
 
 export default async function HomePage(): Promise<React.ReactElement> {
   const events = await getUpcomingEvents();
@@ -55,7 +55,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
           <Filters />
           <ToggleViews />
         </Box>
-        <HomePageClient events={eventsWithState} />
+        <Events events={eventsWithState} />
       </Box>
     </div>
   );
