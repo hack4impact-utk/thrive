@@ -3,37 +3,60 @@
     Has a few basic dropdowns, and a button that opens a card for more filter options.
 */
 "use client";
+import SearchIcon from "@mui/icons-material/Search";
 import { Box, Button } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material/Select";
+import InputBase from "@mui/material/InputBase";
+import { alpha, styled } from "@mui/material/styles";
 import * as React from "react";
 
-import Dropdown from "./components/FiltersDropdown";
 import FiltersModal from "./components/FiltersModal";
 
 export default function Filters(): React.ReactElement {
   const [open, setOpen] = React.useState(false);
-  const [event, setEvent] = React.useState("");
-  const [slot, setSlots] = React.useState("");
-  const events = [
-    "Cornestone/Westland",
-    "Spring Semester Meal Train",
-    "Kappa Kappa Gamma Opportunities",
-    "Etc",
-  ];
-  const slots = ["1", "2", "3"];
-  const handleChangeEvent = (event: SelectChangeEvent): void => {
-    setEvent(event.target.value as string);
-  };
-  const handleChangeSlot = (event: SelectChangeEvent): void => {
-    setSlots(event.target.value as string);
-  };
+
+  const Search = styled("div")(({ theme }) => ({
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+
+    width: "auto",
+
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(1),
+    },
+  }));
+
+  const SearchIconWrapper = styled("div")(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }));
+
+  const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: "inherit",
+    width: "100%",
+    "& .MuiInputBase-input": {
+      padding: theme.spacing(1, 1, 1, 0),
+      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      transition: theme.transitions.create("width"),
+      [theme.breakpoints.up("sm")]: {
+        width: "12ch",
+        "&:focus": {
+          width: "20ch",
+        },
+      },
+    },
+  }));
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-      }}
-    >
+    <Box>
       <Box
         sx={{
           display: "flex",
@@ -50,18 +73,16 @@ export default function Filters(): React.ReactElement {
             alignItems: "center",
           }}
         >
-          <Dropdown
-            label="Events"
-            value={event}
-            options={events}
-            onChange={handleChangeEvent}
-          />
-          <Dropdown
-            label="Slots"
-            value={slot}
-            options={slots}
-            onChange={handleChangeSlot}
-          />
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+            />
+          </Search>
+
           <Button
             size="large"
             variant="outlined"

@@ -50,10 +50,12 @@ export default async function HomePage(): Promise<React.ReactElement> {
           sx={{
             display: "flex",
             width: "100%",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <Filters />
           <ToggleViews />
+          <Filters />
         </Box>
         <Events events={eventsWithState} />
       </Box>
