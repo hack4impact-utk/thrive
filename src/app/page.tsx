@@ -35,10 +35,10 @@ export default async function HomePage(): Promise<React.ReactElement> {
     <div>
       <Box
         sx={{
-          width: "80%",
+          width: { xs: "100%", sm: "80%" },
           maxWidth: 1000,
           mx: "auto",
-          p: 4,
+          p: { xs: 2, sm: 4 },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",

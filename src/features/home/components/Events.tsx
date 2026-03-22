@@ -1,9 +1,6 @@
 "use client";
 import { Box, Typography } from "@mui/material";
-import { useSession } from "next-auth/react";
 import { Fragment } from "react";
-
-import { DefaultButton } from "@/components/ui/Button/DefaultButton";
 
 import EventCard from "./EventCard";
 
@@ -25,8 +22,6 @@ type HomePageClientProps = {
 export default function Events({
   events,
 }: HomePageClientProps): React.ReactElement {
-  const { status } = useSession();
-
   const groups: Record<string, typeof events> = {};
 
   for (const event of events) {
@@ -87,15 +82,6 @@ export default function Events({
           </Fragment>
         );
       })}
-
-      {status === "authenticated" && (
-        <Box sx={{ display: "flex" }}>
-          <DefaultButton
-            label="temporary one time event creation button"
-            href="/admin/one-time-event-creation"
-          />
-        </Box>
-      )}
     </>
   );
 }

@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
+import CreateEventDropdown from "@/components/layout/Header/CreateEventDropdown";
 import ProfileDropdown from "@/components/layout/Header/ProfileDropdown";
 import { AuthButton, DefaultButton } from "@/components/ui/Button";
 
@@ -21,11 +22,11 @@ const Search = styled("div")(({ theme }) => ({
   "&:hover": {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
-  marginLeft: 0,
-  width: "100%",
+
+  width: "auto",
+
   [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(1),
-    width: "auto",
   },
 }));
 
@@ -56,7 +57,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Header(): React.ReactElement {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const role = session?.user?.role;
+  const canCreate = role === "admin" || role === "manager";
 
   return (
     <Box
@@ -68,14 +71,18 @@ export default function Header(): React.ReactElement {
       }}
     >
       <AppBar position="static" color="default">
-        <Toolbar>
+        <Toolbar
+          sx={{
+            ml: { xs: 0, sm: "10%" },
+            mr: { xs: 0, sm: "10%" },
+          }}
+        >
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
               flexGrow: 1,
-              ml: "10%",
             }}
           >
             <Box
@@ -119,7 +126,7 @@ export default function Header(): React.ReactElement {
             </Box>
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", mr: "10%" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <Search>
               <SearchIconWrapper>
                 <SearchIcon />
@@ -129,8 +136,13 @@ export default function Header(): React.ReactElement {
                 inputProps={{ "aria-label": "search" }}
               />
             </Search>
+
+            {canCreate && <CreateEventDropdown />}
+
             {status === "authenticated" ? (
-              <ProfileDropdown />
+              <Box sx={{ flexShrink: 0 }}>
+                <ProfileDropdown />
+              </Box>
             ) : (
               <>
                 <AuthButton label="Sign In" />
