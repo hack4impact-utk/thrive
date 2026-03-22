@@ -6,7 +6,7 @@ type Props = {
 
 export default function SubmitFormButton({ label }: Props): React.ReactElement {
   return (
-    <Box sx={{ display: "flex", mt: 5, mb: 3 }}>
+    <Box sx={{ display: "flex", mt: 2, mb: 2 }}>
       <Button
         type="submit"
         variant="contained"
