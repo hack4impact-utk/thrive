@@ -14,7 +14,7 @@ export default function CalendarView({
 
   return (
     <Box>
-      <Typography>calendar view</Typography>
+      <Typography></Typography>
     </Box>
   );
 }

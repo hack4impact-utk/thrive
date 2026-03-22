@@ -3,9 +3,9 @@ import { eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees } from "@/db/schema";
-import Events from "@/features/home/components/Events";
 import WelcomeCard from "@/features/home/components/WelcomeCard";
 import ToggleViews from "@/features/toggles/ToggleViews";
+import ListView from "@/features/toggles/ToggleViews/ListView";
 import { auth } from "@/lib/auth";
 import { getUpcomingEvents } from "@/lib/events";
 
@@ -57,7 +57,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
           <ToggleViews />
           <Filters />
         </Box>
-        <Events events={eventsWithState} />
+        <ListView events={eventsWithState} />
       </Box>
     </div>
   );

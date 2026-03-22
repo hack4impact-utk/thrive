@@ -3,14 +3,14 @@ import * as React from "react";
 
 import type { View } from "./view-types";
 
-type MapViewProps = {
+type ListViewProps = {
   activeView: View;
 };
 
-export default function MapView({
+export default function ListView({
   activeView,
-}: MapViewProps): React.ReactElement | null {
-  if (activeView !== "map") return null;
+}: ListViewProps): React.ReactElement | null {
+  if (activeView !== "list") return null;
 
   return (
     <Box>

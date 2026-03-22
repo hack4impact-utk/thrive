@@ -6,12 +6,12 @@ import { Box, ButtonGroup, IconButton } from "@mui/material";
 import * as React from "react";
 
 import CalendarView from "./CalendarView";
-import ListView from "./ListView";
 import MapView from "./MapView";
+import TempListView from "./TempListView";
 import { View } from "./view-types";
 
 export default function ToggleViews(): React.ReactElement {
-  const [activeView, setActiveView] = React.useState<View>(null);
+  const [activeView, setActiveView] = React.useState<View>("list");
   const toggleView = (view: View): void => {
     setActiveView((current) => (current === view ? null : view));
   };
@@ -19,10 +19,20 @@ export default function ToggleViews(): React.ReactElement {
   return (
     <Box>
       <Box>
-        <ButtonGroup variant="outlined">
+        <ButtonGroup
+          variant="outlined"
+          sx={{
+            borderRadius: 1,
+            overflow: "hidden",
+            border: "1px solid #0000003B",
+          }}
+        >
           <IconButton
             onClick={() => toggleView("list")}
             sx={{
+              borderRadius: 0,
+              borderRight: "1px solid rgba(0,0,0,0.12)",
+
               backgroundColor:
                 activeView === "list" ? "#E0E0E0" : "transparent",
               "&:hover": {
@@ -36,6 +46,9 @@ export default function ToggleViews(): React.ReactElement {
           <IconButton
             onClick={() => toggleView("map")}
             sx={{
+              borderRadius: 0,
+              borderRight: "1px solid rgba(0,0,0,0.12)",
+
               backgroundColor: activeView === "map" ? "#E0E0E0" : "transparent",
               "&:hover": {
                 backgroundColor: activeView === "map" ? "#D3D3D3" : "#f5f5f5",
@@ -48,8 +61,12 @@ export default function ToggleViews(): React.ReactElement {
           <IconButton
             onClick={() => toggleView("calendar")}
             sx={{
+              borderRadius: 0,
+              borderRight: "none",
+
               backgroundColor:
                 activeView === "calendar" ? "#E0E0E0" : "transparent",
+
               "&:hover": {
                 backgroundColor:
                   activeView === "calendar" ? "#D3D3D3" : "#f5f5f5",
@@ -61,7 +78,7 @@ export default function ToggleViews(): React.ReactElement {
         </ButtonGroup>
       </Box>
       <Box>
-        <ListView activeView={activeView} />
+        <TempListView activeView={activeView} />
         <MapView activeView={activeView} />
         <CalendarView activeView={activeView} />
       </Box>
