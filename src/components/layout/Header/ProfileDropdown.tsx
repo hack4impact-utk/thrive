@@ -74,31 +74,7 @@ export default function ProfileDropdown(): React.ReactElement {
             handleClose();
           }}
         >
-          Update Profile
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            void router.push("/account/change-password");
-            handleClose();
-          }}
-        >
-          Change Password
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            void router.push("/account/manage-affiliations");
-            handleClose();
-          }}
-        >
-          Manage Affiliations
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            void router.push("/account/view-hours");
-            handleClose();
-          }}
-        >
-          View Hours
+          Update profile
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -106,7 +82,15 @@ export default function ProfileDropdown(): React.ReactElement {
             handleClose();
           }}
         >
-          Notification Settings
+          Notification settings
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            void router.push("/account/view-hours");
+            handleClose();
+          }}
+        >
+          View hours
         </MenuItem>
         <MenuItem
           onClick={() => {

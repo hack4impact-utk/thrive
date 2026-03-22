@@ -43,7 +43,19 @@ export default function CreateEventDropdown(): React.ReactElement {
         Create
       </Button>
 
-      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
         <MenuItem onClick={() => handleNavigate("/dashboard/create-event")}>
           One-time Event
         </MenuItem>
