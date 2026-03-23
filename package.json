@@ -13,7 +13,12 @@
   "pnpm": {
     "overrides": {
       "@auth/core": "0.41.1"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.1",
