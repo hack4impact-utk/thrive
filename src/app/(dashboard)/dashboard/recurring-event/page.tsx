@@ -91,7 +91,7 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
     <FormLayout
       title="Create Recurring Event"
       description="Fill out the details below to create a new event. DOES NOT CREATE RECURRING EVENTS YET"
-      submitLabel="Create Event"
+      submitLabel="Create Recurring Event"
       onSubmit={handleSubmit}
     >
       {/* Basic info */}
