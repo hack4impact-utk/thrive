@@ -7,9 +7,7 @@ import { eventAttendees } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { getUpcomingEvents } from "@/lib/events";
 
-import Filters from "./Filters";
-import HomePageClient from "./HomePageClient";
-import ToggleViews from "./ToggleViews";
+import HomePageContent from "./HomePageContent";
 
 export default async function HomePage(): Promise<React.ReactElement> {
   const events = await getUpcomingEvents();
@@ -46,16 +44,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
         }}
       >
         <WelcomeCard />
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-          }}
-        >
-          <Filters />
-          <ToggleViews />
-        </Box>
-        <HomePageClient events={eventsWithState} />
+        <HomePageContent events={eventsWithState} />
       </Box>
     </div>
   );

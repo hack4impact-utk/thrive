@@ -5,66 +5,62 @@ import MapIcon from "@mui/icons-material/Map";
 import { Box, ButtonGroup, IconButton } from "@mui/material";
 import * as React from "react";
 
-import CalendarView from "./CalendarView";
-import ListView from "./ListView";
-import MapView from "./MapView";
 import { View } from "./view-types";
 
-export default function ToggleViews(): React.ReactElement {
-  const [activeView, setActiveView] = React.useState<View>(null);
+type ToggleViewsProps = {
+  activeView: View;
+  onViewChange: (view: View) => void;
+};
+
+export default function ToggleViews({
+  activeView,
+  onViewChange,
+}: ToggleViewsProps): React.ReactElement {
   const toggleView = (view: View): void => {
-    setActiveView((current) => (current === view ? null : view));
+    onViewChange(activeView === view ? null : view);
   };
 
   return (
     <Box>
-      <Box>
-        <ButtonGroup variant="outlined">
-          <IconButton
-            onClick={() => toggleView("list")}
-            sx={{
-              backgroundColor:
-                activeView === "list" ? "#E0E0E0" : "transparent",
-              "&:hover": {
-                backgroundColor: activeView === "list" ? "#D3D3D3" : "#f5f5f5",
-              },
-            }}
-          >
-            <FormatListBulletedIcon sx={{ color: "#555555" }} />
-          </IconButton>
+      <ButtonGroup variant="outlined">
+        <IconButton
+          onClick={() => toggleView("list")}
+          sx={{
+            backgroundColor: activeView === "list" ? "#E0E0E0" : "transparent",
+            "&:hover": {
+              backgroundColor: activeView === "list" ? "#D3D3D3" : "#f5f5f5",
+            },
+          }}
+        >
+          <FormatListBulletedIcon sx={{ color: "#555555" }} />
+        </IconButton>
 
-          <IconButton
-            onClick={() => toggleView("map")}
-            sx={{
-              backgroundColor: activeView === "map" ? "#E0E0E0" : "transparent",
-              "&:hover": {
-                backgroundColor: activeView === "map" ? "#D3D3D3" : "#f5f5f5",
-              },
-            }}
-          >
-            <MapIcon sx={{ color: "#555555" }} />
-          </IconButton>
+        <IconButton
+          onClick={() => toggleView("map")}
+          sx={{
+            backgroundColor: activeView === "map" ? "#E0E0E0" : "transparent",
+            "&:hover": {
+              backgroundColor: activeView === "map" ? "#D3D3D3" : "#f5f5f5",
+            },
+          }}
+        >
+          <MapIcon sx={{ color: "#555555" }} />
+        </IconButton>
 
-          <IconButton
-            onClick={() => toggleView("calendar")}
-            sx={{
+        <IconButton
+          onClick={() => toggleView("calendar")}
+          sx={{
+            backgroundColor:
+              activeView === "calendar" ? "#E0E0E0" : "transparent",
+            "&:hover": {
               backgroundColor:
-                activeView === "calendar" ? "#E0E0E0" : "transparent",
-              "&:hover": {
-                backgroundColor:
-                  activeView === "calendar" ? "#D3D3D3" : "#f5f5f5",
-              },
-            }}
-          >
-            <CalendarMonthIcon sx={{ color: "#555555" }} />
-          </IconButton>
-        </ButtonGroup>
-      </Box>
-      <Box>
-        <ListView activeView={activeView} />
-        <MapView activeView={activeView} />
-        <CalendarView activeView={activeView} />
-      </Box>
+                activeView === "calendar" ? "#D3D3D3" : "#f5f5f5",
+            },
+          }}
+        >
+          <CalendarMonthIcon sx={{ color: "#555555" }} />
+        </IconButton>
+      </ButtonGroup>
     </Box>
   );
 }
