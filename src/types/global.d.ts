@@ -8,5 +8,7 @@ declare namespace NodeJS {
     NEXTAUTH_SECRET: string;
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;
+    EMAIL_API_KEY: string;
+    CRON_SECRET: string;
   }
 }
