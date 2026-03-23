@@ -5,6 +5,7 @@ import { count, eq } from "drizzle-orm";
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { sendEventSignupEvent } from "@/lib/email/email";
 
 export async function attendEvent(eventId: string): Promise<void> {
   const session = await auth();
@@ -48,4 +49,18 @@ export async function attendEvent(eventId: string): Promise<void> {
       userId: session.user.id,
     })
     .onConflictDoNothing();
+
+  // Fire Brevo event for email reminder automation (non-blocking)
+  if (session.user.email) {
+    sendEventSignupEvent({
+      email: session.user.email,
+      firstName: session.user.name?.split(" ")[0],
+      eventTitle: event.title,
+      eventDate: event.eventDate,
+      startTime: event.startTime,
+      eventId: event.id,
+    }).catch((err) => {
+      console.error("Failed to send Brevo event_signup:", err);
+    });
+  }
 }
