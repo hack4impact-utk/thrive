@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, TextField, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import FormLayout from "@/components/layout/FormLayout";
@@ -19,7 +20,7 @@ type CreateEventFormState = {
   description: string;
 };
 
-export default function oneTimeEventCreationForm(): React.ReactElement {
+export default function OneTimeEventCreationForm(): React.ReactElement {
   const [form, setForm] = React.useState<CreateEventFormState>({
     title: "",
     eventDate: "",
@@ -33,6 +34,8 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
     country: "US",
     description: "",
   });
+
+  const router = useRouter();
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -70,7 +73,7 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
       return;
     }
 
-    alert("Event created successfully.");
+    router.push("/");
 
     setForm({
       title: "",
@@ -90,15 +93,10 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
   return (
     <FormLayout
       title="Create Recurring Event"
-      description="Fill out the details below to create a new event. DOES NOT CREATE RECURRING EVENTS YET"
+      description="* indicates required field"
       submitLabel="Create Recurring Event"
       onSubmit={handleSubmit}
     >
-      {/* Basic info */}
-      <Typography variant="h6" sx={{ mt: 4, mb: 1 }}>
-        Basic Information
-      </Typography>
-
       <TextField
         name="title"
         label="Title"
@@ -106,19 +104,17 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
         fullWidth
         value={form.title}
         onChange={handleChange}
-        slotProps={{ inputLabel: { shrink: true } }}
       />
 
       <TextField
         name="description"
         label="Description"
+        required
         multiline
         rows={3}
-        required
         fullWidth
         value={form.description}
         onChange={handleChange}
-        slotProps={{ inputLabel: { shrink: true } }}
       />
 
       <TextField
@@ -129,7 +125,7 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
         fullWidth
         value={form.eventDate}
         onChange={handleChange}
-        slotProps={{ inputLabel: { shrink: true } }}
+        InputLabelProps={{ shrink: true }}
       />
 
       <Box sx={{ display: "flex", gap: 2 }}>
@@ -141,10 +137,8 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
           fullWidth
           value={form.startTime}
           onChange={handleChange}
-          slotProps={{
-            inputLabel: { shrink: true },
-            htmlInput: { step: 900 },
-          }}
+          InputLabelProps={{ shrink: true }}
+          inputProps={{ step: 900 }}
         />
 
         <TextField
@@ -155,27 +149,22 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
           fullWidth
           value={form.endTime}
           onChange={handleChange}
-          slotProps={{
-            inputLabel: { shrink: true },
-            htmlInput: { step: 900 },
-          }}
+          InputLabelProps={{ shrink: true }}
+          inputProps={{ step: 900 }}
         />
       </Box>
 
       <TextField
         name="capacity"
         type="number"
-        label="Capacity"
+        label="Capacity (optional)"
         fullWidth
         value={form.capacity}
         onChange={handleChange}
-        slotProps={{ inputLabel: { shrink: true } }}
       />
 
       {/* Location */}
-      <Typography variant="h6" sx={{ mt: 4, mb: 1 }}>
-        Location
-      </Typography>
+      <Typography variant="h6">Location</Typography>
 
       <TextField
         name="streetLine"
@@ -184,7 +173,6 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
         fullWidth
         value={form.streetLine}
         onChange={handleChange}
-        slotProps={{ inputLabel: { shrink: true } }}
       />
 
       <Box sx={{ display: "flex", gap: 2 }}>
@@ -195,27 +183,24 @@ export default function oneTimeEventCreationForm(): React.ReactElement {
           fullWidth
           value={form.city}
           onChange={handleChange}
-          slotProps={{ inputLabel: { shrink: true } }}
         />
 
         <TextField
           name="state"
           label="State"
           required
-          sx={{ width: 120 }}
+          sx={{ width: 200 }}
           value={form.state}
           onChange={handleChange}
-          slotProps={{ inputLabel: { shrink: true } }}
         />
 
         <TextField
           name="postalCode"
           label="Zip"
           required
-          sx={{ width: 140 }}
+          sx={{ width: 170 }}
           value={form.postalCode}
           onChange={handleChange}
-          slotProps={{ inputLabel: { shrink: true } }}
         />
       </Box>
     </FormLayout>

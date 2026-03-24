@@ -193,7 +193,7 @@ export default function BasicInfoForm(): React.ReactElement {
           value={form.postalCode}
           onChange={handleChange}
           required
-          label="ZIP Code"
+          label="Zip"
           sx={{ width: 170 }}
         />
       </Box>

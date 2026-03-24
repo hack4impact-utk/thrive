@@ -35,8 +35,8 @@ export default async function HomePage(): Promise<React.ReactElement> {
     <div>
       <Box
         sx={{
-          width: { xs: "100%", sm: "80%" },
-          maxWidth: 1000,
+          width: "100%",
+          maxWidth: 900,
           mx: "auto",
           p: { xs: 2, sm: 4 },
           display: "flex",

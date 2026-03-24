@@ -29,8 +29,10 @@ export default function Header(): React.ReactElement {
       <AppBar position="static" color="default">
         <Toolbar
           sx={{
-            ml: { xs: 0, sm: "10%" },
-            mr: { xs: 0, sm: "10%" },
+            width: "100%",
+            maxWidth: 900,
+            mx: "auto",
+            px: { xs: 2, sm: 3 },
           }}
         >
           <Box
