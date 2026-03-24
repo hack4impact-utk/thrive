@@ -33,7 +33,7 @@ export default function FormLayout({
       <Card
         sx={{
           width: "100%",
-          maxWidth: 600,
+          maxWidth: 700,
           boxShadow: { xs: "none", sm: 1 },
           borderRadius: { xs: 0, sm: 2 },
         }}

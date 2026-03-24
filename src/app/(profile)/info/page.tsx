@@ -2,8 +2,6 @@
 
 import {
   Box,
-  Card,
-  CardContent,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -19,12 +17,11 @@ import { useSession } from "next-auth/react";
 import * as React from "react";
 
 import { addUserInfo } from "@/actions/add-user-info";
-import SubmitFormButton from "@/components/ui/Button/SubmitFormButton";
+import FormLayout from "@/components/layout/FormLayout/";
 
 type BasicInfoFormState = {
   firstName: string;
   lastName: string;
-  email: string;
   addressLine1: string;
   addressLine2?: string;
   city: string;
@@ -46,7 +43,6 @@ export default function BasicInfoForm(): React.ReactElement {
   const [form, setForm] = React.useState<BasicInfoFormState>({
     firstName: "",
     lastName: "",
-    email: "",
     addressLine1: "",
     addressLine2: "",
     city: "",
@@ -85,7 +81,6 @@ export default function BasicInfoForm(): React.ReactElement {
       await addUserInfo({
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
-        email: form.email.trim(),
 
         addressLine1: form.addressLine1.trim(),
         addressLine2: form.addressLine2 || null,
@@ -110,271 +105,209 @@ export default function BasicInfoForm(): React.ReactElement {
       await update();
       router.push("/");
     } catch (error) {
-      console.error(
-        "add user info failed likely because already exists in user info table",
-        error,
-      );
+      console.error("add user info failed", error);
       alert("Error in adding information.");
     }
   }
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        pt: { sm: 0, md: 6 },
-        pb: { sm: 0, md: 6 },
-      }}
+    <FormLayout
+      title="Complete Your Information"
+      description="* indicates required field"
+      submitLabel="Submit"
+      onSubmit={handleSubmit}
     >
-      <Card sx={{ width: "100%", maxWidth: 900 }}>
-        <CardContent sx={{ px: 6, pb: 6 }}>
-          <Box component="form" autoComplete="off" onSubmit={handleSubmit}>
-            <Typography variant="h5" gutterBottom>
-              Complete the form below
-            </Typography>
+      {/* Name */}
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <TextField
+          name="firstName"
+          value={form.firstName}
+          onChange={handleChange}
+          required
+          label="First Name"
+          fullWidth
+        />
+        <TextField
+          name="lastName"
+          value={form.lastName}
+          onChange={handleChange}
+          required
+          label="Last Name"
+          fullWidth
+        />
+      </Box>
 
-            <Typography variant="body2" color="text.secondary">
-              <span style={{ color: "red" }}>*</span> indicates required field
-            </Typography>
+      {/* Gender */}
+      <FormControl fullWidth>
+        <InputLabel>Gender</InputLabel>
+        <Select
+          name="gender"
+          value={form.gender}
+          onChange={handleChange}
+          label="Gender"
+        >
+          <MenuItem value="male">Male</MenuItem>
+          <MenuItem value="female">Female</MenuItem>
+        </Select>
+      </FormControl>
 
-            {/* Name */}
-            <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-              <TextField
-                name="firstName"
-                value={form.firstName}
-                onChange={handleChange}
-                required
-                label="First name"
-                fullWidth
-              />
-              <TextField
-                name="lastName"
-                value={form.lastName}
-                onChange={handleChange}
-                required
-                label="Last name"
-                fullWidth
-              />
-            </Box>
+      {/* Address */}
+      <Typography variant="h6">Home Address</Typography>
 
-            {/* Email */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Email
-            </Typography>
-            <TextField
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              label="Email Address"
-              fullWidth
-            />
+      <TextField
+        name="addressLine1"
+        value={form.addressLine1}
+        onChange={handleChange}
+        required
+        label="Street Address"
+        fullWidth
+      />
 
-            {/* Address */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Home Address
-            </Typography>
+      <TextField
+        name="addressLine2"
+        value={form.addressLine2}
+        onChange={handleChange}
+        label="Apartment / Unit (optional)"
+        fullWidth
+      />
 
-            <TextField
-              name="addressLine1"
-              value={form.addressLine1}
-              onChange={handleChange}
-              required
-              label="Street Address"
-              fullWidth
-              sx={{ mt: 1 }}
-            />
-            <TextField
-              name="addressLine2"
-              value={form.addressLine2}
-              onChange={handleChange}
-              label="Apartment / Unit (optional)"
-              fullWidth
-              sx={{ mt: 1 }}
-            />
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <TextField
+          name="city"
+          value={form.city}
+          onChange={handleChange}
+          required
+          label="City"
+          fullWidth
+        />
+        <TextField
+          name="state"
+          value={form.state}
+          onChange={handleChange}
+          required
+          label="State"
+          sx={{ width: 200 }}
+        />
+        <TextField
+          name="postalCode"
+          value={form.postalCode}
+          onChange={handleChange}
+          required
+          label="ZIP Code"
+          sx={{ width: 170 }}
+        />
+      </Box>
 
-            <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
-              <TextField
-                name="city"
-                value={form.city}
-                onChange={handleChange}
-                required
-                label="City"
-                fullWidth
-              />
-              <TextField
-                name="state"
-                value={form.state}
-                onChange={handleChange}
-                required
-                label="State"
-                sx={{ width: 140 }}
-              />
-              <TextField
-                name="postalCode"
-                value={form.postalCode}
-                onChange={handleChange}
-                required
-                label="Zip"
-                sx={{ width: 140 }}
-              />
-            </Box>
+      {/* Phone */}
+      <Typography variant="h6">Contact</Typography>
 
-            {/* Phone */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Mobile Phone
-            </Typography>
+      <TextField
+        name="phoneNumber"
+        value={form.phoneNumber}
+        onChange={handleChange}
+        required
+        label="Phone Number"
+        fullWidth
+      />
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <TextField
-                name="phoneNumber"
-                value={form.phoneNumber}
-                onChange={handleChange}
-                required
-                label="Phone number"
-                fullWidth
-              />
-            </Box>
+      <FormControlLabel
+        control={
+          <Checkbox
+            name="isTextOptedIn"
+            checked={form.isTextOptedIn}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                isTextOptedIn: e.target.checked,
+              }))
+            }
+          />
+        }
+        label="Send event reminders via text"
+      />
 
-            <FormControlLabel
-              sx={{ mt: 2 }}
-              control={
-                <Checkbox
-                  name="isTextOptedIn"
-                  checked={form.isTextOptedIn}
-                  onChange={(e) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      isTextOptedIn: e.target.checked,
-                    }))
-                  }
-                />
-              }
-              label="Send event reminders to my phone"
-            />
+      {/* DOB */}
+      <Typography variant="h6">Date of Birth</Typography>
 
-            {/* DOB */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Date of Birth
-            </Typography>
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <TextField
+          name="birthMonth"
+          value={form.birthMonth}
+          onChange={handleChange}
+          required
+          label="MM"
+          sx={{ width: 100 }}
+        />
+        <TextField
+          name="birthDay"
+          value={form.birthDay}
+          onChange={handleChange}
+          required
+          label="DD"
+          sx={{ width: 100 }}
+        />
+        <TextField
+          name="birthYear"
+          value={form.birthYear}
+          onChange={handleChange}
+          required
+          label="YYYY"
+          sx={{ width: 140 }}
+        />
+      </Box>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Box sx={{ display: "flex", gap: 2 }}>
-                <TextField
-                  name="birthMonth"
-                  value={form.birthMonth}
-                  onChange={handleChange}
-                  required
-                  label="MM"
-                  sx={{ width: 140 }}
-                />
-                <TextField
-                  name="birthDay"
-                  value={form.birthDay}
-                  onChange={handleChange}
-                  required
-                  label="DD"
-                  sx={{ width: 140 }}
-                />
-                <TextField
-                  name="birthYear"
-                  value={form.birthYear}
-                  onChange={handleChange}
-                  required
-                  label="YYYY"
-                  sx={{ width: 180 }}
-                />
-              </Box>
-            </Box>
+      {/* Other */}
+      <Typography variant="h6">Preferences</Typography>
 
-            {/* Neighborhood */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Neighborhood preference
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              We will place based on site needs, but preferences help.
-            </Typography>
+      <FormControl fullWidth>
+        <InputLabel>Neighborhood</InputLabel>
+        <Select
+          name="preferredNeighborhood"
+          value={form.preferredNeighborhood}
+          onChange={handleChange}
+          label="Neighborhood"
+        >
+          {[
+            "Lonsdale",
+            "Parkridge",
+            "New Hopewell",
+            "Papermill",
+            "West View",
+            "Westland",
+          ].map((loc) => (
+            <MenuItem key={loc} value={loc}>
+              {loc}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-            <FormControl fullWidth sx={{ mt: 1 }}>
-              <InputLabel>Location</InputLabel>
-              <Select
-                name="preferredNeighborhood"
-                value={form.preferredNeighborhood}
-                onChange={handleChange}
-                label="Location"
-              >
-                {[
-                  "Lonsdale",
-                  "Parkridge",
-                  "New Hopewell",
-                  "Papermill",
-                  "West View",
-                  "Westland",
-                ].map((loc) => (
-                  <MenuItem key={loc} value={loc}>
-                    {loc}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+      <FormControl fullWidth>
+        <InputLabel>Shirt Size</InputLabel>
+        <Select
+          name="shirtSize"
+          value={form.shirtSize}
+          onChange={handleChange}
+          label="Shirt Size"
+        >
+          <MenuItem value="small">Small</MenuItem>
+          <MenuItem value="medium">Medium</MenuItem>
+          <MenuItem value="large">Large</MenuItem>
+        </Select>
+      </FormControl>
 
-            {/* Gender */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Gender
-            </Typography>
+      {/* Medical */}
+      <Typography variant="h6">Medical Information</Typography>
 
-            <FormControl fullWidth>
-              <InputLabel>Gender</InputLabel>
-              <Select
-                name="gender"
-                value={form.gender}
-                onChange={handleChange}
-                label="Gender"
-              >
-                <MenuItem value="male">Male</MenuItem>
-                <MenuItem value="female">Female</MenuItem>
-              </Select>
-            </FormControl>
-
-            {/* Shirt size */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Shirt size
-            </Typography>
-
-            <FormControl fullWidth>
-              <InputLabel>Size</InputLabel>
-              <Select
-                name="shirtSize"
-                value={form.shirtSize}
-                onChange={handleChange}
-                label="Size"
-              >
-                <MenuItem value="small">Small</MenuItem>
-                <MenuItem value="medium">Medium</MenuItem>
-                <MenuItem value="large">Large</MenuItem>
-              </Select>
-            </FormControl>
-
-            {/* Medical */}
-            <Typography variant="h6" sx={{ mt: 4 }}>
-              Medical conditions
-            </Typography>
-
-            <TextField
-              name="medicalNotes"
-              value={form.medicalNotes}
-              onChange={handleChange}
-              label="Please list any conditions we should know about"
-              multiline
-              rows={4}
-              fullWidth
-            />
-
-            <SubmitFormButton label="Submit" />
-          </Box>
-        </CardContent>
-      </Card>
-    </Box>
+      <TextField
+        name="medicalNotes"
+        value={form.medicalNotes}
+        onChange={handleChange}
+        label="Conditions we should be aware of"
+        multiline
+        rows={4}
+        fullWidth
+      />
+    </FormLayout>
   );
 }

@@ -134,6 +134,13 @@
       "when": 1773691470167,
       "tag": "0018_third_patriot",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1774379690625,
+      "tag": "0019_curly_richard_fisk",
+      "breakpoints": true
     }
   ]
 }
