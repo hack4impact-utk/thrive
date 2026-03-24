@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
-async function sendBrevoCustomEvent(email: string, firstName?: string) {
+async function sendBrevoCustomEvent(
+  email: string,
+  firstName?: string,
+): Promise<{ status: number }> {
   const apiKey = process.env.BREVO_API_KEY || process.env.EMAIL_API_KEY;
   if (!apiKey) throw new Error("Missing BREVO_API_KEY");
 
@@ -8,7 +11,7 @@ async function sendBrevoCustomEvent(email: string, firstName?: string) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Accept": "application/json",
+      Accept: "application/json",
       "api-key": apiKey,
     },
     body: JSON.stringify({
@@ -28,23 +31,30 @@ async function sendBrevoCustomEvent(email: string, firstName?: string) {
   return { status: res.status }; // usually 204
 }
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<NextResponse> {
   try {
     const body = await req.json();
     const email = String(body?.email ?? "").trim();
     const firstName = String(body?.firstName ?? "").trim();
 
     if (!email) {
-      return NextResponse.json({ success: false, error: "Email is required" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: "Email is required" },
+        { status: 400 },
+      );
     }
 
     const result = await sendBrevoCustomEvent(email, firstName);
     return NextResponse.json({ success: true, result });
-  } catch (err: any) {
-    console.error("testBrevoEvent error:", err);
+  } catch (error: unknown) {
+    console.error("testBrevoEvent error:", error);
+
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
+
     return NextResponse.json(
-      { success: false, error: err?.message || "Internal server error" },
-      { status: 500 }
+      { success: false, error: message },
+      { status: 500 },
     );
   }
 }

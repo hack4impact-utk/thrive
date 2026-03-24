@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<NextResponse> {
   try {
     const body = await req.json();
 
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     if (!email) {
       return NextResponse.json(
         { success: false, error: "Email is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     if (!apiKey) {
       return NextResponse.json(
         { success: false, error: "Missing BREVO_API_KEY" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json",
+        Accept: "application/json",
         "api-key": apiKey,
       },
       body: JSON.stringify({
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
           error: `Brevo event API error ${res.status}`,
           details: text,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -70,11 +70,15 @@ export async function POST(req: Request) {
       brevoStatus: res.status,
       brevoBody: text || null,
     });
-  } catch (err: any) {
-    console.error("testBrevoEvent error:", err);
+  } catch (error: unknown) {
+    console.error("testBrevoEvent error:", error);
+
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
+
     return NextResponse.json(
-      { success: false, error: err?.message || "Internal server error" },
-      { status: 500 }
+      { success: false, error: message },
+      { status: 500 },
     );
   }
 }

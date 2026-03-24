@@ -59,8 +59,8 @@ export async function attendEvent(eventId: string): Promise<void> {
       eventDate: event.eventDate,
       startTime: event.startTime,
       eventId: event.id,
-    }).catch((err) => {
-      console.error("Failed to send Brevo event_signup:", err);
+    }).catch((error) => {
+      console.error("Failed to send Brevo event_signup:", error);
     });
   }
 }

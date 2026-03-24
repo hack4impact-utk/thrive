@@ -1,4 +1,7 @@
-export async function sendTransactionalSms(to: string, content: string) {
+export async function sendTransactionalSms(
+  to: string,
+  content: string,
+): Promise<unknown> {
   const apiKey = process.env.BREVO_API_KEY || process.env.EMAIL_API_KEY;
   if (!apiKey) throw new Error("Missing BREVO_API_KEY");
 
@@ -6,13 +9,13 @@ export async function sendTransactionalSms(to: string, content: string) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Accept": "application/json",
+      Accept: "application/json",
       "api-key": apiKey,
     },
     body: JSON.stringify({
-      sender: "Thrive",      // must be valid in your Brevo setup/region
-      recipient: to,         // E.164 format, e.g. +1865...
-      content,               // plain SMS text
+      sender: "Thrive", // must be valid in your Brevo setup/region
+      recipient: to, // E.164 format, e.g. +1865...
+      content, // plain SMS text
       type: "transactional", // use "marketing" only if it’s actually marketing
     }),
   });

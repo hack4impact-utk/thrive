@@ -1,11 +1,11 @@
+import { between, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { eq, and, between } from "drizzle-orm";
 
 import db from "@/db";
-import { events, eventAttendees, users } from "@/db/schema";
+import { eventAttendees, events, users } from "@/db/schema";
 import { sendEventReminderEvent } from "@/lib/email/email";
 
-export async function GET(req: Request) {
+export async function GET(req: Request): Promise<NextResponse> {
   // Protect the cron endpoint with a secret
   const authHeader = req.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -53,10 +53,10 @@ export async function GET(req: Request) {
             eventId: event.id,
           });
           sent++;
-        } catch (err) {
+        } catch (error) {
           console.error(
             `Failed to send reminder to ${attendee.email} for event ${event.id}:`,
-            err
+            error,
           );
           failed++;
         }
@@ -69,11 +69,15 @@ export async function GET(req: Request) {
       remindersSent: sent,
       remindersFailed: failed,
     });
-  } catch (err: any) {
-    console.error("Event reminder cron error:", err);
+  } catch (error: unknown) {
+    console.error("Event reminder cron error:", error);
+
+    const message =
+      error instanceof Error ? error.message : "Internal server error";
+
     return NextResponse.json(
-      { success: false, error: err?.message || "Internal server error" },
-      { status: 500 }
+      { success: false, error: message },
+      { status: 500 },
     );
   }
 }

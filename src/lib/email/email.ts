@@ -1,10 +1,13 @@
 import { brevo } from "./brevo";
 
-export async function addUserToWelcomeFlow(email: string, firstName?: string) {
+export async function addUserToWelcomeFlow(
+  email: string,
+  firstName?: string,
+): Promise<unknown> {
   return brevo.contacts.createContact({
     email,
     attributes: {
-      FIRSTNAME: firstName || undefined,
+      ...(firstName && { FIRSTNAME: firstName }),
     },
     listIds: [2],
     updateEnabled: true,
@@ -27,10 +30,10 @@ export async function sendEventSignupEvent({
   email: string;
   firstName?: string;
   eventTitle: string;
-  eventDate: string; // "YYYY-MM-DD"
-  startTime: string; // "HH:MM:SS"
+  eventDate: string;
+  startTime: string;
   eventId: string;
-}) {
+}): Promise<void> {
   const apiKey = process.env.BREVO_API_KEY || process.env.EMAIL_API_KEY;
   if (!apiKey) {
     throw new Error("Missing BREVO_API_KEY");
@@ -86,7 +89,7 @@ export async function sendEventReminderEvent({
   eventDate: string;
   startTime: string;
   eventId: string;
-}) {
+}): Promise<void> {
   const apiKey = process.env.BREVO_API_KEY || process.env.EMAIL_API_KEY;
   if (!apiKey) {
     throw new Error("Missing BREVO_API_KEY");
