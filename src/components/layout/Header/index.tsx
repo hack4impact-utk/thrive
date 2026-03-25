@@ -16,7 +16,9 @@ export default function Header(): React.ReactElement {
   const { data: session, status } = useSession();
   const role = session?.user?.role;
   const canCreate = role === "admin" || role === "manager";
-
+  const headerColor = {admin: "#36385C", manager: "#9A9866"}
+  const fontColor = {admin: "#ffffff", manager: "#22305B"}
+  const appBarSx = role && role in headerColor ? { backgroundColor: headerColor[role as keyof typeof headerColor]} : { backgroundColor: "#fff" };
   return (
     <Box
       sx={{
@@ -26,7 +28,7 @@ export default function Header(): React.ReactElement {
         zIndex: 10,
       }}
     >
-      <AppBar position="static" color="default">
+      <AppBar position="static" sx={appBarSx}>
         <Toolbar
           sx={{
             width: "100%",
@@ -74,9 +76,9 @@ export default function Header(): React.ReactElement {
                   display: { xs: "none", md: "flex" },
                   fontSize: ".9rem",
                   fontWeight: 700,
-                  color: "#22305B",
                   textDecoration: "none",
                   flexGrow: 1,
+                  color: fontColor[role as keyof typeof fontColor] || "#22305B"
                 }}
               >
                 THRIVE
