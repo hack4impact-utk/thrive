@@ -10,7 +10,11 @@ type Props = {
 
 export default function AuthenticationActions({
   status,
-}: Props): React.ReactElement {
+}: Props): React.ReactElement | null {
+  if (status === "loading") {
+    return null;
+  }
+
   if (status === "authenticated") {
     return (
       <Box sx={{ flexShrink: 0 }}>
@@ -20,16 +24,18 @@ export default function AuthenticationActions({
   }
 
   if (status === "unauthenticated") {
-    <>
-      <AuthButton label="Sign In" />
-      <DefaultButton
-        label="Create account"
-        href="/create-account"
-        bgcolor="inherit"
-        color="primary"
-      />
-    </>;
+    return (
+      <>
+        <AuthButton label="Sign In" />
+        <DefaultButton
+          label="Create account"
+          href="/create-account"
+          bgcolor="inherit"
+          color="primary"
+        />
+      </>
+    );
   }
 
-  return <></>;
+  return null;
 }

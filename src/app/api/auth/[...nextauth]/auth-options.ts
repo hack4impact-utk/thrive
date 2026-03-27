@@ -22,8 +22,8 @@ const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user, trigger }) {
-      // Initial sign-in
+    async jwt({ token, user }) {
+      // initial sign in
       if (user?.id) {
         const dbUser = await db.query.users.findFirst({
           where: (users, { eq }) => eq(users.id, user.id),
@@ -36,12 +36,9 @@ const authOptions: NextAuthOptions = {
         return token;
       }
 
-      // Called by useSession().update(...) when using JWT sessions
-      if (trigger === "update" && token.sub) {
-        const userId = token.sub;
-
+      if (token.sub) {
         const dbUser = await db.query.users.findFirst({
-          where: (users, { eq }) => eq(users.id, userId),
+          where: (users, { eq }) => eq(users.id, token.sub),
         });
 
         if (dbUser) {
