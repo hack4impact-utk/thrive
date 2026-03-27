@@ -23,7 +23,6 @@ const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      // initial sign in
       if (user?.id) {
         const dbUser = await db.query.users.findFirst({
           where: (users, { eq }) => eq(users.id, user.id),
@@ -37,8 +36,10 @@ const authOptions: NextAuthOptions = {
       }
 
       if (token.sub) {
+        const userId = token.sub;
+
         const dbUser = await db.query.users.findFirst({
-          where: (users, { eq }) => eq(users.id, token.sub),
+          where: (users, { eq }) => eq(users.id, userId),
         });
 
         if (dbUser) {
