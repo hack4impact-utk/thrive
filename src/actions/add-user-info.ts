@@ -4,13 +4,13 @@ import { eq, InferInsertModel } from "drizzle-orm";
 
 import db from "@/db";
 import { userInfo } from "@/db/schema/user-info";
-import { users } from "@/db/schema/users"; // ← add this
-import { auth } from "@/app/api/auth/[...nextauth]/auth-options";
+import { users } from "@/db/schema/users";
+import getUserSession from "@/utils/auth/get-user-session";
 
 type Payload = Omit<InferInsertModel<typeof userInfo>, "userId">;
 
 export async function addUserInfo(data: Payload): Promise<void> {
-  const session = await auth();
+  const session = await getUserSession();
 
   if (!session?.user?.id) {
     throw new Error("Unauthorized");

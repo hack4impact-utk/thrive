@@ -4,10 +4,10 @@ import { and, count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
-import { auth } from "@/app/api/auth/[...nextauth]/auth-options";
+import getUserSession from "@/utils/auth/get-user-session";
 
 export async function leaveEvent(eventId: string): Promise<void> {
-  const session = await auth();
+  const session = await getUserSession();
 
   if (!session?.user?.id) {
     throw new Error("Unauthorized");

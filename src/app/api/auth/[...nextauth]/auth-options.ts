@@ -1,15 +1,20 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 import db from "@/db";
+import { accounts, sessions, users } from "@/db/schema";
 
 const authOptions: NextAuthOptions = {
-  adapter: DrizzleAdapter(db),
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+  }),
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -34,6 +39,7 @@ const authOptions: NextAuthOptions = {
       if (token.user) {
         session.user = token.user;
       }
+
       return session;
     },
   },

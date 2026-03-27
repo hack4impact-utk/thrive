@@ -6,15 +6,15 @@ import { eventAttendees } from "@/db/schema";
 import WelcomeCard from "@/features/home/components/WelcomeCard";
 import ToggleViews from "@/features/toggles/ToggleViews";
 import ListView from "@/features/toggles/ToggleViews/ListView";
-import { auth } from "@/app/api/auth/[...nextauth]/auth-options";
 import { getUpcomingEvents } from "@/lib/events";
+import getUserSession from "@/utils/auth/get-user-session";
 
 import Filters from "../features/filters";
 
 export default async function HomePage(): Promise<React.ReactElement> {
   const events = await getUpcomingEvents();
 
-  const session = await auth();
+  const session = await getUserSession();
   const userId = session?.user?.id ?? null;
 
   const registrations = userId
