@@ -77,4 +77,5 @@ The `.vscode/launch.json` file is configured to run Next.js in debug mode. This 
 To start debug mode, navigate to the `Run and Debug` tab in VSCode, select the mode, and click the green play button.
 
 ### Credits
+
 Repository template originally created by Rudra Patel and adapted for this project.

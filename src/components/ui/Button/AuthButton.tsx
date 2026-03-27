@@ -1,6 +1,7 @@
 "use client";
 import { Box, Button } from "@mui/material";
-import { signIn } from "next-auth/react";
+
+import { handleLogin } from "@/utils/auth/handle-login";
 
 type Props = {
   label: string;
@@ -24,7 +25,7 @@ export function AuthButton({
         width: "fit-content",
       }}
     >
-      <Button onClick={() => signIn("google")} sx={{ color: color }}>
+      <Button onClick={() => handleLogin()} sx={{ color: color }}>
         {label}
       </Button>
     </Box>
