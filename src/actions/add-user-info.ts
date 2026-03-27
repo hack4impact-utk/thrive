@@ -5,7 +5,7 @@ import { eq, InferInsertModel } from "drizzle-orm";
 import db from "@/db";
 import { userInfo } from "@/db/schema/user-info";
 import { users } from "@/db/schema/users"; // ← add this
-import { auth } from "@/lib/auth";
+import { auth } from "@/app/api/auth/[...nextauth]/auth-options";
 
 type Payload = Omit<InferInsertModel<typeof userInfo>, "userId">;
 

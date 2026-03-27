@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import db from "@/db";
 import { eventAttendees } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/app/api/auth/[...nextauth]/auth-options";
 
 export async function POST(req: Request): Promise<Response> {
   const session = await auth();

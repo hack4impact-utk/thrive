@@ -6,7 +6,7 @@ import { eventAttendees } from "@/db/schema";
 import WelcomeCard from "@/features/home/components/WelcomeCard";
 import ToggleViews from "@/features/toggles/ToggleViews";
 import ListView from "@/features/toggles/ToggleViews/ListView";
-import { auth } from "@/lib/auth";
+import { auth } from "@/app/api/auth/[...nextauth]/auth-options";
 import { getUpcomingEvents } from "@/lib/events";
 
 import Filters from "../features/filters";

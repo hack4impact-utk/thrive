@@ -4,7 +4,7 @@ import { and, count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/app/api/auth/[...nextauth]/auth-options";
 
 export async function leaveEvent(eventId: string): Promise<void> {
   const session = await auth();

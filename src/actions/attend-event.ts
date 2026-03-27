@@ -4,7 +4,7 @@ import { count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { auth } from "@/app/api/auth/[...nextauth]/auth-options";
 import { sendEventSignupEvent } from "@/lib/email/email";
 
 export async function attendEvent(eventId: string): Promise<void> {
