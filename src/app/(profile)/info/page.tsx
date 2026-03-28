@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import * as React from "react";
 
 import { addUserInfo } from "@/actions/add-user-info";
+import { updateUserInfo } from "@/actions/update-user-info";
 import FormLayout from "@/components/layout/FormLayout/";
 
 type BasicInfoFormState = {
@@ -39,26 +40,34 @@ type BasicInfoFormState = {
   medicalNotes?: string;
 };
 
-export default function BasicInfoForm(): React.ReactElement {
-  const [form, setForm] = React.useState<BasicInfoFormState>({
-    firstName: "",
-    lastName: "",
-    addressLine1: "",
-    addressLine2: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-    phoneNumber: "",
-    isTextOptedIn: false,
-    birthMonth: "",
-    birthDay: "",
-    birthYear: "",
-    preferredNeighborhood: "",
-    gender: "",
-    shirtSize: "",
-    medicalNotes: "",
-  });
+type BasicInfoFormProps = {
+  initialData?: Partial<BasicInfoFormState>;
+  mode?: "submitForm" | "editForm";
+};
+
+export default function BasicInfoForm({
+  initialData,
+  mode = "submitForm",
+}: BasicInfoFormProps): React.ReactElement {
+  const [form, setForm] = React.useState<BasicInfoFormState>(() => ({
+    firstName: initialData?.firstName ?? "",
+    lastName: initialData?.lastName ?? "",
+    addressLine1: initialData?.addressLine1 ?? "",
+    addressLine2: initialData?.addressLine2 ?? "",
+    city: initialData?.city ?? "",
+    state: initialData?.state ?? "",
+    postalCode: initialData?.postalCode ?? "",
+    country: initialData?.country ?? "US",
+    phoneNumber: initialData?.phoneNumber ?? "",
+    isTextOptedIn: initialData?.isTextOptedIn ?? false,
+    birthMonth: initialData?.birthMonth?.toString() ?? "",
+    birthDay: initialData?.birthDay?.toString() ?? "",
+    birthYear: initialData?.birthYear?.toString() ?? "",
+    preferredNeighborhood: initialData?.preferredNeighborhood ?? "",
+    gender: initialData?.gender ?? "",
+    shirtSize: initialData?.shirtSize ?? "",
+    medicalNotes: initialData?.medicalNotes ?? "",
+  }));
 
   const { update } = useSession();
   const router = useRouter();
@@ -77,44 +86,50 @@ export default function BasicInfoForm(): React.ReactElement {
   ): Promise<void> {
     e.preventDefault();
 
+    const payload = {
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      addressLine1: form.addressLine1.trim(),
+      addressLine2: form.addressLine2 || null,
+      city: form.city.trim(),
+      state: form.state.trim(),
+      postalCode: form.postalCode.trim(),
+      country: "US",
+      phoneNumber: form.phoneNumber.trim(),
+      isTextOptedIn: form.isTextOptedIn,
+      birthMonth: Number(form.birthMonth),
+      birthDay: Number(form.birthDay),
+      birthYear: Number(form.birthYear),
+      preferredNeighborhood: form.preferredNeighborhood || null,
+      gender: form.gender || null,
+      shirtSize: form.shirtSize || null,
+      medicalNotes: form.medicalNotes || null,
+    };
+
     try {
-      await addUserInfo({
-        firstName: form.firstName.trim(),
-        lastName: form.lastName.trim(),
-
-        addressLine1: form.addressLine1.trim(),
-        addressLine2: form.addressLine2 || null,
-        city: form.city.trim(),
-        state: form.state.trim(),
-        postalCode: form.postalCode.trim(),
-        country: "US",
-
-        phoneNumber: form.phoneNumber.trim(),
-        isTextOptedIn: form.isTextOptedIn,
-
-        birthMonth: Number(form.birthMonth),
-        birthDay: Number(form.birthDay),
-        birthYear: Number(form.birthYear),
-
-        preferredNeighborhood: form.preferredNeighborhood || null,
-        gender: form.gender || null,
-        shirtSize: form.shirtSize || null,
-        medicalNotes: form.medicalNotes || null,
-      });
-
-      await update();
-      router.push("/");
+      if (mode === "editForm") {
+        await updateUserInfo(payload);
+        alert("Profile updated successfully.");
+      } else {
+        await addUserInfo(payload);
+        await update();
+        router.push("/");
+      }
     } catch (error) {
-      console.error("add user info failed", error);
-      alert("Error in adding information.");
+      console.error("form submit failed", error);
+      alert("Error saving information.");
     }
   }
 
   return (
     <FormLayout
-      title="Complete Your Information"
+      title={
+        mode === "editForm"
+          ? "Update Your Information"
+          : "Complete Your Information"
+      }
       description="* indicates required field"
-      submitLabel="Submit"
+      submitLabel={mode === "editForm" ? "Save" : "Submit"}
       onSubmit={handleSubmit}
     >
       {/* Name */}
