@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import { eq } from "drizzle-orm";
 
+import { Popup } from "@/components/ui/Button/Popup";
 import db from "@/db";
 import { eventAttendees } from "@/db/schema";
 import WelcomeCard from "@/features/home/components/WelcomeCard";
@@ -59,6 +60,8 @@ export default async function HomePage(): Promise<React.ReactElement> {
         </Box>
         <ListView events={eventsWithState} />
       </Box>
+
+      <Popup buttonLabel="Popup" />
     </div>
   );
 }
