@@ -8,7 +8,6 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
-import CreateEventDropdown from "@/components/layout/Header/CreateEventDropdown";
 import ProfileDropdown from "@/components/layout/Header/ProfileDropdown";
 import { AuthButton, DefaultButton } from "@/components/ui/Button";
 
@@ -91,22 +90,14 @@ export default function Header(): React.ReactElement {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {canCreate && <CreateEventDropdown />}
+            {canCreate && <DefaultButton label="Dashboard" href="/dashboard" />}
 
             {status === "authenticated" ? (
               <Box sx={{ flexShrink: 0 }}>
                 <ProfileDropdown />
               </Box>
             ) : (
-              <>
-                <AuthButton label="Sign In" />
-                <DefaultButton
-                  label="Create account"
-                  href="/create-account"
-                  bgcolor="inherit"
-                  color="primary"
-                />
-              </>
+              <AuthButton label="Sign In" />
             )}
           </Box>
         </Toolbar>
