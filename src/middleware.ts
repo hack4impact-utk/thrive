@@ -6,6 +6,9 @@ export default auth((req) => {
 
   const isInfoPage = pathname.startsWith("/info");
   const isProtectedRoute = pathname.startsWith("/dashboard");
+  const isAdminOnlyDashboardRoute = pathname.startsWith(
+    "/dashboard/events-library",
+  );
 
   const infoFilled = req.auth?.user?.infoFilled;
   const role = req.auth?.user?.role as "admin" | "manager" | undefined;
@@ -18,6 +21,10 @@ export default auth((req) => {
 
   if (isProtectedRoute && role && !allowedRoles.includes(role)) {
     return Response.redirect(new URL("/", req.url));
+  }
+
+  if (isAdminOnlyDashboardRoute && role !== "admin") {
+    return Response.redirect(new URL("/dashboard", req.url));
   }
 
   if (isLoggedIn && !infoFilled && !isInfoPage) {

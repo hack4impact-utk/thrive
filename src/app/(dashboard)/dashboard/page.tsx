@@ -43,7 +43,8 @@ const actions: DashboardAction[] = [
   {
     title: "Events Library",
     description: "Browse, edit, and organize the events your team is running.",
-    status: "planned",
+    href: "/dashboard/events-library",
+    status: "available",
     icon: FolderSharedIcon,
   },
   {
