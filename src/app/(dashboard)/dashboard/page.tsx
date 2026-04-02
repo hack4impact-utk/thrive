@@ -58,7 +58,8 @@ const actions: DashboardAction[] = [
     title: "User Management",
     description:
       "Review volunteer profiles, roles, and account access in one place.",
-    status: "planned",
+    href: "/dashboard/user-management",
+    status: "available",
     icon: ManageAccountsIcon,
   },
   {

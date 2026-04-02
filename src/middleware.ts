@@ -6,9 +6,9 @@ export default auth((req) => {
 
   const isInfoPage = pathname.startsWith("/info");
   const isProtectedRoute = pathname.startsWith("/dashboard");
-  const isAdminOnlyDashboardRoute = pathname.startsWith(
-    "/dashboard/events-library",
-  );
+  const isAdminOnlyDashboardRoute =
+    pathname.startsWith("/dashboard/events-library") ||
+    pathname.startsWith("/dashboard/user-management");
 
   const infoFilled = req.auth?.user?.infoFilled;
   const role = req.auth?.user?.role as "admin" | "manager" | undefined;
