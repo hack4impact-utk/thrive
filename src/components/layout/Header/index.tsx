@@ -90,7 +90,13 @@ export default function Header(): React.ReactElement {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {canCreate && <DefaultButton label="Dashboard" href="/dashboard" />}
+            {canCreate && (
+              <DefaultButton
+                label="Dashboard"
+                href="/dashboard"
+                bgcolor="inherit"
+              />
+            )}
 
             {status === "authenticated" ? (
               <Box sx={{ flexShrink: 0 }}>
