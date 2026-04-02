@@ -2,6 +2,7 @@ import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import { alpha, Box, Chip, Paper, Stack, Typography } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { asc, eq } from "drizzle-orm";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import db from "@/db";
@@ -77,9 +78,19 @@ function UserRow({
           }}
         >
           <Typography
+            component={Link}
+            href={`/dashboard/user-management/${user.id}`}
             variant="subtitle1"
-            component="span"
-            sx={{ fontWeight: 700, color: "#22305B", lineHeight: 1.2 }}
+            sx={{
+              fontWeight: 700,
+              color: "#22305B",
+              lineHeight: 1.2,
+              textDecoration: "none",
+              "&:hover": {
+                color: "#31487f",
+                textDecoration: "underline",
+              },
+            }}
           >
             {fullName}
           </Typography>
@@ -177,7 +188,7 @@ async function getUsers(): Promise<UserRecord[]> {
 export default async function UserManagementPage(): Promise<React.ReactElement> {
   const session = await auth();
 
-  if (session?.user?.role !== "admin") {
+  if (session?.user?.role !== "admin" && session?.user?.role !== "manager") {
     redirect("/dashboard");
   }
 
