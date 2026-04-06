@@ -1,6 +1,7 @@
 import { Box, LinearProgress, Paper, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
@@ -69,8 +70,19 @@ function EventRow({ event }: { event: EventRecord }): React.ReactElement {
     >
       <Box sx={{ minWidth: 0 }}>
         <Typography
+          component={Link}
+          href={`/dashboard/events-library/${event.id}`}
           variant="h6"
-          sx={{ fontWeight: 700, color: "#23437a", lineHeight: 1.2 }}
+          sx={{
+            fontWeight: 700,
+            color: "#23437a",
+            lineHeight: 1.2,
+            textDecoration: "none",
+            "&:hover": {
+              color: "#31487f",
+              textDecoration: "underline",
+            },
+          }}
         >
           {event.title}
         </Typography>
