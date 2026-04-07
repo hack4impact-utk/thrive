@@ -1,7 +1,3 @@
-/* 
-    This is the filters bar. 
-    Has a few basic dropdowns, and a button that opens a card for more filter options.
-*/
 "use client";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, Button } from "@mui/material";
@@ -11,7 +7,12 @@ import * as React from "react";
 
 import FiltersModal from "./components/FiltersModal";
 
-export default function Filters(): React.ReactElement {
+interface FiltersProps {
+  query: string;
+  onQueryChange: (value: string) => void;
+}
+
+export default function Filters({ query, onQueryChange }: FiltersProps): React.ReactElement {
   const [open, setOpen] = React.useState(false);
 
   const Search = styled("div")(({ theme }) => ({
@@ -21,9 +22,7 @@ export default function Filters(): React.ReactElement {
     "&:hover": {
       backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
-
     width: "auto",
-
     [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(1),
     },
@@ -80,6 +79,8 @@ export default function Filters(): React.ReactElement {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ "aria-label": "search" }}
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
             />
           </Search>
 

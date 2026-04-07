@@ -1,3 +1,4 @@
+"use client";
 import Box from "@mui/material/Box";
 import { eq } from "drizzle-orm";
 
@@ -8,7 +9,9 @@ import ToggleViews from "@/features/toggles/ToggleViews";
 import ListView from "@/features/toggles/ToggleViews/ListView";
 import { auth } from "@/lib/auth";
 import { getUpcomingEvents } from "@/lib/events";
+import { useState, useMemo } from "react";
 
+import { fuzzyMatch } from "@/utils/levenshtein";
 import Filters from "../features/filters";
 
 export default async function HomePage(): Promise<React.ReactElement> {
@@ -31,6 +34,11 @@ export default async function HomePage(): Promise<React.ReactElement> {
     isRegistered: userId ? registeredSet.has(e.id) : false,
   }));
 
+  const [query, setQuery] = useState("");
+  const filtered = useMemo(() =>
+    events.filter(event => fuzzyMatch(event.title, query)),
+    [query]
+  );
   return (
     <div>
       <Box
@@ -55,9 +63,12 @@ export default async function HomePage(): Promise<React.ReactElement> {
           }}
         >
           <ToggleViews />
-          <Filters />
+          <Filters query={query} onQueryChange={setQuery} /> 
         </Box>
-        <ListView events={eventsWithState} />
+        <div>
+          Hello
+        </div>
+        <ListView events={filtered} />
       </Box>
     </div>
   );
