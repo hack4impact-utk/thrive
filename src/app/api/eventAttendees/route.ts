@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 
 import db from "@/db";
 import { eventAttendees } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import getUserSession from "@/utils/auth/get-user-session";
 
 export async function POST(req: Request): Promise<Response> {
-  const session = await auth();
+  const session = await getUserSession();
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

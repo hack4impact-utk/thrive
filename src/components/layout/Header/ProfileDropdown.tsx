@@ -3,8 +3,10 @@ import Box from "@mui/material/Box";
 import Popover from "@mui/material/Popover";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
+
+import { handleLogout } from "@/utils/auth/handle-logout";
 
 export default function ProfileDropdown(): React.ReactElement {
   const router = useRouter();
@@ -94,7 +96,7 @@ export default function ProfileDropdown(): React.ReactElement {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            void signOut({ callbackUrl: "/" });
+            handleLogout("/");
             handleClose();
           }}
         >
