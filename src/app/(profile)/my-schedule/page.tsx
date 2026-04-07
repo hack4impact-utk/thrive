@@ -38,7 +38,7 @@ export default async function MySchedulePage(): Promise<React.ReactElement> {
             py: 5,
           }}
         >
-          <Typography>Please Sign In.</Typography>
+          <Typography>Please Sign In</Typography>
         </Box>
       </>
     );
