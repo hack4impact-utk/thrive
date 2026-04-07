@@ -22,6 +22,26 @@ type HomePageClientProps = {
 export default function ListView({
   events,
 }: HomePageClientProps): React.ReactElement {
+  if (events.length === 0) {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          mt: 4,
+          py: 6,
+          px: 3,
+          textAlign: "center",
+          borderRadius: 2,
+          backgroundColor: "grey.100",
+        }}
+      >
+        <Typography variant="body1" color="text.secondary">
+          There are no upcoming events at this time.
+        </Typography>
+      </Box>
+    );
+  }
+
   const groups: Record<string, typeof events> = {};
 
   for (const event of events) {

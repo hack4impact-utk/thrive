@@ -8,6 +8,9 @@ export default withAuth(
 
     const isInfoPage = pathname.startsWith("/info");
     const isProtectedRoute = pathname.startsWith("/dashboard");
+    const isAdminOnlyDashboardRoute = pathname.startsWith(
+      "/dashboard/events-library",
+    );
 
     const infoFilled = request.nextauth.token?.user?.infoFilled;
     const role = request.nextauth.token?.user?.role as
@@ -23,6 +26,10 @@ export default withAuth(
 
     if (isProtectedRoute && role && !allowedRoles.includes(role)) {
       return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    if (isAdminOnlyDashboardRoute && role !== "admin") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
     if (isLoggedIn && !infoFilled && !isInfoPage) {

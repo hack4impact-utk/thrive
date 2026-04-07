@@ -8,13 +8,19 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
-import AuthenticationActions from "@/components/layout/Header/AuthenticationActions";
-import CreateEventDropdown from "@/components/layout/Header/CreateEventDropdown";
+import ProfileDropdown from "@/components/layout/Header/ProfileDropdown";
+import { AuthButton, DefaultButton } from "@/components/ui/Button";
 
 export default function Header(): React.ReactElement {
   const { data: session, status } = useSession();
   const role = session?.user?.role;
   const canCreate = role === "admin" || role === "manager";
+  const headerColor = { admin: "secondary.main", manager: "#276636" };
+  const fontColor = { admin: "#ffffff", manager: "#ffffff" };
+  const appBarSx =
+    role && role in headerColor
+      ? { backgroundColor: headerColor[role as keyof typeof headerColor] }
+      : { backgroundColor: "#fff" };
 
   return (
     <Box
@@ -25,7 +31,7 @@ export default function Header(): React.ReactElement {
         zIndex: 10,
       }}
     >
-      <AppBar position="static" color="default">
+      <AppBar position="static" sx={appBarSx}>
         <Toolbar
           sx={{
             width: "100%",
@@ -73,9 +79,9 @@ export default function Header(): React.ReactElement {
                   display: { xs: "none", md: "flex" },
                   fontSize: ".9rem",
                   fontWeight: 700,
-                  color: "#22305B",
                   textDecoration: "none",
                   flexGrow: 1,
+                  color: fontColor[role as keyof typeof fontColor] || "#22305B",
                 }}
               >
                 THRIVE
@@ -84,9 +90,21 @@ export default function Header(): React.ReactElement {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {canCreate && <CreateEventDropdown />}
+            {canCreate && (
+              <DefaultButton
+                label="Dashboard"
+                href="/dashboard"
+                bgcolor="inherit"
+              />
+            )}
 
-            <AuthenticationActions status={status} />
+            {status === "authenticated" ? (
+              <Box sx={{ flexShrink: 0 }}>
+                <ProfileDropdown />
+              </Box>
+            ) : (
+              <AuthButton label="Sign In" />
+            )}
           </Box>
         </Toolbar>
       </AppBar>
