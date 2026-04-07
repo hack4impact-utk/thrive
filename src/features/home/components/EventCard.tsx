@@ -4,6 +4,7 @@ import LocationPinIcon from "@mui/icons-material/LocationPin";
 import PersonIcon from "@mui/icons-material/Person";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import { Box, Card, CardContent, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
@@ -30,6 +31,8 @@ export default function VolunteerEventCard(
   event: VolunteerEventCardProps,
 ): React.ReactElement {
   const { status } = useSession();
+
+  const router = useRouter();
 
   const timeRange = getTimeRange(
     event.eventDate,
@@ -79,6 +82,7 @@ export default function VolunteerEventCard(
                     setIsRegistered(true);
                     setRegisteredUsers((prev) => prev + 1);
                   }
+                  router.refresh();
                 } catch (error) {
                   if (error instanceof Error) {
                     if (error.message === "Event capacity reached") {

@@ -5,6 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
@@ -17,6 +18,9 @@ export default function Header(): React.ReactElement {
   const canCreate = role === "admin" || role === "manager";
   const headerColor = { admin: "secondary.main", manager: "#276636" };
   const fontColor = { admin: "#ffffff", manager: "#ffffff" };
+  const pathname = usePathname();
+  const isEvents = pathname === "/";
+  const isMySchedule = pathname === "/my-schedule";
   const appBarSx =
     role && role in headerColor
       ? { backgroundColor: headerColor[role as keyof typeof headerColor] }
@@ -87,6 +91,33 @@ export default function Header(): React.ReactElement {
                 THRIVE
               </Typography>
             </Box>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 4, mr: 4 }}>
+            <Link href="/" style={{ textDecoration: "none" }}>
+              <Typography
+                sx={{
+                  fontSize: ".9rem",
+                  fontWeight: isEvents ? 700 : 400,
+                  color: isEvents ? "#22305B" : "#6c6f79",
+                  cursor: "pointer",
+                }}
+              >
+                Events
+              </Typography>
+            </Link>
+
+            <Link href="/my-schedule" style={{ textDecoration: "none" }}>
+              <Typography
+                sx={{
+                  fontSize: ".9rem",
+                  fontWeight: isMySchedule ? 700 : 400,
+                  color: isMySchedule ? "#22305B" : "#6c6f79",
+                  cursor: "pointer",
+                }}
+              >
+                My Schedule
+              </Typography>
+            </Link>
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
