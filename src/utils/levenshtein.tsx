@@ -24,12 +24,12 @@ export const levenshteinDistance = (a: string, b: string, bLen: number, aLen: nu
 export const levenshtein = (str: string, query: string): boolean => {
   if (!query) return true;
 
-  if (str.length < query.length) {
+  if (str.length > query.length) {
     str = str.slice(0, query.length);
   }
 
   const distance = levenshteinDistance(str, query, query.length, str.length);
-
+  console.log("Levenshtein distance between '%s' and '%s': %d", str, query, distance);
   //this can be adjusted based on how lenient we want the matching to be
   return distance <= 2;
 }

@@ -6,14 +6,14 @@ import WelcomeCard from "@/features/home/components/WelcomeCard";
 import ToggleViews from "@/features/toggles/ToggleViews";
 import ListView from "@/features/toggles/ToggleViews/ListView";
 import Filters from "../features/filters";
-import { fuzzyMatch } from "@/utils/levenshtein";
+import { levenshtein } from "@/utils/levenshtein";
 import * as React from "react";
 
 export default function HomeClient({ eventsWithState }: { eventsWithState: any[] }) {
   const [query, setQuery] = React.useState("");
 
   const filtered = (eventsWithState??[]).filter(event =>
-    fuzzyMatch(event.title, query)
+    levenshtein(event.title, query)
   );
 
   return (
