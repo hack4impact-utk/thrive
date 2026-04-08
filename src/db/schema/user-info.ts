@@ -1,4 +1,11 @@
-import { boolean, integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  numeric,
+  pgTable,
+  text,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 import { users } from "./users";
 
@@ -29,6 +36,10 @@ export const userInfo = pgTable("user_info", {
   gender: varchar("gender", { length: 20 }),
 
   shirtSize: varchar("shirt_size", { length: 10 }),
+
+  hoursVolunteered: numeric("hours_volunteered", { mode: "number" })
+    .notNull()
+    .default(0),
 
   medicalNotes: text("medical_notes"),
 });

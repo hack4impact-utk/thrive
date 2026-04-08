@@ -1,0 +1,1 @@
+ALTER TABLE "user_info" ADD COLUMN "hours_volunteered" numeric DEFAULT 0 NOT NULL;
