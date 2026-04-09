@@ -88,11 +88,11 @@ export default function ProfileDropdown(): React.ReactElement {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            void router.push("/account/view-hours");
+            void router.push("/account/manage-hours");
             handleClose();
           }}
         >
-          View hours
+          Manage hours
         </MenuItem>
         <MenuItem
           onClick={() => {
