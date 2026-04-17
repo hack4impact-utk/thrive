@@ -86,14 +86,16 @@ export default function ProfileDropdown(): React.ReactElement {
         >
           Notification settings
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            void router.push("/account/manage-hours");
-            handleClose();
-          }}
-        >
-          Manage hours
-        </MenuItem>
+        {session?.user?.role === "user" && (
+          <MenuItem
+            onClick={() => {
+              void router.push("/account/manage-hours");
+              handleClose();
+            }}
+          >
+            My hours
+          </MenuItem>
+        )}
         <MenuItem
           onClick={() => {
             handleLogout("/");
