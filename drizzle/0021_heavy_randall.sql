@@ -1,0 +1,1 @@
+ALTER TABLE "user_info" ALTER COLUMN "hours_volunteered" SET DATA TYPE numeric(10, 2);

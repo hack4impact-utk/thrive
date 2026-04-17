@@ -37,7 +37,11 @@ export const userInfo = pgTable("user_info", {
 
   shirtSize: varchar("shirt_size", { length: 10 }),
 
-  hoursVolunteered: numeric("hours_volunteered", { mode: "number" })
+  hoursVolunteered: numeric("hours_volunteered", {
+    precision: 10,
+    scale: 2,
+    mode: "number",
+  })
     .notNull()
     .default(0),
 
