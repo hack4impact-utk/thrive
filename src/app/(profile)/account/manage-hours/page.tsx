@@ -1,5 +1,5 @@
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
-import { Box, Card, CardContent, Grid, Stack, Typography } from "@mui/material";
+import { Box, Card, CardContent, Stack, Typography } from "@mui/material";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -63,69 +63,74 @@ export default async function ViewHours(): Promise<React.ReactElement> {
           width: "100%",
         }}
       >
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 8, lg: 6 }}>
-            <Card
-              elevation={0}
-              sx={{
-                borderRadius: 3,
-                border: "1px solid",
-                borderColor: "divider",
-                boxShadow: "0 10px 30px rgba(34, 48, 91, 0.08)",
-              }}
-            >
-              <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
-                <Stack spacing={3}>
-                  <Stack
-                    direction="row"
-                    spacing={1.5}
-                    alignItems="center"
-                    sx={{ color: "secondary.main" }}
-                  >
-                    <AccessTimeRoundedIcon />
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      Logged Volunteer Hours
-                    </Typography>
-                  </Stack>
-
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "text.secondary",
-                        textTransform: "uppercase",
-                        letterSpacing: 1,
-                        mb: 1,
-                      }}
-                    >
-                      Current Total
-                    </Typography>
-                    <Typography
-                      variant="h2"
-                      sx={{
-                        fontWeight: 700,
-                        color: "primary.main",
-                        lineHeight: 1,
-                      }}
-                    >
-                      {formatHours(volunteerHours)}
-                    </Typography>
-                    <Typography
-                      variant="h6"
-                      sx={{ mt: 1, color: "secondary.main", fontWeight: 500 }}
-                    >
-                      hours volunteered
-                    </Typography>
-                  </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    If this total looks incorrect, please contact an admin or
-                    manager so they can review your recorded hours.
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: 850,
+            mx: "auto",
+          }}
+        >
+          <Card
+            elevation={0}
+            sx={{
+              width: "100%",
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor: "divider",
+              boxShadow: "0 10px 30px rgba(34, 48, 91, 0.08)",
+            }}
+          >
+            <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
+              <Stack spacing={3}>
+                <Stack
+                  direction="row"
+                  spacing={1.5}
+                  alignItems="center"
+                  sx={{ color: "secondary.main" }}
+                >
+                  <AccessTimeRoundedIcon />
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Logged Volunteer Hours
                   </Typography>
                 </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+
+                <Box>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.secondary",
+                      textTransform: "uppercase",
+                      letterSpacing: 1,
+                      mb: 1,
+                    }}
+                  >
+                    Current Total
+                  </Typography>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      fontWeight: 700,
+                      color: "primary.main",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {formatHours(volunteerHours)}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{ mt: 1, color: "secondary.main", fontWeight: 500 }}
+                  >
+                    hours volunteered
+                  </Typography>
+                </Box>
+                <Typography variant="body2" color="text.secondary">
+                  If this total looks incorrect, please contact an admin or
+                  manager so they can review your recorded hours.
+                </Typography>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Box>
       </Box>
     </>
   );
