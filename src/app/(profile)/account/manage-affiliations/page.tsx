@@ -9,7 +9,7 @@ export default function ManageAffiliations(): React.ReactElement {
           backgroundColor: "secondary.main",
           color: "white",
           px: 10,
-          py: 5,
+          py: 3,
           width: "100%",
           marginTop: 0,
         }}

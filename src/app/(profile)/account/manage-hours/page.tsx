@@ -39,7 +39,7 @@ export default async function ViewHours(): Promise<React.ReactElement> {
           backgroundColor: "secondary.main",
           color: "white",
           px: { xs: 3, sm: 6, md: 10 },
-          py: 5,
+          py: 3,
           width: "100%",
           marginTop: 0,
         }}
