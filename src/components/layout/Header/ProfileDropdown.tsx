@@ -61,6 +61,7 @@ export default function ProfileDropdown(): React.ReactElement {
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
+        disableScrollLock
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "right",
