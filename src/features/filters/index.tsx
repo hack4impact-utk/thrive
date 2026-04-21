@@ -46,6 +46,10 @@ export default function Filters(): React.ReactElement {
       padding: theme.spacing(1, 1, 1, 0),
       paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create("width"),
+      width: "6ch",
+      "&:focus": {
+        width: "10ch",
+      },
       [theme.breakpoints.up("sm")]: {
         width: "12ch",
         "&:focus": {
@@ -78,7 +82,7 @@ export default function Filters(): React.ReactElement {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder="Search"
               inputProps={{ "aria-label": "search" }}
             />
           </Search>
