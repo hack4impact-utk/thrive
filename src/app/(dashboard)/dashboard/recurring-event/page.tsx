@@ -8,6 +8,10 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import dayjs, { type Dayjs } from "dayjs";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 
@@ -137,31 +141,36 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
         InputLabelProps={{ shrink: true }}
       />
 
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <TextField
-          name="startTime"
-          type="time"
-          label="Start Time"
-          required
-          fullWidth
-          value={form.startTime}
-          onChange={handleChange}
-          InputLabelProps={{ shrink: true }}
-          inputProps={{ step: 900 }}
-        />
-
-        <TextField
-          name="endTime"
-          type="time"
-          label="End Time"
-          required
-          fullWidth
-          value={form.endTime}
-          onChange={handleChange}
-          InputLabelProps={{ shrink: true }}
-          inputProps={{ step: 900 }}
-        />
-      </Box>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <TimePicker
+            label="Start Time *"
+            minutesStep={5}
+            value={
+              form.startTime ? dayjs(`2000-01-01T${form.startTime}`) : null
+            }
+            onChange={(v: Dayjs | null) =>
+              setForm((prev) => ({
+                ...prev,
+                startTime: v ? v.format("HH:mm") : "",
+              }))
+            }
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+          <TimePicker
+            label="End Time *"
+            minutesStep={5}
+            value={form.endTime ? dayjs(`2000-01-01T${form.endTime}`) : null}
+            onChange={(v: Dayjs | null) =>
+              setForm((prev) => ({
+                ...prev,
+                endTime: v ? v.format("HH:mm") : "",
+              }))
+            }
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+        </Box>
+      </LocalizationProvider>
 
       <TextField
         name="capacity"
