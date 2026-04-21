@@ -1,17 +1,10 @@
-/*
-    This is the filters bar.
-    Has a few basic dropdowns, and a button that opens a card for more filter options.
-*/
 "use client";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import { alpha, styled } from "@mui/material/styles";
 import * as React from "react";
 
-import FiltersModal from "./components/FiltersModal";
-
-// Styled components defined outside the function to avoid recreation on every render
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -64,8 +57,6 @@ export default function Filters({
   searchQuery,
   onSearchChange,
 }: FiltersProps): React.ReactElement {
-  const [open, setOpen] = React.useState(false);
-
   return (
     <Box>
       <Box
@@ -95,18 +86,8 @@ export default function Filters({
               onChange={(e) => onSearchChange(e.target.value)}
             />
           </Search>
-
-          <Button
-            size="large"
-            variant="outlined"
-            sx={{ color: "GrayText", borderColor: "#0000003B" }}
-            onClick={() => setOpen(true)}
-          >
-            Filters
-          </Button>
         </Box>
       </Box>
-      <FiltersModal open={open} setOpen={setOpen} />
     </Box>
   );
 }
