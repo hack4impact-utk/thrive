@@ -3,13 +3,10 @@ import { eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees } from "@/db/schema";
+import HomePageContent from "@/features/home/components/HomePageContent";
 import WelcomeCard from "@/features/home/components/WelcomeCard";
-import ToggleViews from "@/features/toggles/ToggleViews";
-import ListView from "@/features/toggles/ToggleViews/ListView";
 import { getUpcomingEvents } from "@/lib/events";
 import getUserSession from "@/utils/auth/get-user-session";
-
-import Filters from "../features/filters";
 
 export default async function HomePage(): Promise<React.ReactElement> {
   const events = await getUpcomingEvents();
@@ -46,18 +43,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
         }}
       >
         <WelcomeCard />
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <ToggleViews />
-          <Filters />
-        </Box>
-        <ListView events={eventsWithState} />
+        <HomePageContent events={eventsWithState} />
       </Box>
     </div>
   );

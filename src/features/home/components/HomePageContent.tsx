@@ -5,27 +5,38 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { Box, ButtonGroup, IconButton } from "@mui/material";
 import * as React from "react";
 
-import CalendarView, { type CalendarEvent } from "./CalendarView";
-import ListView from "./ListView";
-import { View } from "./view-types";
+import Filters from "@/features/filters";
+import CalendarView, {
+  type CalendarEvent,
+} from "@/features/toggles/ToggleViews/CalendarView";
+import ListView from "@/features/toggles/ToggleViews/ListView";
+import type { View } from "@/features/toggles/ToggleViews/view-types";
 
-type ToggleViewsProps = {
+type HomePageContentProps = {
   events: CalendarEvent[];
 };
 
-export default function ToggleViews({
+export default function HomePageContent({
   events,
-}: ToggleViewsProps): React.ReactElement {
+}: HomePageContentProps): React.ReactElement {
   const [activeView, setActiveView] = React.useState<View>("list");
 
   const toggleView = (view: View): void => {
-    setActiveView((current) => (current === view ? "list" : view));
+    // Clicking the active view does nothing (stays on that view)
+    setActiveView(view ?? "list");
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      {/* Toggle button row — rendered by the parent alongside Filters */}
-      <Box>
+    <>
+      {/* Controls row: view toggle buttons on the left, Filters on the right */}
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <ButtonGroup
           variant="outlined"
           sx={{
@@ -34,10 +45,11 @@ export default function ToggleViews({
             border: "1px solid #0000003B",
           }}
         >
-          {/* List view */}
+          {/* List view button */}
           <IconButton
             onClick={() => toggleView("list")}
             aria-label="List view"
+            aria-pressed={activeView === "list"}
             sx={{
               borderRadius: 0,
               borderRight: "1px solid rgba(0,0,0,0.12)",
@@ -51,10 +63,11 @@ export default function ToggleViews({
             <FormatListBulletedIcon sx={{ color: "#555555" }} />
           </IconButton>
 
-          {/* Calendar view */}
+          {/* Calendar view button */}
           <IconButton
             onClick={() => toggleView("calendar")}
             aria-label="Calendar view"
+            aria-pressed={activeView === "calendar"}
             sx={{
               borderRadius: 0,
               borderRight: "none",
@@ -69,13 +82,13 @@ export default function ToggleViews({
             <CalendarMonthIcon sx={{ color: "#555555" }} />
           </IconButton>
         </ButtonGroup>
+
+        <Filters />
       </Box>
 
-      {/* View content — rendered below the toggle row + filters */}
-      <Box sx={{ width: "100%", mt: 0 }}>
-        {activeView === "list" && <ListView events={events} />}
-        <CalendarView activeView={activeView} events={events} />
-      </Box>
-    </Box>
+      {/* View content */}
+      {activeView === "list" && <ListView events={events} />}
+      <CalendarView activeView={activeView} events={events} />
+    </>
   );
 }
