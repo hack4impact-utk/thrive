@@ -72,7 +72,7 @@ export default function ListView({
                 backgroundColor: "secondary.main",
                 color: "white",
                 position: "sticky",
-                top: 56.8,
+                top: 112.8,
                 zIndex: 1,
                 padding: 2,
                 width: "100%",

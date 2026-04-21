@@ -171,7 +171,7 @@ export default function CalendarView({
             <Box
               sx={{
                 position: "sticky",
-                top: 56.8,
+                top: 112.8,
                 zIndex: 2,
                 backgroundColor: "background.default",
                 py: 1,

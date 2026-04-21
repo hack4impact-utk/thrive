@@ -16,21 +16,42 @@ type HomePageContentProps = {
   events: CalendarEvent[];
 };
 
+/**
+ * Case-insensitive substring search: returns true when `query` appears
+ * anywhere inside `text`. "parkridge" matches "...Workshop Parkridge",
+ * "Y" matches "Youth...", "yo" matches "Youth..." but not "Community Food...".
+ */
+function matchesSearch(query: string, text: string): boolean {
+  if (!query) return true;
+  return text.toLowerCase().includes(query.toLowerCase());
+}
+
 export default function HomePageContent({
   events,
 }: HomePageContentProps): React.ReactElement {
   const [activeView, setActiveView] = React.useState<View>("list");
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   const toggleView = (view: View): void => {
     // Clicking the active view does nothing (stays on that view)
     setActiveView(view ?? "list");
   };
 
+  const filteredEvents = React.useMemo(
+    () => events.filter((event) => matchesSearch(searchQuery, event.title)),
+    [events, searchQuery],
+  );
+
   return (
     <>
-      {/* Controls row: view toggle buttons on the left, Filters on the right */}
+      {/* Controls row — sticky below the navbar */}
       <Box
         sx={{
+          position: "sticky",
+          top: 56.8,
+          zIndex: 3,
+          backgroundColor: "background.default",
+          py: 1,
           display: "flex",
           width: "100%",
           justifyContent: "space-between",
@@ -83,12 +104,12 @@ export default function HomePageContent({
           </IconButton>
         </ButtonGroup>
 
-        <Filters />
+        <Filters searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       </Box>
 
       {/* View content */}
-      {activeView === "list" && <ListView events={events} />}
-      <CalendarView activeView={activeView} events={events} />
+      {activeView === "list" && <ListView events={filteredEvents} />}
+      <CalendarView activeView={activeView} events={filteredEvents} />
     </>
   );
 }
