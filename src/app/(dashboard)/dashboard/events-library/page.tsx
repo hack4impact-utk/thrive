@@ -162,7 +162,7 @@ function EventRow({ event }: { event: EventRecord }): React.ReactElement {
               bgcolor: "#e4eaf3",
               "& .MuiLinearProgress-bar": {
                 borderRadius: 999,
-                bgcolor: "#f5a623",
+                bgcolor: "primary.main",
               },
             }}
           />

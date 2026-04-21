@@ -1,9 +1,7 @@
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import {
-  alpha,
   Box,
-  Chip,
   Paper,
   Stack,
   Table,
@@ -12,9 +10,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
 import dayjs from "dayjs";
 import { asc, eq } from "drizzle-orm";
 import Link from "next/link";
@@ -78,19 +76,16 @@ function AttendeeRow({
   const fullName = formatFullName(attendee);
 
   return (
-    <TableRow sx={{ "&:last-child td": { borderBottom: 0 } }}>
-      <TableCell
-        sx={{ py: 1.75, px: { xs: 2, md: 3 }, verticalAlign: "middle" }}
-      >
+    <TableRow hover sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+      <TableCell>
         <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.75 }}>
           <Typography
             component={Link}
             href={`/dashboard/user-management/${attendee.id}`}
-            variant="subtitle1"
+            variant="body2"
             sx={{
-              fontWeight: 700,
+              fontWeight: 600,
               color: "#22305B",
-              lineHeight: 1.2,
               textDecoration: "none",
               "&:hover": {
                 color: "#31487f",
@@ -100,7 +95,6 @@ function AttendeeRow({
           >
             {fullName}
           </Typography>
-
           {!attendee.infoFilled && (
             <Tooltip title="User has not completed user info form" arrow>
               <Box
@@ -111,69 +105,26 @@ function AttendeeRow({
                   color: "#d9822b",
                 }}
               >
-                <WarningAmberRoundedIcon sx={{ fontSize: 18 }} />
+                <WarningAmberRoundedIcon sx={{ fontSize: 16 }} />
               </Box>
             </Tooltip>
           )}
         </Box>
-        <Typography
-          variant="body2"
-          sx={{
-            mt: 0.4,
-            color: "text.secondary",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {attendee.email ?? "No email on file"}
+      </TableCell>
+      <TableCell>
+        <Typography variant="body2" color="text.secondary">
+          {attendee.email ?? "—"}
         </Typography>
       </TableCell>
-
-      <TableCell
-        sx={{ py: 1.75, px: { xs: 2, md: 3 }, verticalAlign: "middle" }}
-      >
-        <Typography
-          variant="caption"
-          sx={{
-            display: "block",
-            color: "text.secondary",
-            letterSpacing: 0.8,
-            textTransform: "uppercase",
-          }}
-        >
-          Phone
-        </Typography>
-        <Typography variant="body2" sx={{ fontWeight: 600, color: "#31487f" }}>
-          {attendee.phoneNumber ?? "No phone number"}
+      <TableCell>
+        <Typography variant="body2" color="text.secondary">
+          {attendee.phoneNumber ?? "—"}
         </Typography>
       </TableCell>
-
-      <TableCell
-        align="right"
-        sx={{
-          py: 1.75,
-          px: { xs: 2, md: 3 },
-          verticalAlign: "middle",
-          width: 140,
-        }}
-      >
-        <Chip
-          label={formatRoleLabel(attendee.role)}
-          size="small"
-          sx={{
-            fontWeight: 700,
-            color: attendee.role === "admin" ? "#22305B" : "#276636",
-            bgcolor:
-              attendee.role === "admin"
-                ? alpha("#22305B", 0.1)
-                : alpha("#276636", 0.12),
-            border: "1px solid",
-            borderColor:
-              attendee.role === "admin"
-                ? alpha("#22305B", 0.16)
-                : alpha("#276636", 0.18),
-          }}
-        />
+      <TableCell>
+        <Typography variant="body2" color="text.secondary">
+          {formatRoleLabel(attendee.role)}
+        </Typography>
       </TableCell>
     </TableRow>
   );
@@ -286,72 +237,29 @@ export default async function EventAttendeesPage({
             border: "1px solid",
             borderColor: "divider",
             borderRadius: 2,
-            overflow: "hidden",
-            bgcolor: "background.paper",
+            overflow: "auto",
+            maxHeight: "calc(100vh - 280px)",
           }}
         >
-          <Table>
+          <Table size="small" stickyHeader>
             <TableHead>
-              <TableRow sx={{ bgcolor: "#dfe7f2" }}>
-                <TableCell
-                  sx={{
-                    py: 1.25,
-                    px: { xs: 2, md: 3 },
-                    borderBottom: "1px solid",
-                    borderColor: "#cfd8e6",
-                  }}
-                >
-                  <Typography
-                    variant="caption"
+              <TableRow>
+                {["Full Name", "Email", "Phone", "Role"].map((heading) => (
+                  <TableCell
+                    key={heading}
                     sx={{
                       fontWeight: 700,
                       letterSpacing: 1.1,
                       color: "#4b6287",
+                      fontSize: 12,
+                      textTransform: "uppercase",
+                      bgcolor: "#dfe7f2",
+                      borderBottom: "1px solid #cfd8e6",
                     }}
                   >
-                    USER
-                  </Typography>
-                </TableCell>
-                <TableCell
-                  sx={{
-                    py: 1.25,
-                    px: { xs: 2, md: 3 },
-                    borderBottom: "1px solid",
-                    borderColor: "#cfd8e6",
-                  }}
-                >
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 700,
-                      letterSpacing: 1.1,
-                      color: "#4b6287",
-                    }}
-                  >
-                    PHONE
-                  </Typography>
-                </TableCell>
-                <TableCell
-                  align="right"
-                  sx={{
-                    py: 1.25,
-                    px: { xs: 2, md: 3 },
-                    width: 140,
-                    borderBottom: "1px solid",
-                    borderColor: "#cfd8e6",
-                  }}
-                >
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 700,
-                      letterSpacing: 1.1,
-                      color: "#4b6287",
-                    }}
-                  >
-                    ROLE
-                  </Typography>
-                </TableCell>
+                    {heading}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
 
@@ -362,7 +270,7 @@ export default async function EventAttendeesPage({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={3} sx={{ px: 3, py: 5, border: 0 }}>
+                  <TableCell colSpan={4} sx={{ px: 3, py: 5, border: 0 }}>
                     <Typography variant="body1" sx={{ fontWeight: 600 }}>
                       No attendees yet.
                     </Typography>
