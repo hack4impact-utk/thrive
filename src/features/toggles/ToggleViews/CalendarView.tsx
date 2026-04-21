@@ -18,6 +18,7 @@ import * as React from "react";
 
 import { attendEvent } from "@/actions/attend-event";
 import { leaveEvent } from "@/actions/leave-event";
+import type { RegOverride } from "@/features/home/components/HomePageContent";
 
 import type { View } from "./view-types";
 
@@ -37,6 +38,8 @@ export type CalendarEvent = {
 type CalendarViewProps = {
   activeView: View;
   events: CalendarEvent[];
+  regOverrides: Record<string, RegOverride>;
+  onRegChange: (eventId: string, override: RegOverride) => void;
 };
 
 /** Format a "HH:MM:SS" time string → "3 PM" or "3:30 PM" */
@@ -59,6 +62,8 @@ const PILL_COLORS = {
 export default function CalendarView({
   activeView,
   events,
+  regOverrides,
+  onRegChange,
 }: CalendarViewProps): React.ReactElement | null {
   // ── Hooks ─────────────────────────────────────────────────────────────────
   const { status } = useSession();
@@ -76,11 +81,6 @@ export default function CalendarView({
   const [selectedEvent, setSelectedEvent] =
     React.useState<CalendarEvent | null>(null);
   const [isPending, setIsPending] = React.useState(false);
-
-  // Local overrides for registration state so changes persist across popover open/close
-  const [regOverrides, setRegOverrides] = React.useState<
-    Record<string, { isRegistered: boolean; registeredUsers: number }>
-  >({});
 
   // ── Early return ──────────────────────────────────────────────────────────
   if (activeView !== "calendar") return null;
@@ -122,22 +122,16 @@ export default function CalendarView({
       const { isRegistered, registeredUsers } = getRegState(selectedEvent);
       if (isRegistered) {
         await leaveEvent(selectedEvent.id);
-        setRegOverrides((prev) => ({
-          ...prev,
-          [selectedEvent.id]: {
-            isRegistered: false,
-            registeredUsers: Math.max(registeredUsers - 1, 0),
-          },
-        }));
+        onRegChange(selectedEvent.id, {
+          isRegistered: false,
+          registeredUsers: Math.max(registeredUsers - 1, 0),
+        });
       } else {
         await attendEvent(selectedEvent.id);
-        setRegOverrides((prev) => ({
-          ...prev,
-          [selectedEvent.id]: {
-            isRegistered: true,
-            registeredUsers: registeredUsers + 1,
-          },
-        }));
+        onRegChange(selectedEvent.id, {
+          isRegistered: true,
+          registeredUsers: registeredUsers + 1,
+        });
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -430,20 +424,19 @@ export default function CalendarView({
                   )}
 
                   {/* Slots remaining */}
-                  {slotsRemaining !== null && (
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
-                    >
-                      <PersonIcon
-                        fontSize="small"
-                        sx={{ color: "text.secondary" }}
-                      />
-                      <Typography variant="body2" color="text.secondary">
-                        {slotsRemaining} slot
-                        {slotsRemaining === 1 ? "" : "s"} remaining
-                      </Typography>
-                    </Box>
-                  )}
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+                  >
+                    <PersonIcon
+                      fontSize="small"
+                      sx={{ color: "text.secondary" }}
+                    />
+                    <Typography variant="body2" color="text.secondary">
+                      {slotsRemaining === null
+                        ? "Unlimited capacity"
+                        : `${slotsRemaining} slot${slotsRemaining === 1 ? "" : "s"} remaining`}
+                    </Typography>
+                  </Box>
                 </Box>
 
                 <Divider sx={{ mb: 1.5 }} />

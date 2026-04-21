@@ -24,14 +24,12 @@ export async function attendEvent(eventId: string): Promise<void> {
     throw new Error("Event not found");
   }
 
-  const capacity = event.capacity ?? 0;
-
   const attendeeCount = await db
     .select({ count: count() })
     .from(eventAttendees)
     .where(eq(eventAttendees.eventId, eventId));
 
-  if (attendeeCount[0].count >= capacity || capacity == 0) {
+  if (event.capacity !== null && attendeeCount[0].count >= event.capacity) {
     throw new Error("Event capacity reached");
   }
 

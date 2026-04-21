@@ -10,6 +10,7 @@ import * as React from "react";
 import { attendEvent } from "@/actions/attend-event";
 import { leaveEvent } from "@/actions/leave-event";
 import { DefaultButton } from "@/components/ui/Button";
+import type { RegOverride } from "@/features/home/components/HomePageContent";
 
 import getTimeRange from "../helpers";
 
@@ -24,6 +25,8 @@ type VolunteerEventCardProps = {
   streetLine: string | null;
   description: string;
   isRegistered?: boolean;
+  regOverride?: RegOverride;
+  onRegChange: (eventId: string, override: RegOverride) => void;
 };
 
 export default function VolunteerEventCard(
@@ -37,13 +40,10 @@ export default function VolunteerEventCard(
     event.endTime,
   );
 
-  const [isRegistered, setIsRegistered] = React.useState(
-    event.isRegistered ?? false,
-  );
-
-  const [registeredUsers, setRegisteredUsers] = React.useState(
-    event.registeredUsers ?? 0,
-  );
+  const isRegistered =
+    event.regOverride?.isRegistered ?? event.isRegistered ?? false;
+  const registeredUsers =
+    event.regOverride?.registeredUsers ?? event.registeredUsers ?? 0;
 
   const [isPending, setIsPending] = React.useState(false);
 
@@ -72,12 +72,16 @@ export default function VolunteerEventCard(
                 try {
                   if (isRegistered) {
                     await leaveEvent(event.id);
-                    setIsRegistered(false);
-                    setRegisteredUsers((prev) => Math.max(prev - 1, 0));
+                    event.onRegChange(event.id, {
+                      isRegistered: false,
+                      registeredUsers: Math.max(registeredUsers - 1, 0),
+                    });
                   } else {
                     await attendEvent(event.id);
-                    setIsRegistered(true);
-                    setRegisteredUsers((prev) => prev + 1);
+                    event.onRegChange(event.id, {
+                      isRegistered: true,
+                      registeredUsers: registeredUsers + 1,
+                    });
                   }
                 } catch (error) {
                   if (error instanceof Error) {
@@ -114,7 +118,9 @@ export default function VolunteerEventCard(
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <PersonIcon fontSize="small" />
             <Typography variant="body2">
-              {(event.capacity ?? 0) - registeredUsers} slots remaining
+              {event.capacity === null
+                ? "Unlimited capacity"
+                : `${event.capacity - registeredUsers} slots remaining`}
             </Typography>
           </Box>
 

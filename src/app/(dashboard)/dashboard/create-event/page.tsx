@@ -2,7 +2,9 @@
 
 import {
   Box,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
@@ -43,6 +45,7 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
     description: "",
   });
 
+  const [unlimitedCapacity, setUnlimitedCapacity] = React.useState(false);
   const [locationOptions, setLocationOptions] = React.useState<Location[]>([]);
 
   const router = useRouter();
@@ -74,7 +77,11 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
         eventDate: form.eventDate,
         startTime: form.startTime,
         endTime: form.endTime,
-        capacity: form.capacity ? Number(form.capacity) : null,
+        capacity: unlimitedCapacity
+          ? null
+          : form.capacity
+            ? Number(form.capacity)
+            : null,
         locationId: form.locationId || null,
         description: form.description,
       }),
@@ -97,6 +104,7 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
       locationId: "",
       description: "",
     });
+    setUnlimitedCapacity(false);
   }
 
   return (
@@ -163,14 +171,32 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
         />
       </Box>
 
-      <TextField
-        name="capacity"
-        type="number"
-        label="Capacity (optional)"
-        fullWidth
-        value={form.capacity}
-        onChange={handleChange}
-      />
+      <Box>
+        <TextField
+          name="capacity"
+          type="number"
+          label="Capacity"
+          fullWidth
+          value={unlimitedCapacity ? "" : form.capacity}
+          onChange={handleChange}
+          disabled={unlimitedCapacity}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={unlimitedCapacity}
+              onChange={(e) => {
+                setUnlimitedCapacity(e.target.checked);
+                if (e.target.checked) {
+                  setForm((prev) => ({ ...prev, capacity: "" }));
+                }
+              }}
+            />
+          }
+          label="Unlimited capacity"
+          sx={{ mt: 0.5 }}
+        />
+      </Box>
 
       <FormControl fullWidth>
         <InputLabel id="location-label">Location</InputLabel>

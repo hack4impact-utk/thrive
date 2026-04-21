@@ -16,6 +16,11 @@ type HomePageContentProps = {
   events: CalendarEvent[];
 };
 
+export type RegOverride = {
+  isRegistered: boolean;
+  registeredUsers: number;
+};
+
 /**
  * Case-insensitive substring search: returns true when `query` appears
  * anywhere inside `text`. "parkridge" matches "...Workshop Parkridge",
@@ -31,6 +36,16 @@ export default function HomePageContent({
 }: HomePageContentProps): React.ReactElement {
   const [activeView, setActiveView] = React.useState<View>("list");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [regOverrides, setRegOverrides] = React.useState<
+    Record<string, RegOverride>
+  >({});
+
+  const handleRegChange = React.useCallback(
+    (eventId: string, override: RegOverride): void => {
+      setRegOverrides((prev) => ({ ...prev, [eventId]: override }));
+    },
+    [],
+  );
 
   const toggleView = (view: View): void => {
     // Clicking the active view does nothing (stays on that view)
@@ -108,8 +123,19 @@ export default function HomePageContent({
       </Box>
 
       {/* View content */}
-      {activeView === "list" && <ListView events={filteredEvents} />}
-      <CalendarView activeView={activeView} events={filteredEvents} />
+      {activeView === "list" && (
+        <ListView
+          events={filteredEvents}
+          regOverrides={regOverrides}
+          onRegChange={handleRegChange}
+        />
+      )}
+      <CalendarView
+        activeView={activeView}
+        events={filteredEvents}
+        regOverrides={regOverrides}
+        onRegChange={handleRegChange}
+      />
     </>
   );
 }

@@ -5,6 +5,8 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { Box, ButtonGroup, IconButton } from "@mui/material";
 import * as React from "react";
 
+import type { RegOverride } from "@/features/home/components/HomePageContent";
+
 import CalendarView, { type CalendarEvent } from "./CalendarView";
 import ListView from "./ListView";
 import { View } from "./view-types";
@@ -17,6 +19,16 @@ export default function ToggleViews({
   events,
 }: ToggleViewsProps): React.ReactElement {
   const [activeView, setActiveView] = React.useState<View>("list");
+  const [regOverrides, setRegOverrides] = React.useState<
+    Record<string, RegOverride>
+  >({});
+
+  const handleRegChange = React.useCallback(
+    (eventId: string, override: RegOverride): void => {
+      setRegOverrides((prev) => ({ ...prev, [eventId]: override }));
+    },
+    [],
+  );
 
   const toggleView = (view: View): void => {
     setActiveView((current) => (current === view ? "list" : view));
@@ -73,8 +85,19 @@ export default function ToggleViews({
 
       {/* View content — rendered below the toggle row + filters */}
       <Box sx={{ width: "100%", mt: 0 }}>
-        {activeView === "list" && <ListView events={events} />}
-        <CalendarView activeView={activeView} events={events} />
+        {activeView === "list" && (
+          <ListView
+            events={events}
+            regOverrides={regOverrides}
+            onRegChange={handleRegChange}
+          />
+        )}
+        <CalendarView
+          activeView={activeView}
+          events={events}
+          regOverrides={regOverrides}
+          onRegChange={handleRegChange}
+        />
       </Box>
     </Box>
   );

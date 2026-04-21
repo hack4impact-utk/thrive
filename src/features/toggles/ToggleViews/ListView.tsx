@@ -2,6 +2,8 @@
 import { Box, Typography } from "@mui/material";
 import { Fragment } from "react";
 
+import type { RegOverride } from "@/features/home/components/HomePageContent";
+
 import EventCard from "../../home/components/EventCard";
 
 type HomePageClientProps = {
@@ -17,10 +19,14 @@ type HomePageClientProps = {
     description: string;
     isRegistered?: boolean;
   }[];
+  regOverrides: Record<string, RegOverride>;
+  onRegChange: (eventId: string, override: RegOverride) => void;
 };
 
 export default function ListView({
   events,
+  regOverrides,
+  onRegChange,
 }: HomePageClientProps): React.ReactElement {
   if (events.length === 0) {
     return (
@@ -97,6 +103,8 @@ export default function ListView({
                 streetLine={event.streetLine}
                 description={event.description}
                 isRegistered={event.isRegistered}
+                regOverride={regOverrides[event.id]}
+                onRegChange={onRegChange}
               />
             ))}
           </Fragment>
