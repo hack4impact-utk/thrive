@@ -13,13 +13,28 @@ export async function POST(req: Request): Promise<Response> {
       startTime,
       endTime,
       capacity,
+      unlimitedCapacity,
       locationId,
       description,
     } = body;
 
-    if (!title || !eventDate || !startTime || !endTime || !description) {
+    if (
+      !title ||
+      !eventDate ||
+      !startTime ||
+      !endTime ||
+      !description ||
+      !locationId
+    ) {
       return NextResponse.json(
         { error: "Missing required fields" },
+        { status: 400 },
+      );
+    }
+
+    if (capacity === null && unlimitedCapacity !== true) {
+      return NextResponse.json(
+        { error: "Capacity is required" },
         { status: 400 },
       );
     }
@@ -38,7 +53,7 @@ export async function POST(req: Request): Promise<Response> {
       endTime,
       capacity: capacity ?? null,
       registeredUsers: 0,
-      locationId: locationId ?? null,
+      locationId,
       description,
     });
 
