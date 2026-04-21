@@ -1,6 +1,19 @@
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
-import { alpha, Box, Chip, Paper, Stack, Typography } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
+import {
+  alpha,
+  Avatar,
+  Box,
+  Chip,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { asc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -33,117 +46,99 @@ function formatFullName(
   name: string | null,
 ): string {
   const fullName = [firstName, lastName].filter(Boolean).join(" ");
-
-  if (fullName) {
-    return fullName;
-  }
-
+  if (fullName) return fullName;
   return name || "Profile incomplete";
 }
 
-function UserRow({
-  user,
-  isFirst,
-}: {
-  user: UserRecord;
-  isFirst: boolean;
-}): React.ReactElement {
+function getInitials(
+  firstName: string | null,
+  lastName: string | null,
+  name: string | null,
+): string {
+  if (firstName && lastName) {
+    return `${firstName[0]}${lastName[0]}`.toUpperCase();
+  }
+  if (firstName) return firstName[0].toUpperCase();
+  if (lastName) return lastName[0].toUpperCase();
+  if (name) return name[0].toUpperCase();
+  return "?";
+}
+
+function UserRow({ user }: { user: UserRecord }): React.ReactElement {
   const fullName = formatFullName(user.firstName, user.lastName, user.name);
+  const initials = getInitials(user.firstName, user.lastName, user.name);
 
   return (
-    <Box
-      sx={{
-        px: { xs: 2, md: 3 },
-        py: 1.75,
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "minmax(0, 1fr)",
-          md: "minmax(0, 1.35fr) minmax(0, 1fr) 140px",
-        },
-        gap: 1.5,
-        alignItems: "center",
-        borderTop: isFirst ? "none" : "1px solid",
-        borderColor: "divider",
-      }}
-    >
-      <Box sx={{ minWidth: 0 }}>
-        <Box
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 0.75,
-            fontWeight: 700,
-            color: "#22305B",
-            lineHeight: 1.2,
-          }}
-        >
-          <Typography
-            component={Link}
-            href={`/dashboard/user-management/${user.id}`}
-            variant="subtitle1"
+    <TableRow hover sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+      <TableCell>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <Avatar
             sx={{
+              width: 36,
+              height: 36,
+              bgcolor: "#22305B",
+              fontSize: 13,
               fontWeight: 700,
-              color: "#22305B",
-              lineHeight: 1.2,
-              textDecoration: "none",
-              "&:hover": {
-                color: "#31487f",
-                textDecoration: "underline",
-              },
+              flexShrink: 0,
             }}
           >
-            {fullName}
-          </Typography>
-
-          {!user.infoFilled && (
-            <Tooltip title="User has not completed user info form" arrow>
-              <Box
-                component="span"
+            {initials}
+          </Avatar>
+          <Box sx={{ minWidth: 0 }}>
+            <Box
+              sx={{ display: "inline-flex", alignItems: "center", gap: 0.75 }}
+            >
+              <Typography
+                component={Link}
+                href={`/dashboard/user-management/${user.id}`}
+                variant="subtitle2"
                 sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  color: "#d9822b",
+                  fontWeight: 700,
+                  color: "#22305B",
+                  textDecoration: "none",
+                  "&:hover": {
+                    color: "#31487f",
+                    textDecoration: "underline",
+                  },
                 }}
               >
-                <WarningAmberRoundedIcon sx={{ fontSize: 18 }} />
-              </Box>
-            </Tooltip>
-          )}
+                {fullName}
+              </Typography>
+              {!user.infoFilled && (
+                <Tooltip title="User has not completed user info form" arrow>
+                  <Box
+                    component="span"
+                    sx={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      color: "#d9822b",
+                    }}
+                  >
+                    <WarningAmberRoundedIcon sx={{ fontSize: 16 }} />
+                  </Box>
+                </Tooltip>
+              )}
+            </Box>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                display: "block",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {user.email ?? "No email on file"}
+            </Typography>
+          </Box>
         </Box>
-        <Typography
-          variant="body2"
-          sx={{
-            mt: 0.4,
-            color: "text.secondary",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {user.email ?? "No email on file"}
-        </Typography>
-      </Box>
-
-      <Box sx={{ minWidth: 0 }}>
-        <Typography
-          variant="caption"
-          sx={{
-            display: "block",
-            color: "text.secondary",
-            letterSpacing: 0.8,
-            textTransform: "uppercase",
-          }}
-        >
-          Phone
-        </Typography>
+      </TableCell>
+      <TableCell>
         <Typography variant="body2" sx={{ fontWeight: 600, color: "#31487f" }}>
           {user.phoneNumber ?? "No phone number"}
         </Typography>
-      </Box>
-
-      <Stack
-        direction="row"
-        justifyContent={{ xs: "flex-start", md: "flex-end" }}
-      >
+      </TableCell>
+      <TableCell align="right">
         <Chip
           label={formatRoleLabel(user.role)}
           size="small"
@@ -161,8 +156,8 @@ function UserRow({
                 : alpha("#276636", 0.18),
           }}
         />
-      </Stack>
-    </Box>
+      </TableCell>
+    </TableRow>
   );
 }
 
@@ -205,7 +200,7 @@ export default async function UserManagementPage(): Promise<React.ReactElement> 
     >
       <Box sx={{ mb: 2.5 }}>
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
-          User Managment
+          User Management
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
           A condensed view of each user&apos;s name, contact details, and
@@ -213,72 +208,80 @@ export default async function UserManagementPage(): Promise<React.ReactElement> 
         </Typography>
       </Box>
 
-      <Paper
+      <TableContainer
+        component={Paper}
         elevation={0}
         sx={{
           border: "1px solid",
           borderColor: "divider",
           borderRadius: 2,
           overflow: "hidden",
-          bgcolor: "background.paper",
         }}
       >
-        <Box
-          sx={{
-            px: { xs: 2, md: 3 },
-            py: 1.25,
-            display: { xs: "none", md: "grid" },
-            gridTemplateColumns: "minmax(0, 1.35fr) minmax(0, 1fr) 140px",
-            gap: 1.5,
-            bgcolor: "#dfe7f2",
-            borderBottom: "1px solid",
-            borderColor: "#cfd8e6",
-          }}
-        >
-          <Typography
-            variant="caption"
-            sx={{ fontWeight: 700, letterSpacing: 1.1, color: "#4b6287" }}
-          >
-            USER
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{ fontWeight: 700, letterSpacing: 1.1, color: "#4b6287" }}
-          >
-            PHONE
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{
-              fontWeight: 700,
-              letterSpacing: 1.1,
-              color: "#4b6287",
-              textAlign: "right",
-            }}
-          >
-            ROLE
-          </Typography>
-        </Box>
-
-        {people.length > 0 ? (
-          people.map((user, index) => (
-            <UserRow key={user.id} user={user} isFirst={index === 0} />
-          ))
-        ) : (
-          <Box sx={{ px: 3, py: 5 }}>
-            <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              No users found.
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mt: 0.75 }}
-            >
-              User records will appear here once accounts are created.
-            </Typography>
-          </Box>
-        )}
-      </Paper>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ bgcolor: "#dfe7f2" }}>
+              <TableCell
+                sx={{
+                  fontWeight: 700,
+                  letterSpacing: 1.1,
+                  color: "#4b6287",
+                  fontSize: 12,
+                  textTransform: "uppercase",
+                  borderBottom: "1px solid #cfd8e6",
+                }}
+              >
+                User
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontWeight: 700,
+                  letterSpacing: 1.1,
+                  color: "#4b6287",
+                  fontSize: 12,
+                  textTransform: "uppercase",
+                  borderBottom: "1px solid #cfd8e6",
+                }}
+              >
+                Phone
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  fontWeight: 700,
+                  letterSpacing: 1.1,
+                  color: "#4b6287",
+                  fontSize: 12,
+                  textTransform: "uppercase",
+                  borderBottom: "1px solid #cfd8e6",
+                }}
+              >
+                Role
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {people.length > 0 ? (
+              people.map((user) => <UserRow key={user.id} user={user} />)
+            ) : (
+              <TableRow>
+                <TableCell colSpan={3} sx={{ px: 3, py: 5, border: 0 }}>
+                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                    No users found.
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 0.75 }}
+                  >
+                    User records will appear here once accounts are created.
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 }

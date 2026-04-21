@@ -2,6 +2,7 @@ import AutoModeIcon from "@mui/icons-material/AutoMode";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CampaignIcon from "@mui/icons-material/Campaign";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -10,7 +11,19 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { alpha, Box, Container, Paper, Typography } from "@mui/material";
+import {
+  alpha,
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  Chip,
+  Container,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
 import { ElementType } from "react";
 
@@ -110,11 +123,6 @@ const actions: DashboardAction[] = [
   },
 ];
 
-const colors = {
-  primary: "#22A27E",
-  white: "#ffffff",
-};
-
 const rolePalettes = {
   admin: {
     solid: "#22305B",
@@ -128,93 +136,187 @@ const rolePalettes = {
   },
 } as const;
 
-function ActionTile({
+function AvailableTile({
   title,
   description,
   href,
-  status,
   icon: Icon,
   palette,
-}: DashboardAction & {
+}: Omit<DashboardAction, "status"> & {
   palette: (typeof rolePalettes)[keyof typeof rolePalettes];
 }): React.ReactElement {
-  const isAvailable = status === "available";
-
   return (
-    <Paper
-      component={isAvailable ? Link : "div"}
-      href={isAvailable ? href : undefined}
+    <Card
       elevation={0}
       sx={{
-        minHeight: 168,
-        p: 2,
-        display: "flex",
-        flexDirection: "column",
-        textDecoration: "none",
+        height: "100%",
         borderRadius: 3,
         border: "1px solid",
-        borderColor: isAvailable
-          ? alpha(palette.solid, 0.18)
-          : alpha(palette.solid, 0.1),
-        background: isAvailable
-          ? `linear-gradient(160deg, ${palette.solid} 0%, ${palette.solidAlt} 100%)`
-          : `linear-gradient(180deg, ${alpha(palette.solid, 0.14)} 0%, ${alpha(palette.solid, 0.07)} 100%)`,
-        color: isAvailable ? colors.white : palette.solid,
-        boxShadow: isAvailable
-          ? `0 12px 28px ${alpha(palette.solid, 0.16)}`
-          : "none",
+        borderColor: alpha(palette.solid, 0.18),
+        background: `linear-gradient(160deg, ${palette.solid} 0%, ${palette.solidAlt} 100%)`,
+        boxShadow: `0 12px 28px ${alpha(palette.solid, 0.16)}`,
         transition:
           "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease",
-        cursor: isAvailable ? "pointer" : "default",
-        "&:hover": isAvailable
-          ? {
-              transform: "translateY(-2px)",
-              boxShadow: `0 18px 32px ${alpha(palette.solid, 0.2)}`,
-              borderColor: alpha(palette.accent, 0.35),
-            }
-          : undefined,
+        "&:hover": {
+          transform: "translateY(-2px)",
+          boxShadow: `0 18px 32px ${alpha(palette.solid, 0.22)}`,
+          borderColor: alpha(palette.accent, 0.4),
+        },
       }}
     >
-      <Box>
-        <Box
-          sx={{
-            width: 44,
-            height: 44,
-            mb: 1.5,
-            display: "grid",
-            placeItems: "center",
-            borderRadius: 2,
-            bgcolor: isAvailable
-              ? alpha(colors.white, 0.14)
-              : alpha(colors.white, 0.62),
-            border: "1px solid",
-            borderColor: isAvailable
-              ? alpha(colors.white, 0.18)
-              : alpha(palette.solid, 0.12),
-          }}
-        >
-          <Icon sx={{ fontSize: 24 }} />
-        </Box>
+      <CardActionArea
+        component={Link}
+        href={href ?? "#"}
+        sx={{
+          height: "100%",
+          alignItems: "flex-start",
+          "&:hover .MuiCardActionArea-focusHighlight": { opacity: 0 },
+        }}
+      >
+        <CardContent sx={{ p: 2.5, height: "100%" }}>
+          <Stack spacing={1.5} height="100%">
+            <Box
+              sx={{
+                width: 44,
+                height: 44,
+                display: "grid",
+                placeItems: "center",
+                borderRadius: 2,
+                bgcolor: alpha("#ffffff", 0.14),
+                border: "1px solid",
+                borderColor: alpha("#ffffff", 0.18),
+                flexShrink: 0,
+              }}
+            >
+              <Icon sx={{ fontSize: 22, color: "#ffffff" }} />
+            </Box>
 
-        <Typography
-          variant="subtitle1"
-          sx={{ fontWeight: 700, mb: 0.75, lineHeight: 1.25 }}
-        >
-          {title}
-        </Typography>
+            <Box sx={{ flex: 1 }}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                mb={0.75}
+              >
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: 700, lineHeight: 1.25, color: "#ffffff" }}
+                >
+                  {title}
+                </Typography>
+                <ChevronRightIcon
+                  sx={{
+                    fontSize: 18,
+                    color: alpha("#ffffff", 0.6),
+                    flexShrink: 0,
+                  }}
+                />
+              </Stack>
 
-        <Typography
-          variant="body2"
-          sx={{
-            fontSize: "0.83rem",
-            lineHeight: 1.45,
-            color: isAvailable ? alpha(colors.white, 0.84) : "text.secondary",
-          }}
-        >
-          {description}
-        </Typography>
-      </Box>
-    </Paper>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: "0.82rem",
+                  lineHeight: 1.5,
+                  color: alpha("#ffffff", 0.82),
+                }}
+              >
+                {description}
+              </Typography>
+            </Box>
+          </Stack>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
+}
+
+function PlannedTile({
+  title,
+  description,
+  icon: Icon,
+  palette,
+}: Omit<DashboardAction, "status" | "href"> & {
+  palette: (typeof rolePalettes)[keyof typeof rolePalettes];
+}): React.ReactElement {
+  return (
+    <Card
+      elevation={0}
+      sx={{
+        height: "100%",
+        borderRadius: 3,
+        border: "1px solid",
+        borderColor: alpha(palette.solid, 0.1),
+        background: `linear-gradient(180deg, ${alpha(palette.solid, 0.06)} 0%, ${alpha(palette.solid, 0.03)} 100%)`,
+        cursor: "default",
+      }}
+    >
+      <CardContent sx={{ p: 2.5, height: "100%" }}>
+        <Stack spacing={1.5} height="100%">
+          <Stack
+            direction="row"
+            alignItems="flex-start"
+            justifyContent="space-between"
+          >
+            <Box
+              sx={{
+                width: 44,
+                height: 44,
+                display: "grid",
+                placeItems: "center",
+                borderRadius: 2,
+                bgcolor: alpha(palette.solid, 0.07),
+                border: "1px solid",
+                borderColor: alpha(palette.solid, 0.1),
+                flexShrink: 0,
+              }}
+            >
+              <Icon sx={{ fontSize: 22, color: alpha(palette.solid, 0.45) }} />
+            </Box>
+            <Chip
+              label="Coming Soon"
+              size="small"
+              sx={{
+                height: 22,
+                fontSize: "0.68rem",
+                fontWeight: 600,
+                letterSpacing: "0.02em",
+                bgcolor: alpha(palette.solid, 0.08),
+                color: alpha(palette.solid, 0.6),
+                border: "1px solid",
+                borderColor: alpha(palette.solid, 0.12),
+                "& .MuiChip-label": { px: 1 },
+              }}
+            />
+          </Stack>
+
+          <Box>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 700,
+                lineHeight: 1.25,
+                mb: 0.75,
+                color: alpha(palette.solid, 0.7),
+              }}
+            >
+              {title}
+            </Typography>
+
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: "0.82rem",
+                lineHeight: 1.5,
+                color: "text.secondary",
+              }}
+            >
+              {description}
+            </Typography>
+          </Box>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -224,34 +326,77 @@ export default async function DashboardHubPage(): Promise<React.ReactElement> {
   const palette =
     role === "manager" ? rolePalettes.manager : rolePalettes.admin;
 
+  const available = actions.filter((a) => a.status === "available");
+  const planned = actions.filter((a) => a.status === "planned");
+
   return (
-    <Box
-      sx={{
-        minHeight: "calc(100vh - 64px)",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      <Container
-        maxWidth="lg"
-        sx={{ px: { xs: 2, sm: 3 }, py: { xs: 2, md: 3 } }}
-      >
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, minmax(0, 1fr))",
-              md: "repeat(3, minmax(0, 1fr))",
-              lg: "repeat(4, minmax(0, 1fr))",
-            },
-            gap: 1.5,
-          }}
-        >
-          {actions.map((action) => (
-            <ActionTile key={action.title} {...action} palette={palette} />
-          ))}
-        </Box>
+    <Box sx={{ minHeight: "calc(100vh - 64px)", py: { xs: 4, md: 6 } }}>
+      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
+        <Stack spacing={5}>
+          <Box>
+            <Typography variant="h5" fontWeight={700} gutterBottom>
+              Dashboard
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Select a tool below to get started.
+            </Typography>
+          </Box>
+
+          <Stack spacing={2}>
+            <Stack direction="row" alignItems="center" spacing={1.5}>
+              <Typography
+                variant="overline"
+                color="text.secondary"
+                fontWeight={600}
+                lineHeight={1}
+              >
+                Available
+              </Typography>
+              <Divider sx={{ flex: 1 }} />
+            </Stack>
+
+            <Grid container spacing={1.5}>
+              {available.map((action) => (
+                <Grid key={action.title} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                  <AvailableTile
+                    title={action.title}
+                    description={action.description}
+                    href={action.href}
+                    icon={action.icon}
+                    palette={palette}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Stack>
+
+          <Stack spacing={2}>
+            <Stack direction="row" alignItems="center" spacing={1.5}>
+              <Typography
+                variant="overline"
+                color="text.secondary"
+                fontWeight={600}
+                lineHeight={1}
+              >
+                Coming Soon
+              </Typography>
+              <Divider sx={{ flex: 1 }} />
+            </Stack>
+
+            <Grid container spacing={1.5}>
+              {planned.map((action) => (
+                <Grid key={action.title} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                  <PlannedTile
+                    title={action.title}
+                    description={action.description}
+                    icon={action.icon}
+                    palette={palette}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Stack>
+        </Stack>
       </Container>
     </Box>
   );

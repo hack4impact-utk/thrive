@@ -1,6 +1,19 @@
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
-import { alpha, Box, Chip, Paper, Stack, Typography } from "@mui/material";
+import {
+  alpha,
+  Box,
+  Chip,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import dayjs from "dayjs";
 import { asc, eq } from "drizzle-orm";
@@ -59,40 +72,17 @@ function formatEventSchedule(event: EventDetails): string {
 
 function AttendeeRow({
   attendee,
-  isFirst,
 }: {
   attendee: AttendeeRecord;
-  isFirst: boolean;
 }): React.ReactElement {
   const fullName = formatFullName(attendee);
 
   return (
-    <Box
-      sx={{
-        px: { xs: 2, md: 3 },
-        py: 1.75,
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "minmax(0, 1fr)",
-          md: "minmax(0, 1.35fr) minmax(0, 1fr) 140px",
-        },
-        gap: 1.5,
-        alignItems: "center",
-        borderTop: isFirst ? "none" : "1px solid",
-        borderColor: "divider",
-      }}
-    >
-      <Box sx={{ minWidth: 0 }}>
-        <Box
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 0.75,
-            fontWeight: 700,
-            color: "#22305B",
-            lineHeight: 1.2,
-          }}
-        >
+    <TableRow sx={{ "&:last-child td": { borderBottom: 0 } }}>
+      <TableCell
+        sx={{ py: 1.75, px: { xs: 2, md: 3 }, verticalAlign: "middle" }}
+      >
+        <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.75 }}>
           <Typography
             component={Link}
             href={`/dashboard/user-management/${attendee.id}`}
@@ -137,9 +127,11 @@ function AttendeeRow({
         >
           {attendee.email ?? "No email on file"}
         </Typography>
-      </Box>
+      </TableCell>
 
-      <Box sx={{ minWidth: 0 }}>
+      <TableCell
+        sx={{ py: 1.75, px: { xs: 2, md: 3 }, verticalAlign: "middle" }}
+      >
         <Typography
           variant="caption"
           sx={{
@@ -154,11 +146,16 @@ function AttendeeRow({
         <Typography variant="body2" sx={{ fontWeight: 600, color: "#31487f" }}>
           {attendee.phoneNumber ?? "No phone number"}
         </Typography>
-      </Box>
+      </TableCell>
 
-      <Stack
-        direction="row"
-        justifyContent={{ xs: "flex-start", md: "flex-end" }}
+      <TableCell
+        align="right"
+        sx={{
+          py: 1.75,
+          px: { xs: 2, md: 3 },
+          verticalAlign: "middle",
+          width: 140,
+        }}
       >
         <Chip
           label={formatRoleLabel(attendee.role)}
@@ -177,8 +174,8 @@ function AttendeeRow({
                 : alpha("#276636", 0.18),
           }}
         />
-      </Stack>
-    </Box>
+      </TableCell>
+    </TableRow>
   );
 }
 
@@ -282,7 +279,8 @@ export default async function EventAttendeesPage({
           </Typography>
         </Box>
 
-        <Paper
+        <TableContainer
+          component={Paper}
           elevation={0}
           sx={{
             border: "1px solid",
@@ -292,67 +290,96 @@ export default async function EventAttendeesPage({
             bgcolor: "background.paper",
           }}
         >
-          <Box
-            sx={{
-              px: { xs: 2, md: 3 },
-              py: 1.25,
-              display: { xs: "none", md: "grid" },
-              gridTemplateColumns: "minmax(0, 1.35fr) minmax(0, 1fr) 140px",
-              gap: 1.5,
-              bgcolor: "#dfe7f2",
-              borderBottom: "1px solid",
-              borderColor: "#cfd8e6",
-            }}
-          >
-            <Typography
-              variant="caption"
-              sx={{ fontWeight: 700, letterSpacing: 1.1, color: "#4b6287" }}
-            >
-              USER
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{ fontWeight: 700, letterSpacing: 1.1, color: "#4b6287" }}
-            >
-              PHONE
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{
-                fontWeight: 700,
-                letterSpacing: 1.1,
-                color: "#4b6287",
-                textAlign: "right",
-              }}
-            >
-              ROLE
-            </Typography>
-          </Box>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ bgcolor: "#dfe7f2" }}>
+                <TableCell
+                  sx={{
+                    py: 1.25,
+                    px: { xs: 2, md: 3 },
+                    borderBottom: "1px solid",
+                    borderColor: "#cfd8e6",
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      letterSpacing: 1.1,
+                      color: "#4b6287",
+                    }}
+                  >
+                    USER
+                  </Typography>
+                </TableCell>
+                <TableCell
+                  sx={{
+                    py: 1.25,
+                    px: { xs: 2, md: 3 },
+                    borderBottom: "1px solid",
+                    borderColor: "#cfd8e6",
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      letterSpacing: 1.1,
+                      color: "#4b6287",
+                    }}
+                  >
+                    PHONE
+                  </Typography>
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{
+                    py: 1.25,
+                    px: { xs: 2, md: 3 },
+                    width: 140,
+                    borderBottom: "1px solid",
+                    borderColor: "#cfd8e6",
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      letterSpacing: 1.1,
+                      color: "#4b6287",
+                    }}
+                  >
+                    ROLE
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
 
-          {attendees.length > 0 ? (
-            attendees.map((attendee, index) => (
-              <AttendeeRow
-                key={attendee.id}
-                attendee={attendee}
-                isFirst={index === 0}
-              />
-            ))
-          ) : (
-            <Box sx={{ px: 3, py: 5 }}>
-              <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                No attendees yet.
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.75 }}
-              >
-                Registered attendees will appear here once users sign up for
-                this event.
-              </Typography>
-            </Box>
-          )}
-        </Paper>
+            <TableBody>
+              {attendees.length > 0 ? (
+                attendees.map((attendee) => (
+                  <AttendeeRow key={attendee.id} attendee={attendee} />
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={3} sx={{ px: 3, py: 5, border: 0 }}>
+                    <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                      No attendees yet.
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 0.75 }}
+                    >
+                      Registered attendees will appear here once users sign up
+                      for this event.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Stack>
     </Box>
   );

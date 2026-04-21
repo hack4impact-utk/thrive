@@ -1,5 +1,13 @@
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { Box, Divider, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -95,37 +103,47 @@ function DetailSection({
   items: { label: string; value: string }[];
 }): React.ReactElement {
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        p: { xs: 1.75, md: 2.25 },
-        border: "1px solid",
-        borderColor: "divider",
-        borderRadius: 2,
-      }}
-    >
-      <Typography
-        variant="h6"
-        sx={{ mb: 1.25, fontWeight: 700, color: "#22305B", lineHeight: 1.15 }}
-      >
-        {title}
-      </Typography>
-      <Box
+    <Card variant="outlined" sx={{ borderRadius: 2 }}>
+      <CardHeader
+        title={
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 700, color: "#22305B", lineHeight: 1.15 }}
+          >
+            {title}
+          </Typography>
+        }
+        sx={{ px: { xs: 1.75, md: 2.25 }, pt: { xs: 1.75, md: 2.25 }, pb: 0 }}
+      />
+      <CardContent
         sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            sm: "repeat(2, minmax(0, 1fr))",
-          },
-          rowGap: 1.25,
-          columnGap: 1.75,
+          px: { xs: 1.75, md: 2.25 },
+          pt: 1.25,
+          pb: { xs: 1.75, md: 2.25 },
+          "&:last-child": { pb: { xs: 1.75, md: 2.25 } },
         }}
       >
-        {items.map((item) => (
-          <DetailItem key={item.label} label={item.label} value={item.value} />
-        ))}
-      </Box>
-    </Paper>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, minmax(0, 1fr))",
+            },
+            rowGap: 1.25,
+            columnGap: 1.75,
+          }}
+        >
+          {items.map((item) => (
+            <DetailItem
+              key={item.label}
+              label={item.label}
+              value={item.value}
+            />
+          ))}
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -180,6 +198,7 @@ export default async function UserDetailPage({
   if (!user) {
     notFound();
   }
+
   return (
     <Box
       sx={{
@@ -190,25 +209,27 @@ export default async function UserDetailPage({
       }}
     >
       <Stack spacing={1.75}>
-        <Typography
-          component={Link}
-          href="/dashboard/user-management"
-          variant="body2"
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 0.75,
-            color: "#4b6287",
-            textDecoration: "none",
-            lineHeight: 1.2,
-            "&:hover": {
-              textDecoration: "underline",
-            },
-          }}
-        >
-          <ArrowBackRoundedIcon sx={{ fontSize: 18 }} />
-          Back to User Managment
-        </Typography>
+        <Box>
+          <Button
+            component={Link}
+            href="/dashboard/user-management"
+            startIcon={<ArrowBackRoundedIcon />}
+            size="small"
+            sx={{
+              color: "#4b6287",
+              textTransform: "none",
+              fontWeight: 500,
+              px: 0,
+              "&:hover": {
+                bgcolor: "transparent",
+                textDecoration: "underline",
+              },
+            }}
+            disableRipple
+          >
+            Back to User Management
+          </Button>
+        </Box>
 
         <DetailSection
           title="Account"
@@ -278,32 +299,15 @@ export default async function UserDetailPage({
           ]}
         />
 
-        <Paper
-          elevation={0}
-          sx={{
-            p: { xs: 1.75, md: 2.25 },
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: 2,
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 1.25,
-              fontWeight: 700,
-              color: "#22305B",
-              lineHeight: 1.15,
-            }}
-          >
-            Medical
-          </Typography>
-          <Divider sx={{ mb: 1.25 }} />
-          <DetailItem
-            label="Medical Notes"
-            value={formatOptionalValue(user.medicalNotes)}
-          />
-        </Paper>
+        <DetailSection
+          title="Medical"
+          items={[
+            {
+              label: "Medical Notes",
+              value: formatOptionalValue(user.medicalNotes),
+            },
+          ]}
+        />
       </Stack>
     </Box>
   );

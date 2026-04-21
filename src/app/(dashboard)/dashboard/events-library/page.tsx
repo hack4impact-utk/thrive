@@ -1,4 +1,15 @@
-import { Box, LinearProgress, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  LinearProgress,
+  Paper,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import Link from "next/link";
@@ -56,19 +67,15 @@ function EventRow({ event }: { event: EventRecord }): React.ReactElement {
     requested && requested > 0 ? Math.min((filled / requested) * 100, 100) : 0;
 
   return (
-    <Box
-      sx={{
-        px: { xs: 2, md: 3 },
-        py: 2,
-        display: "grid",
-        gridTemplateColumns: { xs: "1fr", md: "minmax(0, 1fr) 280px" },
-        gap: 2,
-        alignItems: "center",
-        borderTop: "1px solid",
-        borderColor: "divider",
-      }}
-    >
-      <Box sx={{ minWidth: 0 }}>
+    <TableRow sx={{ "&:last-child td": { borderBottom: 0 } }}>
+      <TableCell
+        sx={{
+          py: 2,
+          px: { xs: 2, md: 3 },
+          verticalAlign: "top",
+          minWidth: 0,
+        }}
+      >
         <Typography
           component={Link}
           href={`/dashboard/events-library/${event.id}`}
@@ -102,17 +109,17 @@ function EventRow({ event }: { event: EventRecord }): React.ReactElement {
             event.endTime,
           )}
         </Typography>
-      </Box>
+      </TableCell>
 
-      <Box sx={{ width: "100%" }}>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-            gap: 1.5,
-            mb: 1,
-          }}
-        >
+      <TableCell
+        sx={{
+          py: 2,
+          px: { xs: 2, md: 3 },
+          width: 280,
+          verticalAlign: "middle",
+        }}
+      >
+        <Stack direction="row" spacing={3} sx={{ mb: 1 }}>
           <Box>
             <Typography
               variant="caption"
@@ -143,7 +150,7 @@ function EventRow({ event }: { event: EventRecord }): React.ReactElement {
               {filled}
             </Typography>
           </Box>
-        </Box>
+        </Stack>
 
         {!isUnlimited && (
           <LinearProgress
@@ -160,8 +167,8 @@ function EventRow({ event }: { event: EventRecord }): React.ReactElement {
             }}
           />
         )}
-      </Box>
-    </Box>
+      </TableCell>
+    </TableRow>
   );
 }
 
@@ -193,7 +200,8 @@ export default async function EventsLibraryPage(): Promise<React.ReactElement> {
         </Typography>
       </Box>
 
-      <Paper
+      <TableContainer
+        component={Paper}
         elevation={0}
         sx={{
           border: "1px solid",
@@ -203,37 +211,39 @@ export default async function EventsLibraryPage(): Promise<React.ReactElement> {
           bgcolor: "background.paper",
         }}
       >
-        {[...groupedEvents.entries()].map(([date, dayEvents], index) => (
-          <Box
-            key={date}
-            sx={{
-              borderTop: index === 0 ? "none" : "1px solid",
-              borderColor: "divider",
-            }}
-          >
-            <Box
-              sx={{
-                px: { xs: 2, md: 3 },
-                py: 1,
-                bgcolor: "#dfe7f2",
-                borderBottom: "1px solid",
-                borderColor: "#cfd8e6",
-              }}
-            >
-              <Typography
-                variant="caption"
-                sx={{ fontWeight: 700, letterSpacing: 1.2, color: "#4b6287" }}
-              >
-                {formatDateLabel(date)}
-              </Typography>
-            </Box>
+        <Table>
+          {[...groupedEvents.entries()].map(([date, dayEvents]) => (
+            <TableBody key={date}>
+              <TableRow sx={{ bgcolor: "#dfe7f2" }}>
+                <TableCell
+                  colSpan={2}
+                  sx={{
+                    py: 1,
+                    px: { xs: 2, md: 3 },
+                    borderBottom: "1px solid",
+                    borderColor: "#cfd8e6",
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      letterSpacing: 1.2,
+                      color: "#4b6287",
+                    }}
+                  >
+                    {formatDateLabel(date)}
+                  </Typography>
+                </TableCell>
+              </TableRow>
 
-            {dayEvents.map((event) => (
-              <EventRow key={event.id} event={event} />
-            ))}
-          </Box>
-        ))}
-      </Paper>
+              {dayEvents.map((event) => (
+                <EventRow key={event.id} event={event} />
+              ))}
+            </TableBody>
+          ))}
+        </Table>
+      </TableContainer>
     </Box>
   );
 }
