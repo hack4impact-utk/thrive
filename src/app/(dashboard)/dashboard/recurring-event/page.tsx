@@ -130,6 +130,28 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
         onChange={handleChange}
       />
 
+      <FormControl fullWidth>
+        <InputLabel id="location-label">Location</InputLabel>
+        <Select
+          labelId="location-label"
+          value={form.locationId}
+          label="Location"
+          onChange={(e) =>
+            setForm((prev) => ({ ...prev, locationId: e.target.value }))
+          }
+        >
+          <MenuItem value="">
+            <em>No location selected</em>
+          </MenuItem>
+          {locationOptions.map((loc) => (
+            <MenuItem key={loc.id} value={loc.id}>
+              {loc.name} — {loc.streetLine}, {loc.city}, {loc.state}{" "}
+              {loc.postalCode}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
       <TextField
         name="eventDate"
         type="date"
@@ -180,28 +202,6 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
         value={form.capacity}
         onChange={handleChange}
       />
-
-      <FormControl fullWidth>
-        <InputLabel id="location-label">Location</InputLabel>
-        <Select
-          labelId="location-label"
-          value={form.locationId}
-          label="Location"
-          onChange={(e) =>
-            setForm((prev) => ({ ...prev, locationId: e.target.value }))
-          }
-        >
-          <MenuItem value="">
-            <em>No location selected</em>
-          </MenuItem>
-          {locationOptions.map((loc) => (
-            <MenuItem key={loc.id} value={loc.id}>
-              {loc.name} — {loc.streetLine}, {loc.city}, {loc.state}{" "}
-              {loc.postalCode}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
     </FormLayout>
   );
 }
