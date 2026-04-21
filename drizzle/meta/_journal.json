@@ -155,6 +155,13 @@
       "when": 1776469177789,
       "tag": "0021_heavy_randall",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1776806654944,
+      "tag": "0022_true_gargoyle",
+      "breakpoints": true
     }
   ]
 }

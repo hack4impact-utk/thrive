@@ -9,6 +9,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import HubIcon from "@mui/icons-material/Hub";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import PlaceIcon from "@mui/icons-material/Place";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
@@ -59,6 +60,13 @@ const actions: DashboardAction[] = [
     href: "/dashboard/events-library",
     status: "available",
     icon: FolderSharedIcon,
+  },
+  {
+    title: "Manage Locations",
+    description: "Add named venues that can be assigned to events.",
+    href: "/dashboard/create-location",
+    status: "available",
+    icon: PlaceIcon,
   },
   {
     title: "Event Groups",

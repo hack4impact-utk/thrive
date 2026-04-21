@@ -21,7 +21,7 @@ type VolunteerEventCardProps = {
   endTime: string;
   capacity: number | null;
   registeredUsers: number | null;
-  streetLine: string;
+  streetLine: string | null;
   description: string;
   isRegistered?: boolean;
 };

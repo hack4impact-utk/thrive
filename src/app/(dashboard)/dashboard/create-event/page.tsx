@@ -1,10 +1,26 @@
 "use client";
 
-import { Box, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import FormLayout from "@/components/layout/FormLayout";
+
+type Location = {
+  id: string;
+  name: string;
+  streetLine: string;
+  city: string;
+  state: string;
+  postalCode: string;
+};
 
 type CreateEventFormState = {
   title: string;
@@ -12,11 +28,7 @@ type CreateEventFormState = {
   startTime: string;
   endTime: string;
   capacity: string;
-  streetLine: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
+  locationId: string;
   description: string;
 };
 
@@ -27,15 +39,20 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
     startTime: "",
     endTime: "",
     capacity: "",
-    streetLine: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "US",
+    locationId: "",
     description: "",
   });
 
+  const [locationOptions, setLocationOptions] = React.useState<Location[]>([]);
+
   const router = useRouter();
+
+  React.useEffect(() => {
+    fetch("/api/locations")
+      .then((r) => r.json())
+      .then(setLocationOptions)
+      .catch(console.error);
+  }, []);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -58,11 +75,7 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
         startTime: form.startTime,
         endTime: form.endTime,
         capacity: form.capacity ? Number(form.capacity) : null,
-        streetLine: form.streetLine,
-        city: form.city,
-        state: form.state,
-        postalCode: form.postalCode,
-        country: form.country,
+        locationId: form.locationId || null,
         description: form.description,
       }),
     });
@@ -81,11 +94,7 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
       startTime: "",
       endTime: "",
       capacity: "",
-      streetLine: "",
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "US",
+      locationId: "",
       description: "",
     });
   }
@@ -163,46 +172,27 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
         onChange={handleChange}
       />
 
-      {/* Location */}
-      <Typography variant="h6">Location</Typography>
-
-      <TextField
-        name="streetLine"
-        label="Street Address"
-        required
-        fullWidth
-        value={form.streetLine}
-        onChange={handleChange}
-      />
-
-      <Box sx={{ display: "flex", gap: 2 }}>
-        <TextField
-          name="city"
-          label="City"
-          required
-          fullWidth
-          value={form.city}
-          onChange={handleChange}
-        />
-
-        <TextField
-          name="state"
-          label="State"
-          required
-          sx={{ width: 200 }}
-          value={form.state}
-          onChange={handleChange}
-        />
-
-        <TextField
-          name="postalCode"
-          label="Zip"
-          required
-          sx={{ width: 170 }}
-          value={form.postalCode}
-          onChange={handleChange}
-        />
-      </Box>
+      <FormControl fullWidth>
+        <InputLabel id="location-label">Location</InputLabel>
+        <Select
+          labelId="location-label"
+          value={form.locationId}
+          label="Location"
+          onChange={(e) =>
+            setForm((prev) => ({ ...prev, locationId: e.target.value }))
+          }
+        >
+          <MenuItem value="">
+            <em>No location selected</em>
+          </MenuItem>
+          {locationOptions.map((loc) => (
+            <MenuItem key={loc.id} value={loc.id}>
+              {loc.name} — {loc.streetLine}, {loc.city}, {loc.state}{" "}
+              {loc.postalCode}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </FormLayout>
   );
 }

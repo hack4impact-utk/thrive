@@ -1,7 +1,6 @@
 import {
   date,
   integer,
-  numeric,
   pgTable,
   text,
   time,
@@ -9,6 +8,8 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+
+import { locations } from "./locations";
 
 export const events = pgTable("events", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -22,14 +23,7 @@ export const events = pgTable("events", {
   capacity: integer("capacity"),
   registeredUsers: integer("registered_users").default(0).notNull(),
 
-  streetLine: text("street_line").notNull(),
-  city: text("city").notNull(),
-  state: text("state").notNull(),
-  postalCode: text("postal_code").notNull(),
-  country: text("country").notNull(),
-
-  latitude: numeric("latitude", { precision: 9, scale: 6 }),
-  longitude: numeric("longitude", { precision: 9, scale: 6 }),
+  locationId: uuid("location_id").references(() => locations.id),
 
   description: text("description").notNull(),
 

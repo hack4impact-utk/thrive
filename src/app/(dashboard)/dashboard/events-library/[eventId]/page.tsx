@@ -20,6 +20,7 @@ import { notFound, redirect } from "next/navigation";
 
 import db from "@/db";
 import { eventAttendees, events, userInfo, users } from "@/db/schema";
+import { locations } from "@/db/schema/locations";
 import { auth } from "@/lib/auth";
 
 type EventDetails = {
@@ -28,7 +29,7 @@ type EventDetails = {
   eventDate: string;
   startTime: string;
   endTime: string;
-  streetLine: string;
+  streetLine: string | null;
 };
 
 type AttendeeRecord = {
@@ -140,9 +141,10 @@ async function getEventDetails(
       eventDate: events.eventDate,
       startTime: events.startTime,
       endTime: events.endTime,
-      streetLine: events.streetLine,
+      streetLine: locations.streetLine,
     })
     .from(events)
+    .leftJoin(locations, eq(locations.id, events.locationId))
     .where(eq(events.id, eventId));
 
   return event;

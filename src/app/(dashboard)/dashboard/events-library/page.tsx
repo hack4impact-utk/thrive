@@ -97,7 +97,7 @@ function EventRow({ event }: { event: EventRecord }): React.ReactElement {
           variant="body2"
           sx={{ mt: 0.5, color: "text.secondary", lineHeight: 1.4 }}
         >
-          {event.streetLine}
+          {event.streetLine ?? "—"}
         </Typography>
         <Typography
           variant="body2"
