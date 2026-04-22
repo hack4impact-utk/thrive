@@ -124,8 +124,7 @@ export default function VolunteerEventCard(
                   setIsPending(false);
                 }
               }}
-              bgcolor={isRegistered ? "grey.400" : "primary.main"}
-              color={isRegistered ? "text.primary" : "white"}
+              variant={isRegistered ? "outlined" : "contained"}
             />
           )}
         </Box>

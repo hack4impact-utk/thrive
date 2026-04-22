@@ -60,6 +60,71 @@ function groupEventsByDate(events: EventRecord[]): Map<string, EventRecord[]> {
   return grouped;
 }
 
+function EventStatusBar({
+  filled,
+  requested,
+  isUnlimited,
+  progress,
+}: {
+  filled: number;
+  requested: number | null;
+  isUnlimited: boolean;
+  progress: number;
+}): React.ReactElement {
+  return (
+    <>
+      <Stack direction="row" spacing={3} sx={{ mb: 1 }}>
+        <Box>
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              color: "text.secondary",
+              letterSpacing: 1,
+            }}
+          >
+            REQUESTED
+          </Typography>
+          <Typography variant="body2" sx={{ fontWeight: 700 }}>
+            {isUnlimited ? "Unlimited" : requested}
+          </Typography>
+        </Box>
+        <Box>
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              color: "text.secondary",
+              letterSpacing: 1,
+            }}
+          >
+            FILLED
+          </Typography>
+          <Typography variant="body2" sx={{ fontWeight: 700 }}>
+            {filled}
+          </Typography>
+        </Box>
+      </Stack>
+
+      {!isUnlimited && (
+        <LinearProgress
+          variant="determinate"
+          value={progress}
+          sx={{
+            height: 8,
+            borderRadius: 999,
+            bgcolor: "#e4eaf3",
+            "& .MuiLinearProgress-bar": {
+              borderRadius: 999,
+              bgcolor: "primary.main",
+            },
+          }}
+        />
+      )}
+    </>
+  );
+}
+
 function EventRow({ event }: { event: EventRecord }): React.ReactElement {
   const filled = event.registeredUsers ?? 0;
   const requested = event.capacity;
@@ -110,64 +175,32 @@ function EventRow({ event }: { event: EventRecord }): React.ReactElement {
             event.endTime,
           )}
         </Typography>
+
+        <Box sx={{ display: { xs: "block", sm: "none" }, mt: 1.5 }}>
+          <EventStatusBar
+            filled={filled}
+            requested={requested}
+            isUnlimited={isUnlimited}
+            progress={progress}
+          />
+        </Box>
       </TableCell>
 
       <TableCell
         sx={{
+          display: { xs: "none", sm: "table-cell" },
           py: 2,
           px: { xs: 2, md: 3 },
           width: 280,
           verticalAlign: "middle",
         }}
       >
-        <Stack direction="row" spacing={3} sx={{ mb: 1 }}>
-          <Box>
-            <Typography
-              variant="caption"
-              sx={{
-                display: "block",
-                color: "text.secondary",
-                letterSpacing: 1,
-              }}
-            >
-              REQUESTED
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 700 }}>
-              {isUnlimited ? "Unlimited" : requested}
-            </Typography>
-          </Box>
-          <Box>
-            <Typography
-              variant="caption"
-              sx={{
-                display: "block",
-                color: "text.secondary",
-                letterSpacing: 1,
-              }}
-            >
-              FILLED
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 700 }}>
-              {filled}
-            </Typography>
-          </Box>
-        </Stack>
-
-        {!isUnlimited && (
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{
-              height: 8,
-              borderRadius: 999,
-              bgcolor: "#e4eaf3",
-              "& .MuiLinearProgress-bar": {
-                borderRadius: 999,
-                bgcolor: "primary.main",
-              },
-            }}
-          />
-        )}
+        <EventStatusBar
+          filled={filled}
+          requested={requested}
+          isUnlimited={isUnlimited}
+          progress={progress}
+        />
       </TableCell>
     </TableRow>
   );

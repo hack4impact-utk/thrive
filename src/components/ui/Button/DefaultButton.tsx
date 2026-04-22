@@ -7,8 +7,7 @@ type Props = {
   label: string;
   href: string;
   onClick?: () => void;
-  color?: string;
-  bgcolor?: string;
+  variant?: "contained" | "outlined" | "text";
   disabled?: boolean;
 };
 
@@ -16,8 +15,7 @@ export function DefaultButton({
   label,
   href,
   onClick,
-  bgcolor = "primary.main",
-  color = "white",
+  variant = "contained",
   disabled = false,
 }: Props): React.ReactElement {
   const router = useRouter();
@@ -35,8 +33,6 @@ export function DefaultButton({
   return (
     <Box
       sx={{
-        bgcolor: disabled ? "grey.300" : bgcolor,
-        borderRadius: 1,
         ml: 1,
         display: "flex",
         alignItems: "center",
@@ -45,9 +41,10 @@ export function DefaultButton({
       }}
     >
       <Button
+        variant={variant}
+        color="primary"
         onClick={handleClick}
         disabled={disabled}
-        sx={{ color: disabled ? "text.disabled" : color }}
       >
         {label}
       </Button>

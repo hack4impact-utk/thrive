@@ -30,8 +30,7 @@ export default function AuthenticationActions({
         <DefaultButton
           label="Create account"
           href="/create-account"
-          bgcolor="inherit"
-          color="primary"
+          variant="text"
         />
       </>
     );
