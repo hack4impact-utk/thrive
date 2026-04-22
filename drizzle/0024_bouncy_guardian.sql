@@ -1,0 +1,1 @@
+ALTER TABLE "user_info" ADD COLUMN "referral_source" varchar(100) NOT NULL;

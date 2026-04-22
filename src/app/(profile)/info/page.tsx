@@ -87,6 +87,8 @@ type BasicInfoFormState = {
   preferredNeighborhood: string;
   gender: string;
   shirtSize: string;
+  referralSource: string;
+  referralSourceOther: string;
   medicalNotes?: string;
 };
 
@@ -107,6 +109,8 @@ export default function BasicInfoForm(): React.ReactElement {
     preferredNeighborhood: "",
     gender: "",
     shirtSize: "",
+    referralSource: "",
+    referralSourceOther: "",
     medicalNotes: "",
   });
 
@@ -149,6 +153,10 @@ export default function BasicInfoForm(): React.ReactElement {
         preferredNeighborhood: form.preferredNeighborhood,
         gender: form.gender,
         shirtSize: form.shirtSize,
+        referralSource:
+          form.referralSource === "other"
+            ? form.referralSourceOther.trim()
+            : form.referralSource,
         medicalNotes: form.medicalNotes || null,
       });
 
@@ -337,6 +345,39 @@ export default function BasicInfoForm(): React.ReactElement {
           <MenuItem value="large">Large</MenuItem>
         </Select>
       </FormControl>
+
+      <Typography variant="h6">How Did You Hear About Us?</Typography>
+
+      <FormControl fullWidth required>
+        <InputLabel>How did you hear about Thrive?</InputLabel>
+        <Select
+          name="referralSource"
+          value={form.referralSource}
+          onChange={handleChange}
+          label="How did you hear about Thrive?"
+        >
+          <MenuItem value="friend_or_family">
+            A friend or family member
+          </MenuItem>
+          <MenuItem value="church">My church or faith community</MenuItem>
+          <MenuItem value="social_media">Social media</MenuItem>
+          <MenuItem value="community_event">A community event</MenuItem>
+          <MenuItem value="flyer_or_poster">Flyer or poster</MenuItem>
+          <MenuItem value="email_or_newsletter">Email or newsletter</MenuItem>
+          <MenuItem value="other">Other</MenuItem>
+        </Select>
+      </FormControl>
+
+      {form.referralSource === "other" && (
+        <TextField
+          name="referralSourceOther"
+          value={form.referralSourceOther}
+          onChange={handleChange}
+          required
+          label="Please describe"
+          fullWidth
+        />
+      )}
 
       <Typography variant="h6">Medical Information</Typography>
 

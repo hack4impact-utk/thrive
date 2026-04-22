@@ -169,6 +169,13 @@
       "when": 1776865893402,
       "tag": "0023_daily_shockwave",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1776866959211,
+      "tag": "0024_bouncy_guardian",
+      "breakpoints": true
     }
   ]
 }

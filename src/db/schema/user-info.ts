@@ -37,5 +37,7 @@ export const userInfo = pgTable("user_info", {
     .notNull()
     .default(0),
 
+  referralSource: varchar("referral_source", { length: 100 }).notNull(),
+
   medicalNotes: text("medical_notes"),
 });
