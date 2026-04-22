@@ -35,7 +35,7 @@ export default function Header(): React.ReactElement {
         <Toolbar
           sx={{
             width: "100%",
-            maxWidth: 900,
+            maxWidth: 1100,
             mx: "auto",
             px: { xs: 2, sm: 3 },
           }}

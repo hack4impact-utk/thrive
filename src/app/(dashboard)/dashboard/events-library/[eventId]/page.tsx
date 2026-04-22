@@ -18,6 +18,7 @@ import { asc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
 import { eventAttendees, events, userInfo, users } from "@/db/schema";
 import { locations } from "@/db/schema/locations";
@@ -191,14 +192,7 @@ export default async function EventAttendeesPage({
   }
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 1120,
-        mx: "auto",
-        p: { xs: 2, sm: 3, md: 4 },
-      }}
-    >
+    <PageContainer sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
       <Stack spacing={2}>
         <Typography
           component={Link}
@@ -291,6 +285,6 @@ export default async function EventAttendeesPage({
           </Table>
         </TableContainer>
       </Stack>
-    </Box>
+    </PageContainer>
   );
 }

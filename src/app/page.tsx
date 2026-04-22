@@ -1,6 +1,6 @@
-import Box from "@mui/material/Box";
 import { eq } from "drizzle-orm";
 
+import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
 import { eventAttendees } from "@/db/schema";
 import HomePageContent from "@/features/home/components/HomePageContent";
@@ -29,22 +29,9 @@ export default async function HomePage(): Promise<React.ReactElement> {
   }));
 
   return (
-    <div>
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: 900,
-          mx: "auto",
-          p: { xs: 2, sm: 4 },
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <WelcomeCard />
-        <HomePageContent events={eventsWithState} />
-      </Box>
-    </div>
+    <PageContainer>
+      <WelcomeCard />
+      <HomePageContent events={eventsWithState} />
+    </PageContainer>
   );
 }

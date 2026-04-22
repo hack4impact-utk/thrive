@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import { ReactNode } from "react";
 
+import AppShell from "@/components/layout/AppShell";
 import Header from "@/components/layout/Header";
 import NextAuthProvider from "@/providers/next-auth-provider";
 import NotistackProvider from "@/providers/notistack-provider";
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps): ReactNode {
                 <NextAuthProvider>
                   <CssBaseline />
                   <Header />
-                  {children}
+                  <AppShell>{children}</AppShell>
                 </NextAuthProvider>
               </SnackbarProvider>
             </NotistackProvider>

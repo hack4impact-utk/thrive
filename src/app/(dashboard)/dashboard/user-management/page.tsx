@@ -15,6 +15,7 @@ import { asc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
 import { userInfo, users } from "@/db/schema";
 import { auth } from "@/lib/auth";
@@ -134,14 +135,7 @@ export default async function UserManagementPage(): Promise<React.ReactElement> 
   const people = await getUsers();
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 1120,
-        mx: "auto",
-        p: { xs: 2, sm: 3, md: 4 },
-      }}
-    >
+    <PageContainer sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
       <Box sx={{ mb: 2.5 }}>
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
           User Management
@@ -206,6 +200,6 @@ export default async function UserManagementPage(): Promise<React.ReactElement> 
           </TableBody>
         </Table>
       </TableContainer>
-    </Box>
+    </PageContainer>
   );
 }

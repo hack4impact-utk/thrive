@@ -1,17 +1,16 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 
+import PageContainer from "@/components/layout/PageContainer";
+
 export default function NotificationSettings(): React.ReactElement {
   return (
-    <>
+    <PageContainer>
       <Box
         sx={{
           backgroundColor: "secondary.main",
           color: "white",
-          px: 10,
           py: 3,
-          width: "100%",
-          marginTop: 0,
         }}
       >
         <Typography variant="h4" sx={{ fontWeight: 400 }}>
@@ -19,18 +18,11 @@ export default function NotificationSettings(): React.ReactElement {
         </Typography>
       </Box>
 
-      <Box
-        sx={{
-          color: "black",
-          px: 10,
-          py: 5,
-          width: "100%",
-        }}
-      >
+      <Box sx={{ color: "black", py: 5 }}>
         <Typography variant="body1">
           Notification Settings will go here later
         </Typography>
       </Box>
-    </>
+    </PageContainer>
   );
 }

@@ -12,6 +12,7 @@ import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
 import { userInfo, users } from "@/db/schema";
 import { auth } from "@/lib/auth";
@@ -200,14 +201,7 @@ export default async function UserDetailPage({
   }
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 1120,
-        mx: "auto",
-        p: { xs: 2, sm: 3, md: 4 },
-      }}
-    >
+    <PageContainer sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
       <Stack spacing={1.75}>
         <Box>
           <Button
@@ -309,6 +303,6 @@ export default async function UserDetailPage({
           ]}
         />
       </Stack>
-    </Box>
+    </PageContainer>
   );
 }

@@ -15,6 +15,7 @@ import duration from "dayjs/plugin/duration";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import PageContainer from "@/components/layout/PageContainer";
 import { auth } from "@/lib/auth";
 import { getAllEvents } from "@/lib/events";
 
@@ -183,14 +184,7 @@ export default async function EventsLibraryPage(): Promise<React.ReactElement> {
   const groupedEvents = groupEventsByDate(events);
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 1120,
-        mx: "auto",
-        p: { xs: 2, sm: 3, md: 4 },
-      }}
-    >
+    <PageContainer sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
       <Box sx={{ mb: 2 }}>
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
           Events Library
@@ -244,6 +238,6 @@ export default async function EventsLibraryPage(): Promise<React.ReactElement> {
           ))}
         </Table>
       </TableContainer>
-    </Box>
+    </PageContainer>
   );
 }

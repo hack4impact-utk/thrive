@@ -19,7 +19,6 @@ import {
   CardActionArea,
   CardContent,
   Chip,
-  Container,
   Divider,
   Grid,
   Stack,
@@ -28,6 +27,7 @@ import {
 import Link from "next/link";
 import { ElementType } from "react";
 
+import PageContainer from "@/components/layout/PageContainer";
 import { auth } from "@/lib/auth";
 
 type DashboardAction = {
@@ -338,74 +338,72 @@ export default async function DashboardHubPage(): Promise<React.ReactElement> {
   const planned = actions.filter((a) => a.status === "planned");
 
   return (
-    <Box sx={{ minHeight: "calc(100vh - 64px)", py: { xs: 4, md: 6 } }}>
-      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
-        <Stack spacing={5}>
-          <Box>
-            <Typography variant="h5" fontWeight={700} gutterBottom>
-              Dashboard
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Select a tool below to get started.
-            </Typography>
-          </Box>
+    <PageContainer sx={{ py: { xs: 4, md: 6 } }}>
+      <Stack spacing={5}>
+        <Box>
+          <Typography variant="h5" fontWeight={700} gutterBottom>
+            Dashboard
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Select a tool below to get started.
+          </Typography>
+        </Box>
 
-          <Stack spacing={2}>
-            <Stack direction="row" alignItems="center" spacing={1.5}>
-              <Typography
-                variant="overline"
-                color="text.secondary"
-                fontWeight={600}
-                lineHeight={1}
-              >
-                Available
-              </Typography>
-              <Divider sx={{ flex: 1 }} />
-            </Stack>
-
-            <Grid container spacing={1.5}>
-              {available.map((action) => (
-                <Grid key={action.title} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                  <AvailableTile
-                    title={action.title}
-                    description={action.description}
-                    href={action.href}
-                    icon={action.icon}
-                    palette={palette}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+        <Stack spacing={2}>
+          <Stack direction="row" alignItems="center" spacing={1.5}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              fontWeight={600}
+              lineHeight={1}
+            >
+              Available
+            </Typography>
+            <Divider sx={{ flex: 1 }} />
           </Stack>
 
-          <Stack spacing={2}>
-            <Stack direction="row" alignItems="center" spacing={1.5}>
-              <Typography
-                variant="overline"
-                color="text.secondary"
-                fontWeight={600}
-                lineHeight={1}
-              >
-                Coming Soon
-              </Typography>
-              <Divider sx={{ flex: 1 }} />
-            </Stack>
-
-            <Grid container spacing={1.5}>
-              {planned.map((action) => (
-                <Grid key={action.title} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                  <PlannedTile
-                    title={action.title}
-                    description={action.description}
-                    icon={action.icon}
-                    palette={palette}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </Stack>
+          <Grid container spacing={1.5}>
+            {available.map((action) => (
+              <Grid key={action.title} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                <AvailableTile
+                  title={action.title}
+                  description={action.description}
+                  href={action.href}
+                  icon={action.icon}
+                  palette={palette}
+                />
+              </Grid>
+            ))}
+          </Grid>
         </Stack>
-      </Container>
-    </Box>
+
+        <Stack spacing={2}>
+          <Stack direction="row" alignItems="center" spacing={1.5}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              fontWeight={600}
+              lineHeight={1}
+            >
+              Coming Soon
+            </Typography>
+            <Divider sx={{ flex: 1 }} />
+          </Stack>
+
+          <Grid container spacing={1.5}>
+            {planned.map((action) => (
+              <Grid key={action.title} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                <PlannedTile
+                  title={action.title}
+                  description={action.description}
+                  icon={action.icon}
+                  palette={palette}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Stack>
+      </Stack>
+    </PageContainer>
   );
 }
