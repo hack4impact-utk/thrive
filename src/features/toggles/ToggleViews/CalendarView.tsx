@@ -57,10 +57,10 @@ function formatTime(time: string): string {
 
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-// Pill colours: [default bg, hover bg, text colour] for each state
-const PILL_COLORS = {
-  unregistered: { bg: "grey.400", hover: "grey.500", text: "text.primary" },
-  registered: { bg: "primary.main", hover: "primary.dark", text: "white" },
+const PILL_STYLES = {
+  canRegister: { bg: "primary.main", hoverBg: "primary.dark", text: "white", outlined: false },
+  registered: { bg: "transparent", hoverBg: "action.hover", text: "primary.main", outlined: true },
+  full: { bg: "grey.300", hoverBg: "grey.300", text: "text.disabled", outlined: false },
 };
 
 export default function CalendarView({
@@ -295,10 +295,15 @@ export default function CalendarView({
 
                             {/* Event pills */}
                             {dayEvents.map((event) => {
-                              const { isRegistered } = getRegState(event);
-                              const colors = isRegistered
-                                ? PILL_COLORS.registered
-                                : PILL_COLORS.unregistered;
+                              const { isRegistered, registeredUsers: eventRegisteredUsers } = getRegState(event);
+                              const eventIsFull =
+                                event.capacity !== null &&
+                                event.capacity - eventRegisteredUsers <= 0;
+                              const pill = isRegistered
+                                ? PILL_STYLES.registered
+                                : eventIsFull
+                                  ? PILL_STYLES.full
+                                  : PILL_STYLES.canRegister;
 
                               return (
                                 <Box
@@ -316,14 +321,16 @@ export default function CalendarView({
                                   }}
                                   sx={{
                                     cursor: "pointer",
-                                    backgroundColor: colors.bg,
+                                    backgroundColor: pill.bg,
+                                    border: pill.outlined ? "1px solid" : "none",
+                                    borderColor: pill.outlined ? "primary.main" : "transparent",
                                     borderRadius: 0.5,
                                     px: 0.75,
                                     py: 0.5,
                                     mb: 0.5,
                                     transition: "background-color 0.15s",
                                     "&:hover": {
-                                      backgroundColor: colors.hover,
+                                      backgroundColor: pill.hoverBg,
                                     },
                                   }}
                                 >
@@ -333,7 +340,7 @@ export default function CalendarView({
                                     sx={{
                                       display: "block",
                                       fontSize: "0.68rem",
-                                      color: colors.text,
+                                      color: pill.text,
                                       lineHeight: 1.3,
                                       opacity: 0.9,
                                     }}
@@ -352,7 +359,7 @@ export default function CalendarView({
                                       fontSize: "0.75rem",
                                       fontWeight: 600,
                                       lineHeight: 1.25,
-                                      color: colors.text,
+                                      color: pill.text,
                                     }}
                                   >
                                     {event.title}
@@ -392,6 +399,7 @@ export default function CalendarView({
               selectedEvent.capacity === null
                 ? null
                 : (selectedEvent.capacity ?? 0) - registeredUsers;
+            const isFull = slotsRemaining !== null && slotsRemaining <= 0;
 
             return (
               <Paper sx={{ p: 2.5, maxWidth: 320, minWidth: 260 }}>
@@ -495,33 +503,25 @@ export default function CalendarView({
                 {status === "authenticated" && (
                   <Button
                     fullWidth
-                    variant="contained"
-                    disabled={isPending}
+                    variant={isRegistered ? "outlined" : "contained"}
+                    color="primary"
+                    disabled={isPending || (isFull && !isRegistered)}
                     onClick={handleRegister}
                     startIcon={
                       isPending ? (
                         <CircularProgress size={16} color="inherit" />
                       ) : null
                     }
-                    sx={{
-                      backgroundColor: isRegistered
-                        ? "grey.400"
-                        : "primary.main",
-                      color: isRegistered ? "text.primary" : "white",
-                      "&:hover": {
-                        backgroundColor: isRegistered
-                          ? "grey.500"
-                          : "primary.dark",
-                      },
-                    }}
                   >
                     {isPending
                       ? isRegistered
                         ? "Unregistering…"
                         : "Registering…"
-                      : isRegistered
-                        ? "Unregister"
-                        : "Register"}
+                      : isFull && !isRegistered
+                        ? "Event Full"
+                        : isRegistered
+                          ? "Unregister"
+                          : "Register"}
                   </Button>
                 )}
               </Paper>
