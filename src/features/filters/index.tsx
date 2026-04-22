@@ -72,16 +72,20 @@ type Location = {
   postalCode: string;
 };
 
+export type RegistrationStatus = "available" | "going" | "full" | "";
+
 export type FilterState = {
   dateFrom: Dayjs | null;
   dateTo: Dayjs | null;
   locationName: string;
+  registrationStatus: RegistrationStatus;
 };
 
 export const defaultFilters: FilterState = {
   dateFrom: null,
   dateTo: null,
   locationName: "",
+  registrationStatus: "",
 };
 
 type FiltersProps = {
@@ -113,6 +117,7 @@ export default function Filters({
     filters.dateFrom,
     filters.dateTo,
     filters.locationName,
+    filters.registrationStatus,
   ].filter(Boolean).length;
 
   return (
@@ -188,7 +193,7 @@ export default function Filters({
             <InputLabel id="filter-location-label">Location</InputLabel>
             <Select
               labelId="filter-location-label"
-              value={filters.locationName}
+              value={filters.locationName ?? ""}
               label="Location"
               onChange={(e) =>
                 onFiltersChange({ ...filters, locationName: e.target.value })
@@ -203,6 +208,28 @@ export default function Filters({
                   {loc.postalCode}
                 </MenuItem>
               ))}
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" fullWidth>
+            <InputLabel id="filter-status-label">Registration Status</InputLabel>
+            <Select
+              labelId="filter-status-label"
+              value={filters.registrationStatus ?? ""}
+              label="Registration Status"
+              onChange={(e) =>
+                onFiltersChange({
+                  ...filters,
+                  registrationStatus: e.target.value as RegistrationStatus,
+                })
+              }
+            >
+              <MenuItem value="">
+                <em>Any</em>
+              </MenuItem>
+              <MenuItem value="available">Available</MenuItem>
+              <MenuItem value="going">Going</MenuItem>
+              <MenuItem value="full">Full</MenuItem>
             </Select>
           </FormControl>
 

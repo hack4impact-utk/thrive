@@ -36,6 +36,20 @@ function matchesFilters(event: CalendarEvent, filters: FilterState): boolean {
     return false;
   if (filters.locationName && event.locationName !== filters.locationName)
     return false;
+  if (filters.registrationStatus === "going" && !event.isRegistered)
+    return false;
+  if (filters.registrationStatus === "available") {
+    const isFull =
+      event.capacity !== null &&
+      (event.registeredUsers ?? 0) >= event.capacity;
+    if (isFull || event.isRegistered) return false;
+  }
+  if (filters.registrationStatus === "full") {
+    const isFull =
+      event.capacity !== null &&
+      (event.registeredUsers ?? 0) >= event.capacity;
+    if (!isFull) return false;
+  }
   return true;
 }
 
@@ -78,7 +92,8 @@ export default function HomePageContent({
           top: 56.8,
           zIndex: 3,
           backgroundColor: "background.default",
-          py: 1,
+          pt: 2,
+          pb: 1,
           display: "flex",
           width: "100%",
           justifyContent: "space-between",
