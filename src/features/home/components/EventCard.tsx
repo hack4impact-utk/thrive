@@ -13,6 +13,7 @@ import { attendEvent } from "@/actions/attend-event";
 import { leaveEvent } from "@/actions/leave-event";
 import { DefaultButton } from "@/components/ui/Button";
 import type { RegOverride } from "@/features/home/components/HomePageContent";
+import { useSnackbar } from "@/providers/snackbar-provider";
 
 import getTimeRange from "../helpers";
 
@@ -36,6 +37,7 @@ export default function VolunteerEventCard(
   event: VolunteerEventCardProps,
 ): React.ReactElement {
   const { status } = useSession();
+  const { showSnackbar } = useSnackbar();
 
   const { date, timeRange } = getTimeRange(
     event.eventDate,
@@ -47,6 +49,9 @@ export default function VolunteerEventCard(
     event.regOverride?.isRegistered ?? event.isRegistered ?? false;
   const registeredUsers =
     event.regOverride?.registeredUsers ?? event.registeredUsers ?? 0;
+
+  const isFull =
+    event.capacity !== null && event.capacity - registeredUsers <= 0;
 
   const [isPending, setIsPending] = React.useState(false);
 
@@ -65,8 +70,15 @@ export default function VolunteerEventCard(
 
           {status === "authenticated" && (
             <DefaultButton
-              label={isRegistered ? "Unregister" : "Register"}
+              label={
+                isFull && !isRegistered
+                  ? "Event Full"
+                  : isRegistered
+                    ? "Unregister"
+                    : "Register"
+              }
               href="/"
+              disabled={isFull && !isRegistered}
               onClick={async () => {
                 if (isPending) return;
 
@@ -78,18 +90,33 @@ export default function VolunteerEventCard(
                       isRegistered: false,
                       registeredUsers: Math.max(registeredUsers - 1, 0),
                     });
+                    showSnackbar(
+                      `You have unregistered from "${event.title}".`,
+                      "info",
+                    );
                   } else {
                     await attendEvent(event.id);
                     event.onRegChange(event.id, {
                       isRegistered: true,
                       registeredUsers: registeredUsers + 1,
                     });
+                    showSnackbar(
+                      `You're registered for "${event.title}"!`,
+                      "success",
+                    );
                   }
                 } catch (error) {
                   if (error instanceof Error) {
                     if (error.message === "Event capacity reached") {
-                      alert("Sorry, this event is full! You cannot register.");
+                      showSnackbar(
+                        "Sorry, this event is full! You cannot register.",
+                        "error",
+                      );
                     } else {
+                      showSnackbar(
+                        "Something went wrong. Please try again.",
+                        "error",
+                      );
                       console.error(error.message);
                     }
                   }

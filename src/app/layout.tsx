@@ -10,6 +10,7 @@ import { ReactNode } from "react";
 import Header from "@/components/layout/Header";
 import NextAuthProvider from "@/providers/next-auth-provider";
 import NotistackProvider from "@/providers/notistack-provider";
+import SnackbarProvider from "@/providers/snackbar-provider";
 import theme from "@/styles/theme";
 
 const roboto = Roboto({
@@ -35,11 +36,13 @@ export default function RootLayout({ children }: RootLayoutProps): ReactNode {
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <NotistackProvider>
-              <NextAuthProvider>
-                <CssBaseline />
-                <Header />
-                {children}
-              </NextAuthProvider>
+              <SnackbarProvider>
+                <NextAuthProvider>
+                  <CssBaseline />
+                  <Header />
+                  {children}
+                </NextAuthProvider>
+              </SnackbarProvider>
             </NotistackProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>

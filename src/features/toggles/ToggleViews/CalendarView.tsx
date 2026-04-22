@@ -21,6 +21,7 @@ import * as React from "react";
 import { attendEvent } from "@/actions/attend-event";
 import { leaveEvent } from "@/actions/leave-event";
 import type { RegOverride } from "@/features/home/components/HomePageContent";
+import { useSnackbar } from "@/providers/snackbar-provider";
 
 import type { View } from "./view-types";
 
@@ -70,6 +71,7 @@ export default function CalendarView({
 }: CalendarViewProps): React.ReactElement | null {
   // ── Hooks ─────────────────────────────────────────────────────────────────
   const { status } = useSession();
+  const { showSnackbar } = useSnackbar();
 
   const eventsByDate = React.useMemo(() => {
     const map: Record<string, CalendarEvent[]> = {};
@@ -129,18 +131,30 @@ export default function CalendarView({
           isRegistered: false,
           registeredUsers: Math.max(registeredUsers - 1, 0),
         });
+        showSnackbar(
+          `You have unregistered from "${selectedEvent.title}".`,
+          "info",
+        );
       } else {
         await attendEvent(selectedEvent.id);
         onRegChange(selectedEvent.id, {
           isRegistered: true,
           registeredUsers: registeredUsers + 1,
         });
+        showSnackbar(
+          `You're registered for "${selectedEvent.title}"!`,
+          "success",
+        );
       }
     } catch (error) {
       if (error instanceof Error) {
         if (error.message === "Event capacity reached") {
-          alert("Sorry, this event is full! You cannot register.");
+          showSnackbar(
+            "Sorry, this event is full! You cannot register.",
+            "error",
+          );
         } else {
+          showSnackbar("Something went wrong. Please try again.", "error");
           console.error(error.message);
         }
       }

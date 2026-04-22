@@ -9,6 +9,7 @@ type Props = {
   onClick?: () => void;
   color?: string;
   bgcolor?: string;
+  disabled?: boolean;
 };
 
 export function DefaultButton({
@@ -17,10 +18,12 @@ export function DefaultButton({
   onClick,
   bgcolor = "primary.main",
   color = "white",
+  disabled = false,
 }: Props): React.ReactElement {
   const router = useRouter();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    if (disabled) return;
     if (onClick) {
       e.preventDefault();
       onClick();
@@ -32,15 +35,20 @@ export function DefaultButton({
   return (
     <Box
       sx={{
-        bgcolor,
+        bgcolor: disabled ? "grey.300" : bgcolor,
         borderRadius: 1,
         ml: 1,
         display: "flex",
         alignItems: "center",
         width: "fit-content",
+        cursor: disabled ? "not-allowed" : "pointer",
       }}
     >
-      <Button onClick={handleClick} sx={{ color }}>
+      <Button
+        onClick={handleClick}
+        disabled={disabled}
+        sx={{ color: disabled ? "text.disabled" : color }}
+      >
         {label}
       </Button>
     </Box>
