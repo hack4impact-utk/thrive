@@ -212,7 +212,9 @@ export default function Filters({
           </FormControl>
 
           <FormControl size="small" fullWidth>
-            <InputLabel id="filter-status-label">Registration Status</InputLabel>
+            <InputLabel id="filter-status-label">
+              Registration Status
+            </InputLabel>
             <Select
               labelId="filter-status-label"
               value={filters.registrationStatus ?? ""}

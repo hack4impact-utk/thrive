@@ -40,14 +40,12 @@ function matchesFilters(event: CalendarEvent, filters: FilterState): boolean {
     return false;
   if (filters.registrationStatus === "available") {
     const isFull =
-      event.capacity !== null &&
-      (event.registeredUsers ?? 0) >= event.capacity;
+      event.capacity !== null && (event.registeredUsers ?? 0) >= event.capacity;
     if (isFull || event.isRegistered) return false;
   }
   if (filters.registrationStatus === "full") {
     const isFull =
-      event.capacity !== null &&
-      (event.registeredUsers ?? 0) >= event.capacity;
+      event.capacity !== null && (event.registeredUsers ?? 0) >= event.capacity;
     if (!isFull) return false;
   }
   return true;

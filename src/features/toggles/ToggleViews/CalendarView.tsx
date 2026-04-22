@@ -58,9 +58,24 @@ function formatTime(time: string): string {
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const PILL_STYLES = {
-  canRegister: { bg: "primary.main", hoverBg: "primary.dark", text: "white", outlined: false },
-  registered: { bg: "transparent", hoverBg: "action.hover", text: "primary.main", outlined: true },
-  full: { bg: "grey.300", hoverBg: "grey.300", text: "text.disabled", outlined: false },
+  canRegister: {
+    bg: "primary.main",
+    hoverBg: "primary.dark",
+    text: "white",
+    outlined: false,
+  },
+  registered: {
+    bg: "transparent",
+    hoverBg: "action.hover",
+    text: "primary.main",
+    outlined: true,
+  },
+  full: {
+    bg: "grey.300",
+    hoverBg: "grey.300",
+    text: "text.disabled",
+    outlined: false,
+  },
 };
 
 export default function CalendarView({
@@ -295,7 +310,10 @@ export default function CalendarView({
 
                             {/* Event pills */}
                             {dayEvents.map((event) => {
-                              const { isRegistered, registeredUsers: eventRegisteredUsers } = getRegState(event);
+                              const {
+                                isRegistered,
+                                registeredUsers: eventRegisteredUsers,
+                              } = getRegState(event);
                               const eventIsFull =
                                 event.capacity !== null &&
                                 event.capacity - eventRegisteredUsers <= 0;
@@ -322,8 +340,12 @@ export default function CalendarView({
                                   sx={{
                                     cursor: "pointer",
                                     backgroundColor: pill.bg,
-                                    border: pill.outlined ? "1px solid" : "none",
-                                    borderColor: pill.outlined ? "primary.main" : "transparent",
+                                    border: pill.outlined
+                                      ? "1px solid"
+                                      : "none",
+                                    borderColor: pill.outlined
+                                      ? "primary.main"
+                                      : "transparent",
                                     borderRadius: 0.5,
                                     px: 0.75,
                                     py: 0.5,

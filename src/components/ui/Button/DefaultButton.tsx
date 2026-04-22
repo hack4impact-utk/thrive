@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Button } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -9,6 +10,7 @@ type Props = {
   onClick?: () => void;
   variant?: "contained" | "outlined" | "text";
   disabled?: boolean;
+  sx?: SxProps<Theme>;
 };
 
 export function DefaultButton({
@@ -17,6 +19,7 @@ export function DefaultButton({
   onClick,
   variant = "contained",
   disabled = false,
+  sx,
 }: Props): React.ReactElement {
   const router = useRouter();
 
@@ -45,6 +48,7 @@ export function DefaultButton({
         color="primary"
         onClick={handleClick}
         disabled={disabled}
+        sx={sx}
       >
         {label}
       </Button>

@@ -94,7 +94,8 @@ export default function Header(): React.ReactElement {
               <DefaultButton
                 label="Dashboard"
                 href="/dashboard"
-                bgcolor="inherit"
+                variant="text"
+                sx={{ color: "white" }}
               />
             )}
 
