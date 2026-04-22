@@ -71,6 +71,12 @@ const US_STATES: { label: string; value: string }[] = [
   { label: "Wyoming", value: "WY" },
 ];
 
+function formatPhoneNumber(digits: string): string {
+  if (digits.length <= 3) return digits.length > 0 ? `(${digits}` : "";
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+}
+
 type BasicInfoFormState = {
   firstName: string;
   lastName: string;
@@ -118,13 +124,24 @@ export default function BasicInfoForm(): React.ReactElement {
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
 
+  const DIGIT_ONLY_FIELDS = new Set([
+    "phoneNumber",
+    "birthMonth",
+    "birthDay",
+    "birthYear",
+  ]);
+
   function handleChange(
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | SelectChangeEvent<string>,
   ): void {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const sanitized = DIGIT_ONLY_FIELDS.has(name)
+      ? value.replaceAll(/\D/g, "")
+      : value;
+    const final = name === "phoneNumber" ? sanitized.slice(0, 10) : sanitized;
+    setForm((prev) => ({ ...prev, [name]: final }));
   }
 
   async function handleSubmit(
@@ -271,11 +288,12 @@ export default function BasicInfoForm(): React.ReactElement {
 
       <TextField
         name="phoneNumber"
-        value={form.phoneNumber}
+        value={formatPhoneNumber(form.phoneNumber)}
         onChange={handleChange}
         required
         label="Phone Number"
         fullWidth
+        inputProps={{ inputMode: "numeric", maxLength: 14 }}
       />
 
       <Typography variant="h6">Date of Birth</Typography>
@@ -288,6 +306,7 @@ export default function BasicInfoForm(): React.ReactElement {
           required
           label="MM"
           sx={{ flex: "0 0 80px" }}
+          inputProps={{ inputMode: "numeric", maxLength: 2 }}
         />
         <TextField
           name="birthDay"
@@ -296,6 +315,7 @@ export default function BasicInfoForm(): React.ReactElement {
           required
           label="DD"
           sx={{ flex: "0 0 80px" }}
+          inputProps={{ inputMode: "numeric", maxLength: 2 }}
         />
         <TextField
           name="birthYear"
@@ -304,6 +324,7 @@ export default function BasicInfoForm(): React.ReactElement {
           required
           label="YYYY"
           sx={{ flex: "0 0 100px" }}
+          inputProps={{ inputMode: "numeric", maxLength: 4 }}
         />
       </Box>
 
