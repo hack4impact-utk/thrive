@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import FormLayout from "@/components/layout/FormLayout";
+import { useSnackbar } from "@/providers/snackbar-provider";
 
 const US_STATES: { label: string; value: string }[] = [
   { label: "Alabama", value: "AL" },
@@ -86,6 +87,7 @@ export default function CreateLocationPage(): React.ReactElement {
   });
 
   const router = useRouter();
+  const { showSnackbar } = useSnackbar();
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -111,6 +113,7 @@ export default function CreateLocationPage(): React.ReactElement {
       return;
     }
 
+    showSnackbar("Location added successfully!", "success");
     router.push("/dashboard");
   }
 

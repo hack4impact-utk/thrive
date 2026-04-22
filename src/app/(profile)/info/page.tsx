@@ -18,6 +18,60 @@ import * as React from "react";
 
 import { addUserInfo } from "@/actions/add-user-info";
 import FormLayout from "@/components/layout/FormLayout/";
+import { useSnackbar } from "@/providers/snackbar-provider";
+
+const US_STATES: { label: string; value: string }[] = [
+  { label: "Alabama", value: "AL" },
+  { label: "Alaska", value: "AK" },
+  { label: "Arizona", value: "AZ" },
+  { label: "Arkansas", value: "AR" },
+  { label: "California", value: "CA" },
+  { label: "Colorado", value: "CO" },
+  { label: "Connecticut", value: "CT" },
+  { label: "Delaware", value: "DE" },
+  { label: "Florida", value: "FL" },
+  { label: "Georgia", value: "GA" },
+  { label: "Hawaii", value: "HI" },
+  { label: "Idaho", value: "ID" },
+  { label: "Illinois", value: "IL" },
+  { label: "Indiana", value: "IN" },
+  { label: "Iowa", value: "IA" },
+  { label: "Kansas", value: "KS" },
+  { label: "Kentucky", value: "KY" },
+  { label: "Louisiana", value: "LA" },
+  { label: "Maine", value: "ME" },
+  { label: "Maryland", value: "MD" },
+  { label: "Massachusetts", value: "MA" },
+  { label: "Michigan", value: "MI" },
+  { label: "Minnesota", value: "MN" },
+  { label: "Mississippi", value: "MS" },
+  { label: "Missouri", value: "MO" },
+  { label: "Montana", value: "MT" },
+  { label: "Nebraska", value: "NE" },
+  { label: "Nevada", value: "NV" },
+  { label: "New Hampshire", value: "NH" },
+  { label: "New Jersey", value: "NJ" },
+  { label: "New Mexico", value: "NM" },
+  { label: "New York", value: "NY" },
+  { label: "North Carolina", value: "NC" },
+  { label: "North Dakota", value: "ND" },
+  { label: "Ohio", value: "OH" },
+  { label: "Oklahoma", value: "OK" },
+  { label: "Oregon", value: "OR" },
+  { label: "Pennsylvania", value: "PA" },
+  { label: "Rhode Island", value: "RI" },
+  { label: "South Carolina", value: "SC" },
+  { label: "South Dakota", value: "SD" },
+  { label: "Tennessee", value: "TN" },
+  { label: "Texas", value: "TX" },
+  { label: "Utah", value: "UT" },
+  { label: "Vermont", value: "VT" },
+  { label: "Virginia", value: "VA" },
+  { label: "Washington", value: "WA" },
+  { label: "West Virginia", value: "WV" },
+  { label: "Wisconsin", value: "WI" },
+  { label: "Wyoming", value: "WY" },
+];
 
 type BasicInfoFormState = {
   firstName: string;
@@ -62,6 +116,7 @@ export default function BasicInfoForm(): React.ReactElement {
 
   const { update } = useSession();
   const router = useRouter();
+  const { showSnackbar } = useSnackbar();
 
   function handleChange(
     e:
@@ -103,6 +158,7 @@ export default function BasicInfoForm(): React.ReactElement {
       });
 
       await update();
+      showSnackbar("Your information has been saved!", "success");
       router.push("/");
     } catch (error) {
       console.error("add user info failed", error);
@@ -117,7 +173,6 @@ export default function BasicInfoForm(): React.ReactElement {
       submitLabel="Submit"
       onSubmit={handleSubmit}
     >
-      {/* Name */}
       <Box sx={{ display: "flex", gap: 2 }}>
         <TextField
           name="firstName"
@@ -137,7 +192,6 @@ export default function BasicInfoForm(): React.ReactElement {
         />
       </Box>
 
-      {/* Gender */}
       <FormControl fullWidth>
         <InputLabel>Gender</InputLabel>
         <Select
@@ -151,7 +205,6 @@ export default function BasicInfoForm(): React.ReactElement {
         </Select>
       </FormControl>
 
-      {/* Address */}
       <Typography variant="h6">Home Address</Typography>
 
       <TextField
@@ -171,7 +224,9 @@ export default function BasicInfoForm(): React.ReactElement {
         fullWidth
       />
 
-      <Box sx={{ display: "flex", gap: 2 }}>
+      <Box
+        sx={{ display: "flex", gap: 2, flexWrap: { xs: "wrap", sm: "nowrap" } }}
+      >
         <TextField
           name="city"
           value={form.city}
@@ -180,25 +235,35 @@ export default function BasicInfoForm(): React.ReactElement {
           label="City"
           fullWidth
         />
-        <TextField
-          name="state"
-          value={form.state}
-          onChange={handleChange}
-          required
-          label="State"
-          sx={{ width: 200 }}
-        />
+        <FormControl required sx={{ flex: "0 0 200px" }}>
+          <InputLabel id="state-label">State</InputLabel>
+          <Select
+            labelId="state-label"
+            label="State"
+            value={form.state}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, state: e.target.value }))
+            }
+          >
+            <MenuItem value="TN">Tennessee</MenuItem>
+            <MenuItem divider disabled sx={{ my: 0, py: 0 }} />
+            {US_STATES.map(({ label, value }) => (
+              <MenuItem key={value} value={value}>
+                {label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <TextField
           name="postalCode"
           value={form.postalCode}
           onChange={handleChange}
           required
           label="Zip"
-          sx={{ width: 170 }}
+          sx={{ flex: { xs: 1, sm: "0 0 100px" } }}
         />
       </Box>
 
-      {/* Phone */}
       <Typography variant="h6">Contact</Typography>
 
       <TextField
@@ -226,7 +291,6 @@ export default function BasicInfoForm(): React.ReactElement {
         label="Send event reminders via text"
       />
 
-      {/* DOB */}
       <Typography variant="h6">Date of Birth</Typography>
 
       <Box sx={{ display: "flex", gap: 2 }}>
@@ -236,7 +300,7 @@ export default function BasicInfoForm(): React.ReactElement {
           onChange={handleChange}
           required
           label="MM"
-          sx={{ width: 100 }}
+          sx={{ flex: "0 0 80px" }}
         />
         <TextField
           name="birthDay"
@@ -244,7 +308,7 @@ export default function BasicInfoForm(): React.ReactElement {
           onChange={handleChange}
           required
           label="DD"
-          sx={{ width: 100 }}
+          sx={{ flex: "0 0 80px" }}
         />
         <TextField
           name="birthYear"
@@ -252,11 +316,10 @@ export default function BasicInfoForm(): React.ReactElement {
           onChange={handleChange}
           required
           label="YYYY"
-          sx={{ width: 140 }}
+          sx={{ flex: "0 0 100px" }}
         />
       </Box>
 
-      {/* Other */}
       <Typography variant="h6">Preferences</Typography>
 
       <FormControl fullWidth>
@@ -296,7 +359,6 @@ export default function BasicInfoForm(): React.ReactElement {
         </Select>
       </FormControl>
 
-      {/* Medical */}
       <Typography variant="h6">Medical Information</Typography>
 
       <TextField

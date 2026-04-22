@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import FormLayout from "@/components/layout/FormLayout";
+import { useSnackbar } from "@/providers/snackbar-provider";
 
 type Location = {
   id: string;
@@ -59,6 +60,7 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
   const [errors, setErrors] = React.useState<FormErrors>({});
 
   const router = useRouter();
+  const { showSnackbar } = useSnackbar();
 
   React.useEffect(() => {
     fetch("/api/locations")
@@ -117,6 +119,7 @@ export default function OneTimeEventCreationForm(): React.ReactElement {
       return;
     }
 
+    showSnackbar("Event created successfully!", "success");
     router.push("/");
 
     setForm({
