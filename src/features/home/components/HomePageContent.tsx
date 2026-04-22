@@ -5,7 +5,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { Box, ButtonGroup, IconButton } from "@mui/material";
 import * as React from "react";
 
-import Filters from "@/features/filters";
+import Filters, { defaultFilters, type FilterState } from "@/features/filters";
 import CalendarView, {
   type CalendarEvent,
 } from "@/features/toggles/ToggleViews/CalendarView";
@@ -21,14 +21,22 @@ export type RegOverride = {
   registeredUsers: number;
 };
 
-/**
- * Case-insensitive substring search: returns true when `query` appears
- * anywhere inside `text`. "parkridge" matches "...Workshop Parkridge",
- * "Y" matches "Youth...", "yo" matches "Youth..." but not "Community Food...".
- */
 function matchesSearch(query: string, text: string): boolean {
   if (!query) return true;
   return text.toLowerCase().includes(query.toLowerCase());
+}
+
+function matchesFilters(event: CalendarEvent, filters: FilterState): boolean {
+  if (
+    filters.dateFrom &&
+    event.eventDate < filters.dateFrom.format("YYYY-MM-DD")
+  )
+    return false;
+  if (filters.dateTo && event.eventDate > filters.dateTo.format("YYYY-MM-DD"))
+    return false;
+  if (filters.locationName && event.locationName !== filters.locationName)
+    return false;
+  return true;
 }
 
 export default function HomePageContent({
@@ -36,6 +44,7 @@ export default function HomePageContent({
 }: HomePageContentProps): React.ReactElement {
   const [activeView, setActiveView] = React.useState<View>("list");
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [filters, setFilters] = React.useState<FilterState>(defaultFilters);
   const [regOverrides, setRegOverrides] = React.useState<
     Record<string, RegOverride>
   >({});
@@ -48,18 +57,21 @@ export default function HomePageContent({
   );
 
   const toggleView = (view: View): void => {
-    // Clicking the active view does nothing (stays on that view)
     setActiveView(view ?? "list");
   };
 
   const filteredEvents = React.useMemo(
-    () => events.filter((event) => matchesSearch(searchQuery, event.title)),
-    [events, searchQuery],
+    () =>
+      events.filter(
+        (event) =>
+          matchesSearch(searchQuery, event.title) &&
+          matchesFilters(event, filters),
+      ),
+    [events, searchQuery, filters],
   );
 
   return (
     <>
-      {/* Controls row — sticky below the navbar */}
       <Box
         sx={{
           position: "sticky",
@@ -81,7 +93,6 @@ export default function HomePageContent({
             border: "1px solid #0000003B",
           }}
         >
-          {/* List view button */}
           <IconButton
             onClick={() => toggleView("list")}
             aria-label="List view"
@@ -99,7 +110,6 @@ export default function HomePageContent({
             <FormatListBulletedIcon sx={{ color: "#555555" }} />
           </IconButton>
 
-          {/* Calendar view button */}
           <IconButton
             onClick={() => toggleView("calendar")}
             aria-label="Calendar view"
@@ -119,10 +129,14 @@ export default function HomePageContent({
           </IconButton>
         </ButtonGroup>
 
-        <Filters searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        <Filters
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          filters={filters}
+          onFiltersChange={setFilters}
+        />
       </Box>
 
-      {/* View content */}
       {activeView === "list" && (
         <ListView
           events={filteredEvents}
