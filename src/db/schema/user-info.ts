@@ -1,11 +1,4 @@
-import {
-  boolean,
-  integer,
-  numeric,
-  pgTable,
-  text,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { integer, numeric, pgTable, text, varchar } from "drizzle-orm/pg-core";
 
 import { users } from "./users";
 
@@ -25,17 +18,16 @@ export const userInfo = pgTable("user_info", {
   country: varchar("country", { length: 50 }).notNull(),
 
   phoneNumber: varchar("phone_number", { length: 20 }).notNull(),
-  isTextOptedIn: boolean("is_text_opted_in").notNull().default(false),
 
   birthMonth: integer("birth_month").notNull(),
   birthDay: integer("birth_day").notNull(),
   birthYear: integer("birth_year").notNull(),
 
-  preferredNeighborhood: text("preferred_neighborhood"),
+  preferredNeighborhood: text("preferred_neighborhood").notNull(),
 
-  gender: varchar("gender", { length: 20 }),
+  gender: varchar("gender", { length: 20 }).notNull(),
 
-  shirtSize: varchar("shirt_size", { length: 10 }),
+  shirtSize: varchar("shirt_size", { length: 10 }).notNull(),
 
   hoursVolunteered: numeric("hours_volunteered", {
     precision: 10,

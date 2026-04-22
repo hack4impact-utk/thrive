@@ -162,6 +162,13 @@
       "when": 1776806654944,
       "tag": "0022_true_gargoyle",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1776865893402,
+      "tag": "0023_daily_shockwave",
+      "breakpoints": true
     }
   ]
 }

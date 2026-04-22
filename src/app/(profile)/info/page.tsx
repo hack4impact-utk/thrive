@@ -2,9 +2,7 @@
 
 import {
   Box,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
@@ -83,13 +81,12 @@ type BasicInfoFormState = {
   postalCode: string;
   country: string;
   phoneNumber: string;
-  isTextOptedIn: boolean;
   birthMonth: string;
   birthDay: string;
   birthYear: string;
-  preferredNeighborhood?: string;
-  gender?: string;
-  shirtSize?: string;
+  preferredNeighborhood: string;
+  gender: string;
+  shirtSize: string;
   medicalNotes?: string;
 };
 
@@ -104,7 +101,6 @@ export default function BasicInfoForm(): React.ReactElement {
     postalCode: "",
     country: "",
     phoneNumber: "",
-    isTextOptedIn: false,
     birthMonth: "",
     birthDay: "",
     birthYear: "",
@@ -145,15 +141,14 @@ export default function BasicInfoForm(): React.ReactElement {
         country: "US",
 
         phoneNumber: form.phoneNumber.trim(),
-        isTextOptedIn: form.isTextOptedIn,
 
         birthMonth: Number(form.birthMonth),
         birthDay: Number(form.birthDay),
         birthYear: Number(form.birthYear),
 
-        preferredNeighborhood: form.preferredNeighborhood || null,
-        gender: form.gender || null,
-        shirtSize: form.shirtSize || null,
+        preferredNeighborhood: form.preferredNeighborhood,
+        gender: form.gender,
+        shirtSize: form.shirtSize,
         medicalNotes: form.medicalNotes || null,
       });
 
@@ -192,7 +187,7 @@ export default function BasicInfoForm(): React.ReactElement {
         />
       </Box>
 
-      <FormControl fullWidth>
+      <FormControl fullWidth required>
         <InputLabel>Gender</InputLabel>
         <Select
           name="gender"
@@ -275,22 +270,6 @@ export default function BasicInfoForm(): React.ReactElement {
         fullWidth
       />
 
-      <FormControlLabel
-        control={
-          <Checkbox
-            name="isTextOptedIn"
-            checked={form.isTextOptedIn}
-            onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                isTextOptedIn: e.target.checked,
-              }))
-            }
-          />
-        }
-        label="Send event reminders via text"
-      />
-
       <Typography variant="h6">Date of Birth</Typography>
 
       <Box sx={{ display: "flex", gap: 2 }}>
@@ -322,7 +301,7 @@ export default function BasicInfoForm(): React.ReactElement {
 
       <Typography variant="h6">Preferences</Typography>
 
-      <FormControl fullWidth>
+      <FormControl fullWidth required>
         <InputLabel>Neighborhood</InputLabel>
         <Select
           name="preferredNeighborhood"
@@ -345,7 +324,7 @@ export default function BasicInfoForm(): React.ReactElement {
         </Select>
       </FormControl>
 
-      <FormControl fullWidth>
+      <FormControl fullWidth required>
         <InputLabel>Shirt Size</InputLabel>
         <Select
           name="shirtSize"
