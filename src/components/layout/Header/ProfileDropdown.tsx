@@ -79,14 +79,6 @@ export default function ProfileDropdown(): React.ReactElement {
         >
           Update profile
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            void router.push("/account/notification-settings");
-            handleClose();
-          }}
-        >
-          Notification settings
-        </MenuItem>
         {session?.user?.role === "user" && (
           <MenuItem
             onClick={() => {
