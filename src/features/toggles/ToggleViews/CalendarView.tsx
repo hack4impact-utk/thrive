@@ -1,5 +1,7 @@
 "use client";
 
+import BusinessIcon from "@mui/icons-material/Business";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LocationPinIcon from "@mui/icons-material/LocationPin";
 import PersonIcon from "@mui/icons-material/Person";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
@@ -30,6 +32,7 @@ export type CalendarEvent = {
   endTime: string;
   capacity: number | null;
   registeredUsers: number | null;
+  locationName: string | null;
   streetLine: string | null;
   description: string;
   isRegistered?: boolean;
@@ -390,7 +393,22 @@ export default function CalendarView({
                     mb: 1.5,
                   }}
                 >
-                  {/* Date + time */}
+                  {/* Date */}
+                  <Box
+                    sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+                  >
+                    <CalendarTodayIcon
+                      fontSize="small"
+                      sx={{ color: "text.secondary" }}
+                    />
+                    <Typography variant="body2" color="text.secondary">
+                      {dayjs(selectedEvent.eventDate).format(
+                        "dddd, MMMM D, YYYY",
+                      )}
+                    </Typography>
+                  </Box>
+
+                  {/* Time */}
                   <Box
                     sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
                   >
@@ -399,16 +417,27 @@ export default function CalendarView({
                       sx={{ color: "text.secondary" }}
                     />
                     <Typography variant="body2" color="text.secondary">
-                      {dayjs(selectedEvent.eventDate).format(
-                        "dddd, MMMM D, YYYY",
-                      )}
-                      &nbsp;&bull;&nbsp;
                       {formatTime(selectedEvent.startTime)} –{" "}
                       {formatTime(selectedEvent.endTime)}
                     </Typography>
                   </Box>
 
-                  {/* Location */}
+                  {/* Location name */}
+                  {selectedEvent.locationName && (
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 0.75 }}
+                    >
+                      <BusinessIcon
+                        fontSize="small"
+                        sx={{ color: "text.secondary" }}
+                      />
+                      <Typography variant="body2" color="text.secondary">
+                        {selectedEvent.locationName}
+                      </Typography>
+                    </Box>
+                  )}
+
+                  {/* Street address */}
                   {selectedEvent.streetLine && (
                     <Box
                       sx={{ display: "flex", alignItems: "center", gap: 0.75 }}

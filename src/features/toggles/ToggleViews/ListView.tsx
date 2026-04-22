@@ -15,6 +15,7 @@ type HomePageClientProps = {
     endTime: string;
     capacity: number | null;
     registeredUsers: number | null;
+    locationName: string | null;
     streetLine: string | null;
     description: string;
     isRegistered?: boolean;
@@ -100,6 +101,7 @@ export default function ListView({
                 endTime={event.endTime}
                 capacity={event.capacity}
                 registeredUsers={event.registeredUsers}
+                locationName={event.locationName}
                 streetLine={event.streetLine}
                 description={event.description}
                 isRegistered={event.isRegistered}

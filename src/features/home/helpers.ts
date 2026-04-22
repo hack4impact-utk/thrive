@@ -5,17 +5,23 @@ export default function getTimeRange(
   eventDate: string,
   startTime: string,
   endTime: string,
-): string {
+): { date: string; timeRange: string } {
   dayjs.extend(duration);
 
   const start = dayjs(`${eventDate} ${startTime}`);
   const end = dayjs(`${eventDate} ${endTime}`);
 
   const formattedDate = start.format("ddd, MMMM D");
-  const formattedTimeRange = `${start.format("h A")} - ${end.format("h A")}`;
+  const formattedTimeRange = `${start.format("h:mm A")} - ${end.format("h:mm A")}`;
 
-  const hours = Math.round(end.diff(start, "minute") / 60);
-  const formattedDuration = `(${hours} Hours)`;
+  const totalMinutes = end.diff(start, "minute");
+  const hours = totalMinutes / 60;
+  const formattedHours =
+    hours % 1 === 0 ? `${hours}` : `${Number.parseFloat(hours.toFixed(2))}`;
+  const formattedDuration = `(${formattedHours} Hours)`;
 
-  return `${formattedDate} at ${formattedTimeRange} ${formattedDuration}`;
+  return {
+    date: formattedDate,
+    timeRange: `${formattedTimeRange} ${formattedDuration}`,
+  };
 }

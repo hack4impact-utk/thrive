@@ -1,5 +1,7 @@
 "use client";
 
+import BusinessIcon from "@mui/icons-material/Business";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LocationPinIcon from "@mui/icons-material/LocationPin";
 import PersonIcon from "@mui/icons-material/Person";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
@@ -22,6 +24,7 @@ type VolunteerEventCardProps = {
   endTime: string;
   capacity: number | null;
   registeredUsers: number | null;
+  locationName: string | null;
   streetLine: string | null;
   description: string;
   isRegistered?: boolean;
@@ -34,7 +37,7 @@ export default function VolunteerEventCard(
 ): React.ReactElement {
   const { status } = useSession();
 
-  const timeRange = getTimeRange(
+  const { date, timeRange } = getTimeRange(
     event.eventDate,
     event.startTime,
     event.endTime,
@@ -50,7 +53,6 @@ export default function VolunteerEventCard(
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>
       <CardContent>
-        {/* Header */}
         <Box
           sx={{
             display: "flex",
@@ -101,7 +103,6 @@ export default function VolunteerEventCard(
           )}
         </Box>
 
-        {/* Meta info */}
         <Box
           sx={{
             display: "flex",
@@ -110,6 +111,11 @@ export default function VolunteerEventCard(
             color: "text.secondary",
           }}
         >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <CalendarTodayIcon fontSize="small" />
+            <Typography variant="body2">{date}</Typography>
+          </Box>
+
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <QueryBuilderIcon fontSize="small" />
             <Typography variant="body2">{timeRange}</Typography>
@@ -124,13 +130,21 @@ export default function VolunteerEventCard(
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <LocationPinIcon fontSize="small" />
-            <Typography variant="body2">{event.streetLine}</Typography>
-          </Box>
+          {event.locationName && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <BusinessIcon fontSize="small" />
+              <Typography variant="body2">{event.locationName}</Typography>
+            </Box>
+          )}
+
+          {event.streetLine && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <LocationPinIcon fontSize="small" />
+              <Typography variant="body2">{event.streetLine}</Typography>
+            </Box>
+          )}
         </Box>
 
-        {/* Description */}
         <Typography variant="body2" sx={{ mt: 2 }}>
           {event.description}
         </Typography>
