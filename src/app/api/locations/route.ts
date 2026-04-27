@@ -1,7 +1,8 @@
-import { asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import db from "@/db";
+import { events } from "@/db/schema/events";
 import { locations } from "@/db/schema/locations";
 
 export async function GET(): Promise<Response> {
@@ -63,6 +64,48 @@ export async function POST(req: Request): Promise<Response> {
     return NextResponse.json(location, { status: 201 });
   } catch (error) {
     console.error("Failed to create location", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PATCH(req: Request): Promise<Response> {
+  try {
+    const body = await req.json();
+    const { id, deleted } = body;
+
+    if (!id || typeof deleted !== "boolean") {
+      return NextResponse.json(
+        { error: "Missing required fields: id and deleted" },
+        { status: 400 },
+      );
+    }
+
+    const [location] = await db
+      .update(locations)
+      .set({ deleted })
+      .where(eq(locations.id, id))
+      .returning();
+
+    if (!location) {
+      return NextResponse.json(
+        { error: "Location not found" },
+        { status: 404 },
+      );
+    }
+
+    if (deleted) {
+      await db
+        .update(events)
+        .set({ deleted: true })
+        .where(eq(events.locationId, id));
+    }
+
+    return NextResponse.json(location);
+  } catch (error) {
+    console.error("Failed to update location", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

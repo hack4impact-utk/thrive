@@ -1,4 +1,5 @@
 import {
+  boolean,
   numeric,
   pgTable,
   text,
@@ -17,6 +18,7 @@ export const locations = pgTable("locations", {
   country: text("country").notNull(),
   latitude: numeric("latitude", { precision: 9, scale: 6 }),
   longitude: numeric("longitude", { precision: 9, scale: 6 }),
+  deleted: boolean("deleted").default(false).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),

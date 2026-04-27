@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, lte } from "drizzle-orm";
+import { and, asc, eq, gte, lte, ne } from "drizzle-orm";
 
 import db from "@/db";
 import { events } from "@/db/schema";
@@ -41,6 +41,7 @@ export async function getAllEvents(): Promise<EventRow[]> {
     .select(eventWithLocation)
     .from(events)
     .leftJoin(locations, eq(locations.id, events.locationId))
+    .where(ne(events.deleted, true))
     .orderBy(asc(events.eventDate));
 }
 
@@ -58,6 +59,7 @@ export async function getUpcomingEvents(): Promise<EventRow[]> {
     .leftJoin(locations, eq(locations.id, events.locationId))
     .where(
       and(
+        ne(events.deleted, true),
         gte(events.eventDate, todayStr),
         lte(events.eventDate, threeMonthsStr),
       ),

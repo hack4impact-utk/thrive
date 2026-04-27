@@ -1,4 +1,5 @@
 import {
+  boolean,
   date,
   integer,
   pgTable,
@@ -26,6 +27,8 @@ export const events = pgTable("events", {
   locationId: uuid("location_id").references(() => locations.id),
 
   description: text("description").notNull(),
+
+  deleted: boolean("deleted").default(false).notNull(),
 
   createdAt: timestamp("created_at", {
     withTimezone: true,
