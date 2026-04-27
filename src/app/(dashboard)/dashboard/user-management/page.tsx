@@ -19,6 +19,7 @@ import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
 import { userInfo, users } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import RoleCell from "./RoleCell";
 
 type UserRecord = {
   id: string;
@@ -31,13 +32,6 @@ type UserRecord = {
   role: string;
 };
 
-function formatRoleLabel(role: string): string {
-  return role
-    .split("_")
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-    .join(" ");
-}
-
 function formatFullName(
   firstName: string | null,
   lastName: string | null,
@@ -48,7 +42,13 @@ function formatFullName(
   return name || "Profile incomplete";
 }
 
-function UserRow({ user }: { user: UserRecord }): React.ReactElement {
+function UserRow({
+  user,
+  callerRole,
+}: {
+  user: UserRecord;
+  callerRole: string;
+}): React.ReactElement {
   const fullName = formatFullName(user.firstName, user.lastName, user.name);
 
   return (
@@ -98,9 +98,12 @@ function UserRow({ user }: { user: UserRecord }): React.ReactElement {
         </Typography>
       </TableCell>
       <TableCell>
-        <Typography variant="body2" color="text.secondary">
-          {formatRoleLabel(user.role)}
-        </Typography>
+        <RoleCell
+          userId={user.id}
+          currentRole={user.role}
+          callerRole={callerRole}
+          userName={fullName}
+        />
       </TableCell>
     </TableRow>
   );
@@ -127,8 +130,9 @@ async function getUsers(): Promise<UserRecord[]> {
 
 export default async function UserManagementPage(): Promise<React.ReactElement> {
   const session = await auth();
+  const callerRole = session?.user?.role ?? "";
 
-  if (session?.user?.role !== "admin" && session?.user?.role !== "manager") {
+  if (callerRole !== "admin" && callerRole !== "manager") {
     redirect("/dashboard");
   }
 
@@ -180,7 +184,9 @@ export default async function UserManagementPage(): Promise<React.ReactElement> 
           </TableHead>
           <TableBody>
             {people.length > 0 ? (
-              people.map((user) => <UserRow key={user.id} user={user} />)
+              people.map((user) => (
+                <UserRow key={user.id} user={user} callerRole={callerRole} />
+              ))
             ) : (
               <TableRow>
                 <TableCell colSpan={4} sx={{ px: 3, py: 5, border: 0 }}>
