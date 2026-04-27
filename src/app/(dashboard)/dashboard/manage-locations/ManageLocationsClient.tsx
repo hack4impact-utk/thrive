@@ -41,7 +41,11 @@ type Props = {
   locations: Location[];
 };
 
-function DeleteLocationButton({ location }: { location: Location }): React.ReactElement {
+function DeleteLocationButton({
+  location,
+}: {
+  location: Location;
+}): React.ReactElement {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
@@ -117,7 +121,9 @@ function DeleteLocationButton({ location }: { location: Location }): React.React
   );
 }
 
-export default function ManageLocationsClient({ locations }: Props): React.ReactElement {
+export default function ManageLocationsClient({
+  locations,
+}: Props): React.ReactElement {
   return (
     <>
       <Box
@@ -200,7 +206,9 @@ export default function ManageLocationsClient({ locations }: Props): React.React
                       {loc.streetLine}, {loc.city}, {loc.state} {loc.postalCode}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ width: 48, p: 0, pr: 1, textAlign: "right" }}>
+                  <TableCell
+                    sx={{ width: 48, p: 0, pr: 1, textAlign: "right" }}
+                  >
                     <DeleteLocationButton location={loc} />
                   </TableCell>
                 </TableRow>

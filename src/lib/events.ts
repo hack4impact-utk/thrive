@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, lte, ne } from "drizzle-orm";
+import { and, asc, eq, getTableColumns, gte, lte, ne } from "drizzle-orm";
 
 import db from "@/db";
 import { events } from "@/db/schema";
@@ -16,16 +16,7 @@ type EventRow = typeof events.$inferSelect & {
 };
 
 const eventWithLocation = {
-  id: events.id,
-  title: events.title,
-  eventDate: events.eventDate,
-  startTime: events.startTime,
-  endTime: events.endTime,
-  capacity: events.capacity,
-  registeredUsers: events.registeredUsers,
-  description: events.description,
-  locationId: events.locationId,
-  createdAt: events.createdAt,
+  ...getTableColumns(events),
   locationName: locations.name,
   streetLine: locations.streetLine,
   city: locations.city,
