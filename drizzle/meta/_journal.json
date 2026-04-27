@@ -183,6 +183,13 @@
       "when": 1777250890956,
       "tag": "0025_long_maddog",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1777300251360,
+      "tag": "0026_sweet_george_stacy",
+      "breakpoints": true
     }
   ]
 }

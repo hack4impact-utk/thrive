@@ -17,7 +17,7 @@ import { redirect } from "next/navigation";
 
 import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
-import { userInfo, users } from "@/db/schema";
+import { locations, userInfo, users } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import RoleCell from "./RoleCell";
 
@@ -30,6 +30,12 @@ type UserRecord = {
   email: string | null;
   infoFilled: boolean;
   role: string;
+  locationName: string | null;
+};
+
+type LocationOption = {
+  id: string;
+  name: string;
 };
 
 function formatFullName(
@@ -45,9 +51,11 @@ function formatFullName(
 function UserRow({
   user,
   callerRole,
+  locations,
 }: {
   user: UserRecord;
   callerRole: string;
+  locations: LocationOption[];
 }): React.ReactElement {
   const fullName = formatFullName(user.firstName, user.lastName, user.name);
 
@@ -103,7 +111,13 @@ function UserRow({
           currentRole={user.role}
           callerRole={callerRole}
           userName={fullName}
+          locations={locations}
         />
+      </TableCell>
+      <TableCell>
+        <Typography variant="body2" color="text.secondary">
+          {user.locationName ?? "—"}
+        </Typography>
       </TableCell>
     </TableRow>
   );
@@ -120,12 +134,22 @@ async function getUsers(): Promise<UserRecord[]> {
       email: users.email,
       infoFilled: users.infoFilled,
       role: users.role,
+      locationName: locations.name,
     })
     .from(users)
     .leftJoin(userInfo, eq(userInfo.userId, users.id))
+    .leftJoin(locations, eq(locations.id, users.locationId))
     .orderBy(asc(userInfo.lastName), asc(userInfo.firstName), asc(users.email));
 
   return records;
+}
+
+async function getLocations(): Promise<LocationOption[]> {
+  return db
+    .select({ id: locations.id, name: locations.name })
+    .from(locations)
+    .where(eq(locations.deleted, false))
+    .orderBy(asc(locations.name));
 }
 
 export default async function UserManagementPage(): Promise<React.ReactElement> {
@@ -136,7 +160,10 @@ export default async function UserManagementPage(): Promise<React.ReactElement> 
     redirect("/dashboard");
   }
 
-  const people = await getUsers();
+  const [people, locationOptions] = await Promise.all([
+    getUsers(),
+    callerRole === "admin" ? getLocations() : Promise.resolve([]),
+  ]);
 
   return (
     <PageContainer sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
@@ -164,32 +191,39 @@ export default async function UserManagementPage(): Promise<React.ReactElement> 
         <Table size="small" stickyHeader>
           <TableHead>
             <TableRow>
-              {["Full Name", "Email", "Phone", "Role"].map((heading) => (
-                <TableCell
-                  key={heading}
-                  sx={{
-                    fontWeight: 700,
-                    letterSpacing: 1.1,
-                    color: "#4b6287",
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    bgcolor: "#dfe7f2",
-                    borderBottom: "1px solid #cfd8e6",
-                  }}
-                >
-                  {heading}
-                </TableCell>
-              ))}
+              {["Full Name", "Email", "Phone", "Role", "Home Location"].map(
+                (heading) => (
+                  <TableCell
+                    key={heading}
+                    sx={{
+                      fontWeight: 700,
+                      letterSpacing: 1.1,
+                      color: "#4b6287",
+                      fontSize: 12,
+                      textTransform: "uppercase",
+                      bgcolor: "#dfe7f2",
+                      borderBottom: "1px solid #cfd8e6",
+                    }}
+                  >
+                    {heading}
+                  </TableCell>
+                ),
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
             {people.length > 0 ? (
               people.map((user) => (
-                <UserRow key={user.id} user={user} callerRole={callerRole} />
+                <UserRow
+                  key={user.id}
+                  user={user}
+                  callerRole={callerRole}
+                  locations={locationOptions}
+                />
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} sx={{ px: 3, py: 5, border: 0 }}>
+                <TableCell colSpan={5} sx={{ px: 3, py: 5, border: 0 }}>
                   <Typography variant="body1" sx={{ fontWeight: 600 }}>
                     No users found.
                   </Typography>

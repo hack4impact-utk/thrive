@@ -9,8 +9,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
   Menu,
   MenuItem,
+  Select,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
@@ -27,6 +30,12 @@ const ROLE_LABELS: Record<Role, string> = {
 
 const ALL_ROLES: Role[] = ["user", "kiosk", "manager", "admin"];
 const MANAGER_ROLES: Role[] = ["user", "kiosk", "manager"];
+const LOCATION_ROLES: Role[] = ["manager", "kiosk"];
+
+type LocationOption = {
+  id: string;
+  name: string;
+};
 
 function formatRole(role: string): string {
   return role
@@ -40,6 +49,7 @@ interface RoleCellProps {
   currentRole: string;
   callerRole: string;
   userName: string;
+  locations: LocationOption[];
 }
 
 export default function RoleCell({
@@ -47,15 +57,21 @@ export default function RoleCell({
   currentRole,
   callerRole,
   userName,
+  locations,
 }: RoleCellProps): React.ReactElement {
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingRole, setPendingRole] = useState<Role | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<string>("");
   const [role, setRole] = useState(currentRole);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const availableRoles = callerRole === "admin" ? ALL_ROLES : MANAGER_ROLES;
+  const showLocationPicker =
+    callerRole === "admin" &&
+    pendingRole !== null &&
+    LOCATION_ROLES.includes(pendingRole);
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuAnchor(event.currentTarget);
@@ -67,6 +83,7 @@ export default function RoleCell({
 
   const handleRoleSelect = (newRole: Role) => {
     setPendingRole(newRole);
+    setSelectedLocationId("");
     setMenuAnchor(null);
     setError(null);
     setConfirmOpen(true);
@@ -75,6 +92,7 @@ export default function RoleCell({
   const handleConfirmClose = () => {
     setConfirmOpen(false);
     setPendingRole(null);
+    setSelectedLocationId("");
     setError(null);
   };
 
@@ -83,7 +101,11 @@ export default function RoleCell({
     setLoading(true);
     setError(null);
     try {
-      await updateUserRole(userId, pendingRole);
+      await updateUserRole(
+        userId,
+        pendingRole,
+        showLocationPicker ? selectedLocationId || null : undefined,
+      );
       setRole(pendingRole);
       handleConfirmClose();
     } catch {
@@ -163,7 +185,9 @@ export default function RoleCell({
         <DialogTitle sx={{ fontWeight: 700, pb: 0.5 }}>
           Confirm role change
         </DialogTitle>
-        <DialogContent>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
           <Typography variant="body2" color="text.secondary">
             Change{" "}
             <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
@@ -175,12 +199,34 @@ export default function RoleCell({
             </Box>
             ?
           </Typography>
+
+          {showLocationPicker && (
+            <FormControl size="small" fullWidth>
+              <InputLabel shrink id="location-select-label">Home Location</InputLabel>
+              <Select
+                labelId="location-select-label"
+                label="Home Location"
+                notched
+                value={selectedLocationId}
+                onChange={(e) => setSelectedLocationId(e.target.value)}
+                displayEmpty
+              >
+                <MenuItem value="">
+                  <Typography variant="body2" color="text.secondary">
+                    No location
+                  </Typography>
+                </MenuItem>
+                {locations.map((loc) => (
+                  <MenuItem key={loc.id} value={loc.id}>
+                    {loc.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+
           {error && (
-            <Typography
-              variant="caption"
-              color="error"
-              sx={{ display: "block", mt: 1 }}
-            >
+            <Typography variant="caption" color="error">
               {error}
             </Typography>
           )}

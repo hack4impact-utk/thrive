@@ -1,4 +1,6 @@
-import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+
+import { locations } from "./locations";
 
 export const users = pgTable("user", {
   id: text("id")
@@ -10,4 +12,5 @@ export const users = pgTable("user", {
   infoFilled: boolean("info_filled").notNull().default(false),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  locationId: uuid("location_id").references(() => locations.id),
 });

@@ -14,7 +14,7 @@ import { notFound, redirect } from "next/navigation";
 
 import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
-import { userInfo, users } from "@/db/schema";
+import { locations, userInfo, users } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 type UserDetailRecord = {
@@ -23,6 +23,7 @@ type UserDetailRecord = {
   email: string | null;
   role: string;
   infoFilled: boolean;
+  locationName: string | null;
   firstName: string | null;
   lastName: string | null;
   addressLine1: string | null;
@@ -158,6 +159,7 @@ async function getUserDetails(
       email: users.email,
       role: users.role,
       infoFilled: users.infoFilled,
+      locationName: locations.name,
       firstName: userInfo.firstName,
       lastName: userInfo.lastName,
       addressLine1: userInfo.addressLine1,
@@ -177,6 +179,7 @@ async function getUserDetails(
     })
     .from(users)
     .leftJoin(userInfo, eq(userInfo.userId, users.id))
+    .leftJoin(locations, eq(locations.id, users.locationId))
     .where(eq(users.id, userId));
 
   return record;
@@ -243,6 +246,10 @@ export default async function UserDetailPage({
             {
               label: "Profile Status",
               value: user.infoFilled ? "Completed" : "Incomplete",
+            },
+            {
+              label: "Home Location",
+              value: user.locationName ?? "Not assigned",
             },
           ]}
         />
