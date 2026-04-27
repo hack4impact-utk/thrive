@@ -7,7 +7,8 @@ import UserTable, {
   type LocationOption,
   type UserRecord,
 } from "@/components/ui/UserTable";
-import UserTableFilters from "@/components/ui/UserTable/UserTableFilters";
+import UserTableFilterPopover from "@/components/ui/UserTable/UserTableFilterPopover";
+import UserTableSearch from "@/components/ui/UserTable/UserTableSearch";
 
 type HoursSort = "desc" | "asc" | null;
 
@@ -43,26 +44,28 @@ export default function UserManagementClient({
 
   return (
     <Stack spacing={4}>
+      <Box>
+        <Typography variant="h5" fontWeight={700} gutterBottom>
+          User Management
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          A condensed view of each user&apos;s name, contact details, and
+          account role.
+        </Typography>
+      </Box>
+
       <Box
         sx={{
           display: "flex",
-          alignItems: "flex-start",
+          alignItems: "center",
           justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: 2,
         }}
       >
-        <Box>
-          <Typography variant="h5" fontWeight={700} gutterBottom>
-            User Management
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            A condensed view of each user&apos;s name, contact details, and
-            account role.
-          </Typography>
-        </Box>
         <Suspense fallback={null}>
-          <UserTableFilters
+          <UserTableSearch />
+        </Suspense>
+        <Suspense fallback={null}>
+          <UserTableFilterPopover
             locationOptions={locationOptions}
             neighborhoodOptions={neighborhoodOptions}
           />

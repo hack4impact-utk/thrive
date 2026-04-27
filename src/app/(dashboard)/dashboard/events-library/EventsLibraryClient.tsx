@@ -64,9 +64,9 @@ export default function EventsLibraryClient({
       <Box
         sx={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: "flex-start",
+          justifyContent: { md: "space-between" },
           gap: 2,
         }}
       >

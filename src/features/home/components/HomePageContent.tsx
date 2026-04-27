@@ -98,13 +98,6 @@ export default function HomePageContent({
           alignItems: "center",
         }}
       >
-        <Filters
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          filters={filters}
-          onFiltersChange={setFilters}
-        />
-
         <ButtonGroup
           variant="outlined"
           sx={{
@@ -148,6 +141,13 @@ export default function HomePageContent({
             <CalendarMonthIcon sx={{ color: "#555555" }} />
           </IconButton>
         </ButtonGroup>
+
+        <Filters
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          filters={filters}
+          onFiltersChange={setFilters}
+        />
       </Box>
 
       {activeView === "list" && (
