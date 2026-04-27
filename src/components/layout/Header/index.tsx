@@ -15,12 +15,15 @@ export default function Header(): React.ReactElement {
   const { data: session, status } = useSession();
   const role = session?.user?.role;
   const canCreate = role === "admin" || role === "manager";
-  const headerColor = { admin: "secondary.main", manager: "#276636" };
-  const fontColor = { admin: "#ffffff", manager: "#ffffff" };
+  const headerColor = { admin: "admin.main", manager: "manager.main" };
+  const fontColor = {
+    admin: "admin.contrastText",
+    manager: "manager.contrastText",
+  };
   const appBarSx =
     role && role in headerColor
-      ? { backgroundColor: headerColor[role as keyof typeof headerColor] }
-      : { backgroundColor: "#fff" };
+      ? { bgcolor: headerColor[role as keyof typeof headerColor] }
+      : { bgcolor: "#fff" };
 
   return (
     <Box
