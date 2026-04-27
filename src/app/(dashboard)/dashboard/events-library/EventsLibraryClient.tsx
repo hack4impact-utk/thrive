@@ -11,11 +11,21 @@ type EventsLibraryClientProps = {
   accentColor: string;
 };
 
-function matchesFilters(event: EventRecord, filters: FilterState, searchQuery: string): boolean {
-  if (searchQuery && !event.title.toLowerCase().includes(searchQuery.toLowerCase())) {
+function matchesFilters(
+  event: EventRecord,
+  filters: FilterState,
+  searchQuery: string,
+): boolean {
+  if (
+    searchQuery &&
+    !event.title.toLowerCase().includes(searchQuery.toLowerCase())
+  ) {
     return false;
   }
-  if (filters.dateFrom && event.eventDate < filters.dateFrom.format("YYYY-MM-DD")) {
+  if (
+    filters.dateFrom &&
+    event.eventDate < filters.dateFrom.format("YYYY-MM-DD")
+  ) {
     return false;
   }
   if (filters.dateTo && event.eventDate > filters.dateTo.format("YYYY-MM-DD")) {
@@ -25,11 +35,13 @@ function matchesFilters(event: EventRecord, filters: FilterState, searchQuery: s
     return false;
   }
   if (filters.registrationStatus === "full") {
-    const isFull = event.capacity !== null && event.registeredUsers >= event.capacity;
+    const isFull =
+      event.capacity !== null && event.registeredUsers >= event.capacity;
     if (!isFull) return false;
   }
   if (filters.registrationStatus === "available") {
-    const isFull = event.capacity !== null && event.registeredUsers >= event.capacity;
+    const isFull =
+      event.capacity !== null && event.registeredUsers >= event.capacity;
     if (isFull) return false;
   }
   return true;
@@ -49,7 +61,15 @@ export default function EventsLibraryClient({
 
   return (
     <Stack spacing={4}>
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 2,
+        }}
+      >
         <Box>
           <Typography variant="h5" fontWeight={700} gutterBottom>
             Events Library

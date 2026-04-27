@@ -215,7 +215,7 @@ export default function RoleCell({
           {showLocationPicker && (
             <FormControl size="small" fullWidth>
               <InputLabel shrink id="location-select-label">
-                Home Location
+                Assigned Location
               </InputLabel>
               <Select
                 labelId="location-select-label"

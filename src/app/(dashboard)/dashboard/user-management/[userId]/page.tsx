@@ -248,7 +248,7 @@ export default async function UserDetailPage({
               value: user.infoFilled ? "Completed" : "Incomplete",
             },
             {
-              label: "Home Location",
+              label: "Assigned Location",
               value: user.locationName ?? "Not assigned",
             },
           ]}
