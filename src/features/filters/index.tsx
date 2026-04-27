@@ -122,18 +122,6 @@ export default function Filters({
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Search>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Search"
-          inputProps={{ "aria-label": "search" }}
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-        />
-      </Search>
-
       <Badge badgeContent={activeFilterCount || null} color="primary">
         <Button
           size="large"
@@ -149,6 +137,18 @@ export default function Filters({
           Filters
         </Button>
       </Badge>
+
+      <Search>
+        <SearchIconWrapper>
+          <SearchIcon />
+        </SearchIconWrapper>
+        <StyledInputBase
+          placeholder="Search"
+          inputProps={{ "aria-label": "search" }}
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+        />
+      </Search>
 
       <Popover
         open={Boolean(anchorEl)}

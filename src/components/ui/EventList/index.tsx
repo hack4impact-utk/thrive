@@ -62,9 +62,9 @@ function CapacityIndicator({
   capacity: number | null;
 }): React.ReactElement {
   const isUnlimited = capacity === null || capacity === 0;
-  const progress = !isUnlimited
-    ? Math.min((registered / capacity!) * 100, 100)
-    : 0;
+  const progress = isUnlimited
+    ? 0
+    : Math.min((registered / capacity!) * 100, 100);
 
   return (
     <Box sx={{ minWidth: 160 }}>
@@ -76,7 +76,11 @@ function CapacityIndicator({
           >
             REQUESTED
           </Typography>
-          <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
+          <Typography
+            variant="body2"
+            color="text.primary"
+            sx={{ fontWeight: 700 }}
+          >
             {isUnlimited ? "Unlimited" : capacity}
           </Typography>
         </Box>
@@ -87,7 +91,11 @@ function CapacityIndicator({
           >
             FILLED
           </Typography>
-          <Typography variant="body2" color="text.primary" sx={{ fontWeight: 700 }}>
+          <Typography
+            variant="body2"
+            color="text.primary"
+            sx={{ fontWeight: 700 }}
+          >
             {registered}
           </Typography>
         </Box>
@@ -121,7 +129,11 @@ function EventRow({
   isLast: boolean;
 }): React.ReactElement {
   const date = formatDate(event.eventDate);
-  const timeRange = formatTimeRange(event.eventDate, event.startTime, event.endTime);
+  const timeRange = formatTimeRange(
+    event.eventDate,
+    event.startTime,
+    event.endTime,
+  );
   const slotsLabel =
     event.capacity === null
       ? "Unlimited capacity"
@@ -133,9 +145,7 @@ function EventRow({
       href={`/dashboard/events-library/${event.id}`}
       sx={{
         display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 2,
+        flexDirection: "column",
         px: 3,
         py: 2,
         borderBottom: isLast ? "none" : "1px solid",
@@ -148,76 +158,92 @@ function EventRow({
         },
       }}
     >
-      <Stack spacing={0.75} sx={{ minWidth: 0, flex: 1 }}>
-        <Typography
-          variant="body1"
-          sx={{ fontWeight: 600, color: "text.primary", lineHeight: 1.3 }}
-        >
-          {event.title}
-        </Typography>
-
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 1.5,
-            color: "text.secondary",
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <CalendarTodayIcon sx={{ fontSize: 14 }} />
-            <Typography variant="caption">{date}</Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <QueryBuilderIcon sx={{ fontSize: 14 }} />
-            <Typography variant="caption">{timeRange}</Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <PersonIcon sx={{ fontSize: 14 }} />
-            <Typography variant="caption">{slotsLabel}</Typography>
-          </Box>
-
-          {event.locationName && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <BusinessIcon sx={{ fontSize: 14 }} />
-              <Typography variant="caption">{event.locationName}</Typography>
-            </Box>
-          )}
-
-          {event.streetLine && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <LocationPinIcon sx={{ fontSize: 14 }} />
-              <Typography variant="caption">{event.streetLine}</Typography>
-            </Box>
-          )}
-        </Box>
-      </Stack>
-
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={1.5}
-        sx={{ flexShrink: 0 }}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 2,
+        }}
       >
-        <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <CapacityIndicator
-            registered={event.registeredUsers}
-            capacity={event.capacity}
+        <Stack spacing={0.75} sx={{ minWidth: 0, flex: 1 }}>
+          <Typography
+            variant="body1"
+            sx={{ fontWeight: 600, color: "text.primary", lineHeight: 1.3 }}
+          >
+            {event.title}
+          </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1.5,
+              color: "text.secondary",
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <CalendarTodayIcon sx={{ fontSize: 14 }} />
+              <Typography variant="caption">{date}</Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <QueryBuilderIcon sx={{ fontSize: 14 }} />
+              <Typography variant="caption">{timeRange}</Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <PersonIcon sx={{ fontSize: 14 }} />
+              <Typography variant="caption">{slotsLabel}</Typography>
+            </Box>
+
+            {event.locationName && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <BusinessIcon sx={{ fontSize: 14 }} />
+                <Typography variant="caption">{event.locationName}</Typography>
+              </Box>
+            )}
+
+            {event.streetLine && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <LocationPinIcon sx={{ fontSize: 14 }} />
+                <Typography variant="caption">{event.streetLine}</Typography>
+              </Box>
+            )}
+          </Box>
+        </Stack>
+
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1.5}
+          sx={{ flexShrink: 0 }}
+        >
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            <CapacityIndicator
+              registered={event.registeredUsers}
+              capacity={event.capacity}
+            />
+          </Box>
+          <ArrowForwardIcon
+            className="event-arrow"
+            sx={{
+              fontSize: 15,
+              color: "text.secondary",
+              opacity: 0,
+              transform: "translateX(-4px)",
+              transition: "opacity 120ms ease, transform 120ms ease",
+            }}
           />
-        </Box>
-        <ArrowForwardIcon
-          className="event-arrow"
-          sx={{
-            fontSize: 15,
-            color: "text.secondary",
-            opacity: 0,
-            transform: "translateX(-4px)",
-            transition: "opacity 120ms ease, transform 120ms ease",
-          }}
+        </Stack>
+      </Box>
+
+      <Box sx={{ display: { xs: "block", sm: "none" }, mt: 1.5 }}>
+        <CapacityIndicator
+          registered={event.registeredUsers}
+          capacity={event.capacity}
         />
-      </Stack>
+      </Box>
     </Box>
   );
 }
