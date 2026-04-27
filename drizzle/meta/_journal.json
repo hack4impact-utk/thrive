@@ -176,6 +176,13 @@
       "when": 1776866959211,
       "tag": "0024_bouncy_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1777250890956,
+      "tag": "0025_long_maddog",
+      "breakpoints": true
     }
   ]
 }

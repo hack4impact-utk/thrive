@@ -50,7 +50,7 @@ const actions: DashboardAction[] = [
   {
     title: "Manage Locations",
     description: "Add named venues that can be assigned to events.",
-    href: "/dashboard/create-location",
+    href: "/dashboard/manage-locations",
     icon: PlaceIcon,
   },
   {

@@ -114,7 +114,7 @@ export default function CreateLocationPage(): React.ReactElement {
     }
 
     showSnackbar("Location added successfully!", "success");
-    router.push("/dashboard");
+    router.push("/dashboard/manage-locations");
   }
 
   return (
