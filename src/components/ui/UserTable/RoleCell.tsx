@@ -18,8 +18,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-import { updateUserRole } from "@/actions/update-user-role";
 import type { Role } from "@/actions/update-user-role";
+import { updateUserRole } from "@/actions/update-user-role";
 
 const ROLE_LABELS: Record<Role, string> = {
   user: "User",
@@ -30,9 +30,9 @@ const ROLE_LABELS: Record<Role, string> = {
 
 const ALL_ROLES: Role[] = ["user", "kiosk", "manager", "admin"];
 const MANAGER_ROLES: Role[] = ["user", "kiosk", "manager"];
-const LOCATION_ROLES: Role[] = ["manager", "kiosk"];
+const LOCATION_ROLES = new Set<Role>(["manager", "kiosk"]);
 
-type LocationOption = {
+export type LocationOption = {
   id: string;
   name: string;
 };
@@ -44,13 +44,13 @@ function formatRole(role: string): string {
     .join(" ");
 }
 
-interface RoleCellProps {
+type RoleCellProps = {
   userId: string;
   currentRole: string;
   callerRole: string;
   userName: string;
   locations: LocationOption[];
-}
+};
 
 export default function RoleCell({
   userId,
@@ -71,17 +71,19 @@ export default function RoleCell({
   const showLocationPicker =
     callerRole === "admin" &&
     pendingRole !== null &&
-    LOCATION_ROLES.includes(pendingRole);
+    LOCATION_ROLES.has(pendingRole);
 
-  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ): void => {
     setMenuAnchor(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (): void => {
     setMenuAnchor(null);
   };
 
-  const handleRoleSelect = (newRole: Role) => {
+  const handleRoleSelect = (newRole: Role): void => {
     setPendingRole(newRole);
     setSelectedLocationId("");
     setMenuAnchor(null);
@@ -89,14 +91,14 @@ export default function RoleCell({
     setConfirmOpen(true);
   };
 
-  const handleConfirmClose = () => {
+  const handleConfirmClose = (): void => {
     setConfirmOpen(false);
     setPendingRole(null);
     setSelectedLocationId("");
     setError(null);
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (): Promise<void> => {
     if (!pendingRole) return;
     setLoading(true);
     setError(null);
@@ -143,7 +145,11 @@ export default function RoleCell({
         </Typography>
         <ArrowDropDownRoundedIcon
           className="role-arrow"
-          sx={{ fontSize: 18, color: "text.disabled", transition: "color 0.15s" }}
+          sx={{
+            fontSize: 18,
+            color: "text.disabled",
+            transition: "color 0.15s",
+          }}
         />
       </Box>
 
@@ -190,11 +196,17 @@ export default function RoleCell({
         >
           <Typography variant="body2" color="text.secondary">
             Change{" "}
-            <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
+            <Box
+              component="span"
+              sx={{ fontWeight: 600, color: "text.primary" }}
+            >
               {userName}
             </Box>
             {"'s role to "}
-            <Box component="span" sx={{ fontWeight: 600, color: "text.primary" }}>
+            <Box
+              component="span"
+              sx={{ fontWeight: 600, color: "text.primary" }}
+            >
               {pendingRole ? ROLE_LABELS[pendingRole] : ""}
             </Box>
             ?
@@ -202,7 +214,9 @@ export default function RoleCell({
 
           {showLocationPicker && (
             <FormControl size="small" fullWidth>
-              <InputLabel shrink id="location-select-label">Home Location</InputLabel>
+              <InputLabel shrink id="location-select-label">
+                Home Location
+              </InputLabel>
               <Select
                 labelId="location-select-label"
                 label="Home Location"

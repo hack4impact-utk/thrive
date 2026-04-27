@@ -9,8 +9,8 @@ import getUserSession from "@/utils/auth/get-user-session";
 
 export type Role = "user" | "kiosk" | "manager" | "admin";
 
-const ALLOWED_ROLES: Role[] = ["user", "kiosk", "manager", "admin"];
-const LOCATION_ROLES: Role[] = ["manager", "kiosk"];
+const ALLOWED_ROLES = new Set<Role>(["user", "kiosk", "manager", "admin"]);
+const LOCATION_ROLES = new Set<Role>(["manager", "kiosk"]);
 
 export async function updateUserRole(
   targetUserId: string,
@@ -29,13 +29,13 @@ export async function updateUserRole(
     throw new Error("Managers cannot promote users to admin");
   }
 
-  if (!ALLOWED_ROLES.includes(newRole)) {
+  if (!ALLOWED_ROLES.has(newRole)) {
     throw new Error("Invalid role");
   }
 
   let resolvedLocationId: string | null = null;
 
-  if (LOCATION_ROLES.includes(newRole)) {
+  if (LOCATION_ROLES.has(newRole)) {
     if (callerRole === "manager") {
       const [caller] = await db
         .select({ locationId: users.locationId })
