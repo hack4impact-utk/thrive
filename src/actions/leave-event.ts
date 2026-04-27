@@ -4,6 +4,7 @@ import { and, count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
+import { sendEmail } from "@/lib/email";
 import getUserSession from "@/utils/auth/get-user-session";
 
 export async function leaveEvent(eventId: string): Promise<void> {
@@ -34,7 +35,6 @@ export async function leaveEvent(eventId: string): Promise<void> {
     .set({ registeredUsers: newCount })
     .where(eq(events.id, eventId));
 
-  // ✅ Remove the attendee row for this user + event
   await db
     .delete(eventAttendees)
     .where(
@@ -43,4 +43,17 @@ export async function leaveEvent(eventId: string): Promise<void> {
         eq(eventAttendees.userId, session.user.id),
       ),
     );
+
+  if (session.user.email) {
+    await sendEmail({
+      to: session.user.email,
+      subject: `You've unregistered from "${event.title}"`,
+      html: `
+        <p>Hi${session.user.name ? ` ${session.user.name}` : ""},</p>
+        <p>You have successfully unregistered from <strong>${event.title}</strong>.</p>
+        <p>If this was a mistake, you can re-register on the Thrive homepage.</p>
+        <p>— The Thrive Team</p>
+      `,
+    }).catch(console.error);
+  }
 }

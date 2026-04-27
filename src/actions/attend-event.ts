@@ -4,6 +4,7 @@ import { count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
+import { sendEmail } from "@/lib/email";
 import getUserSession from "@/utils/auth/get-user-session";
 
 export async function attendEvent(eventId: string): Promise<void> {
@@ -46,4 +47,19 @@ export async function attendEvent(eventId: string): Promise<void> {
       userId: session.user.id,
     })
     .onConflictDoNothing();
+
+  if (session.user.email) {
+    await sendEmail({
+      to: session.user.email,
+      subject: `You're registered for "${event.title}"!`,
+      html: `
+        <p>Hi${session.user.name ? ` ${session.user.name}` : ""},</p>
+        <p>You have successfully registered for <strong>${event.title}</strong>.</p>
+        <p><strong>Date:</strong> ${event.eventDate}<br/>
+        <strong>Time:</strong> ${event.startTime} – ${event.endTime}</p>
+        <p>We look forward to seeing you there!</p>
+        <p>— The Thrive Team</p>
+      `,
+    }).catch(console.error);
+  }
 }
