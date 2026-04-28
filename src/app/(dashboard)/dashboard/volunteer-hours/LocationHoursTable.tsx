@@ -138,7 +138,7 @@ function LocationDetailRow({
                     sx={{
                       display: "grid",
                       gridTemplateColumns:
-                        "180px minmax(min-content, 1fr) 110px 70px",
+                        "repeat(4, minmax(min-content, 1fr))",
                       gap: 1,
                       py: 0.75,
                       borderBottom:
@@ -156,7 +156,12 @@ function LocationDetailRow({
                     >
                       {a.eventTitle}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      noWrap
+                      sx={{ textAlign: "center" }}
+                    >
                       {fmtEventDate(a.eventDate)}
                     </Typography>
                     <Typography
