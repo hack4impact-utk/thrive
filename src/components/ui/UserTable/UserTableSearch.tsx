@@ -43,7 +43,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function UserTableSearch(): React.ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const debounceTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceTimer = React.useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   const [localSearch, setLocalSearch] = React.useState(
     searchParams.get("search") ?? "",
