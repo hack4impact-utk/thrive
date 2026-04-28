@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Stack, Typography } from "@mui/material";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
 
 import UserTable, {
@@ -16,31 +17,76 @@ type Props = {
   users: UserRecord[];
   callerRole: string;
   locationOptions: LocationOption[];
-  neighborhoodOptions: string[];
   accentColor: string;
 };
 
-export default function UserManagementClient({
+function UserManagementContent({
   users,
   callerRole,
   locationOptions,
-  neighborhoodOptions,
   accentColor,
 }: Props): React.ReactElement {
+  const searchParams = useSearchParams();
   const [hoursSort, setHoursSort] = useState<HoursSort>(null);
+
+  const search = searchParams.get("search") ?? "";
+  const location = searchParams.get("location") ?? "";
+  const role = searchParams.get("role") ?? "";
+  const neighborhood = searchParams.get("neighborhood") ?? "";
+
+  const neighborhoodOptions = useMemo(() => {
+    const seen = new Set<string>();
+    const result: string[] = [];
+    for (const user of users) {
+      const n = user.preferredNeighborhood;
+      if (n && n.trim() && !seen.has(n)) {
+        seen.add(n);
+        result.push(n);
+      }
+    }
+    return result.sort();
+  }, [users]);
+
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      if (search) {
+        const q = search.toLowerCase();
+        const fullName = [user.firstName, user.lastName]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        const altName = (user.name ?? "").toLowerCase();
+        const email = (user.email ?? "").toLowerCase();
+        const phone = (user.phoneNumber ?? "").toLowerCase();
+        if (
+          !fullName.includes(q) &&
+          !altName.includes(q) &&
+          !email.includes(q) &&
+          !phone.includes(q)
+        ) {
+          return false;
+        }
+      }
+      if (location && user.locationName !== location) return false;
+      if (role && user.role !== role) return false;
+      if (neighborhood && user.preferredNeighborhood !== neighborhood)
+        return false;
+      return true;
+    });
+  }, [users, search, location, role, neighborhood]);
 
   const handleHoursSortToggle = (): void => {
     setHoursSort((prev) => (prev === "desc" ? "asc" : "desc"));
   };
 
   const sortedUsers = useMemo(() => {
-    if (!hoursSort) return users;
-    return [...users].sort((a, b) => {
+    if (!hoursSort) return filteredUsers;
+    return [...filteredUsers].sort((a, b) => {
       const aH = a.hoursVolunteered ?? 0;
       const bH = b.hoursVolunteered ?? 0;
       return hoursSort === "desc" ? bH - aH : aH - bH;
     });
-  }, [users, hoursSort]);
+  }, [filteredUsers, hoursSort]);
 
   return (
     <Stack spacing={4}>
@@ -61,15 +107,11 @@ export default function UserManagementClient({
           justifyContent: "space-between",
         }}
       >
-        <Suspense fallback={null}>
-          <UserTableSearch />
-        </Suspense>
-        <Suspense fallback={null}>
-          <UserTableFilterPopover
-            locationOptions={locationOptions}
-            neighborhoodOptions={neighborhoodOptions}
-          />
-        </Suspense>
+        <UserTableSearch />
+        <UserTableFilterPopover
+          locationOptions={locationOptions}
+          neighborhoodOptions={neighborhoodOptions}
+        />
       </Box>
 
       <UserTable
@@ -82,5 +124,13 @@ export default function UserManagementClient({
         onHoursSortClear={() => setHoursSort(null)}
       />
     </Stack>
+  );
+}
+
+export default function UserManagementClient(props: Props): React.ReactElement {
+  return (
+    <Suspense fallback={null}>
+      <UserManagementContent {...props} />
+    </Suspense>
   );
 }

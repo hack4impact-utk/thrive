@@ -1,5 +1,6 @@
-import { and, asc, eq, ilike, or, SQL } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 import PageContainer from "@/components/layout/PageContainer";
 import type { LocationOption, UserRecord } from "@/components/ui/UserTable";
@@ -10,33 +11,7 @@ import { ROLE_COLORS } from "@/lib/role-colors";
 
 import UserManagementClient from "./UserManagementClient";
 
-type Filters = {
-  search?: string;
-  location?: string;
-  role?: string;
-  neighborhood?: string;
-};
-
-async function getUsers(filters: Filters): Promise<UserRecord[]> {
-  const conditions: SQL<unknown>[] = [];
-
-  if (filters.search) {
-    const pattern = `%${filters.search}%`;
-    const clause = or(
-      ilike(users.name, pattern),
-      ilike(users.email, pattern),
-      ilike(userInfo.firstName, pattern),
-      ilike(userInfo.lastName, pattern),
-      ilike(userInfo.phoneNumber, pattern),
-    );
-    if (clause) conditions.push(clause);
-  }
-
-  if (filters.role) conditions.push(eq(users.role, filters.role));
-  if (filters.location) conditions.push(eq(locations.name, filters.location));
-  if (filters.neighborhood)
-    conditions.push(eq(userInfo.preferredNeighborhood, filters.neighborhood));
-
+async function getUsers(): Promise<UserRecord[]> {
   return db
     .select({
       id: users.id,
@@ -54,7 +29,6 @@ async function getUsers(filters: Filters): Promise<UserRecord[]> {
     .from(users)
     .leftJoin(userInfo, eq(userInfo.userId, users.id))
     .leftJoin(locations, eq(locations.id, users.locationId))
-    .where(conditions.length > 0 ? and(...conditions) : undefined)
     .orderBy(asc(userInfo.lastName), asc(userInfo.firstName), asc(users.email));
 }
 
@@ -66,19 +40,7 @@ async function getLocations(): Promise<LocationOption[]> {
     .orderBy(asc(locations.name));
 }
 
-async function getNeighborhoods(): Promise<string[]> {
-  const rows = await db
-    .selectDistinct({ neighborhood: userInfo.preferredNeighborhood })
-    .from(userInfo)
-    .orderBy(asc(userInfo.preferredNeighborhood));
-  return rows.map((r) => r.neighborhood).filter((n) => n.trim().length > 0);
-}
-
-export default async function UserManagementPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string>>;
-}): Promise<React.ReactElement> {
+export default async function UserManagementPage(): Promise<React.ReactElement> {
   const session = await auth();
   const callerRole = session?.user?.role ?? "";
 
@@ -86,25 +48,24 @@ export default async function UserManagementPage({
     redirect("/dashboard");
   }
 
-  const { search, location, role, neighborhood } = await searchParams;
   const accentColor =
     callerRole === "manager" ? ROLE_COLORS.manager : ROLE_COLORS.admin;
 
-  const [people, locationOptions, neighborhoodOptions] = await Promise.all([
-    getUsers({ search, location, role, neighborhood }),
+  const [people, locationOptions] = await Promise.all([
+    getUsers(),
     getLocations(),
-    getNeighborhoods(),
   ]);
 
   return (
     <PageContainer sx={{ py: { xs: 4, md: 6 } }}>
-      <UserManagementClient
-        users={people}
-        callerRole={callerRole}
-        locationOptions={locationOptions}
-        neighborhoodOptions={neighborhoodOptions}
-        accentColor={accentColor}
-      />
+      <Suspense fallback={null}>
+        <UserManagementClient
+          users={people}
+          callerRole={callerRole}
+          locationOptions={locationOptions}
+          accentColor={accentColor}
+        />
+      </Suspense>
     </PageContainer>
   );
 }
