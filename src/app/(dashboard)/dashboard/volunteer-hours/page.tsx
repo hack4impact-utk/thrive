@@ -1,26 +1,16 @@
-import {
-  alpha,
-  Box,
-  Paper,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { and, eq, gte, lte, ne } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
-import { eventAttendees, events, locations } from "@/db/schema";
+import { eventAttendees, events, locations, userInfo } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { ROLE_COLORS } from "@/lib/role-colors";
 
+import type { AttendeeEntry, LocationRow } from "./LocationHoursTable";
+import LocationHoursTable from "./LocationHoursTable";
 import VolunteerHoursFilters from "./VolunteerHoursFilters";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -33,24 +23,6 @@ function toMinutes(t: string): number {
 function calcHours(start: string, end: string): number {
   return (toMinutes(end) - toMinutes(start)) / 60;
 }
-
-function fmtHours(h: number): string {
-  return `${h % 1 === 0 ? String(h) : String(Number.parseFloat(h.toFixed(2)))} hrs`;
-}
-
-const headerCellSx = (color: string) =>
-  ({
-    fontWeight: 700,
-    fontSize: "0.7rem",
-    letterSpacing: 0.9,
-    textTransform: "uppercase" as const,
-    color: alpha(color, 0.7),
-    bgcolor: alpha(color, 0.04),
-    borderBottom: "1px solid",
-    borderBottomColor: alpha(color, 0.12),
-    py: 1.5,
-    whiteSpace: "nowrap" as const,
-  }) as const;
 
 type Props = { searchParams: SearchParams };
 
@@ -86,10 +58,15 @@ export default async function VolunteerHoursPage({
         locationName: locations.name,
         startTime: events.startTime,
         endTime: events.endTime,
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        eventTitle: events.title,
+        eventDate: events.eventDate,
       })
       .from(eventAttendees)
       .innerJoin(events, eq(events.id, eventAttendees.eventId))
       .leftJoin(locations, eq(locations.id, events.locationId))
+      .leftJoin(userInfo, eq(userInfo.userId, eventAttendees.userId))
       .where(and(...conditions)),
 
     db
@@ -99,17 +76,38 @@ export default async function VolunteerHoursPage({
       .orderBy(locations.name),
   ]);
 
-  const byLocation = new Map<string, number>();
+  const byLocation = new Map<
+    string,
+    { hours: number; attendees: AttendeeEntry[] }
+  >();
+
   for (const row of rows) {
     const key = row.locationName ?? "No Location";
-    byLocation.set(
-      key,
-      (byLocation.get(key) ?? 0) + calcHours(row.startTime, row.endTime),
+    if (!byLocation.has(key)) {
+      byLocation.set(key, { hours: 0, attendees: [] });
+    }
+    const loc = byLocation.get(key)!;
+    const h = calcHours(row.startTime, row.endTime);
+    loc.hours += h;
+    loc.attendees.push({
+      volunteerName:
+        [row.firstName, row.lastName].filter(Boolean).join(" ") || "Unknown",
+      eventTitle: row.eventTitle,
+      eventDate: row.eventDate,
+      hours: h,
+    });
+  }
+
+  for (const loc of byLocation.values()) {
+    loc.attendees.sort(
+      (a, b) =>
+        a.eventDate.localeCompare(b.eventDate) ||
+        a.volunteerName.localeCompare(b.volunteerName),
     );
   }
 
-  const locationRows = [...byLocation.entries()]
-    .map(([name, hours]) => ({ name, hours }))
+  const locationRows: LocationRow[] = [...byLocation.entries()]
+    .map(([name, d]) => ({ name, hours: d.hours, attendees: d.attendees }))
     .sort((a, b) => b.hours - a.hours);
 
   return (
@@ -143,51 +141,10 @@ export default async function VolunteerHoursPage({
           {locationRows.length === 0 ? (
             <EmptyState />
           ) : (
-            <TableContainer
-              component={Paper}
-              elevation={0}
-              sx={{
-                border: "1px solid",
-                borderColor: "divider",
-                borderRadius: 2,
-              }}
-            >
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    {["Location", "Total Hours"].map((col) => (
-                      <TableCell key={col} sx={headerCellSx(accentColor)}>
-                        {col}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {locationRows.map((row) => (
-                    <TableRow
-                      key={row.name}
-                      sx={{
-                        "&:last-child td": { border: 0 },
-                        "&:hover": { bgcolor: alpha(accentColor, 0.03) },
-                      }}
-                    >
-                      <TableCell sx={{ py: 1.5, fontWeight: 500 }}>
-                        {row.name}
-                      </TableCell>
-                      <TableCell sx={{ py: 1.5 }}>
-                        <Typography
-                          variant="body2"
-                          fontWeight={600}
-                          sx={{ color: accentColor }}
-                        >
-                          {fmtHours(row.hours)}
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <LocationHoursTable
+              locationRows={locationRows}
+              accentColor={accentColor}
+            />
           )}
         </Box>
       </Stack>
