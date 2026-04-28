@@ -4,6 +4,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import FolderSharedIcon from "@mui/icons-material/FolderShared";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PlaceIcon from "@mui/icons-material/Place";
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
 import {
   alpha,
   Box,
@@ -60,6 +61,13 @@ const actions: DashboardAction[] = [
       "Review volunteer profiles, roles, and account access in one place.",
     href: "/dashboard/user-management",
     icon: ManageAccountsIcon,
+  },
+  {
+    title: "Volunteer Hours",
+    description:
+      "Track hours volunteered across all locations and date ranges.",
+    href: "/dashboard/volunteer-hours",
+    icon: VolunteerActivismIcon,
   },
 ];
 
