@@ -90,28 +90,38 @@ function UserManagementContent({
 
   return (
     <Stack spacing={4}>
-      <Box>
-        <Typography variant="h5" fontWeight={700} gutterBottom>
-          User Management
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          A condensed view of each user&apos;s name, contact details, and
-          account role.
-        </Typography>
-      </Box>
-
       <Box
         sx={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: "flex-start",
+          justifyContent: { md: "space-between" },
+          gap: 2,
         }}
       >
-        <UserTableSearch />
-        <UserTableFilterPopover
-          locationOptions={locationOptions}
-          neighborhoodOptions={neighborhoodOptions}
-        />
+        <Box>
+          <Typography variant="h5" fontWeight={700} gutterBottom>
+            User Management
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            A condensed view of each user&apos;s name, contact details, and
+            account role.
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "row-reverse", md: "row" },
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <UserTableSearch />
+          <UserTableFilterPopover
+            locationOptions={locationOptions}
+            neighborhoodOptions={neighborhoodOptions}
+          />
+        </Box>
       </Box>
 
       <UserTable
