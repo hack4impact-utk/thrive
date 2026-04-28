@@ -19,7 +19,6 @@ import {
   type AttendeeResult,
   searchEventAttendees,
 } from "@/actions/search-event-attendees";
-import { DefaultButton } from "@/components/ui/Button";
 import { useSnackbar } from "@/providers/snackbar-provider";
 
 type Props = {
@@ -168,9 +167,16 @@ export default function KioskCheckInContent({
                     "&:last-child": { pb: 1.5 },
                   }}
                 >
-                  <Typography variant="body1" fontWeight={500}>
-                    {attendee.firstName} {attendee.lastName}
-                  </Typography>
+                  <Box>
+                    <Typography variant="body1" fontWeight={500}>
+                      {attendee.firstName} {attendee.lastName}
+                    </Typography>
+                    {attendee.email && (
+                      <Typography variant="body2" color="text.secondary">
+                        {attendee.email}
+                      </Typography>
+                    )}
+                  </Box>
 
                   {attendee.attended ? (
                     <Box
@@ -207,16 +213,6 @@ export default function KioskCheckInContent({
           )}
         </Box>
       )}
-
-      <Divider />
-
-      <Box>
-        <DefaultButton
-          label="← Back to Events"
-          href="/kiosk"
-          variant="outlined"
-        />
-      </Box>
     </Box>
   );
 }

@@ -2,6 +2,7 @@
 
 import BusinessIcon from "@mui/icons-material/Business";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import LocationPinIcon from "@mui/icons-material/LocationPin";
 import PersonIcon from "@mui/icons-material/Person";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import { Box, Card, CardContent, Typography } from "@mui/material";
@@ -31,9 +32,6 @@ export default function KioskEventCard(
     event.startTime,
     event.endTime,
   );
-
-  const spotsLeft =
-    event.capacity === null ? null : event.capacity - event.registeredUsers;
 
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>
@@ -75,9 +73,8 @@ export default function KioskEventCard(
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <PersonIcon fontSize="small" />
             <Typography variant="body2">
-              {spotsLeft === null
-                ? "Unlimited capacity"
-                : `${spotsLeft} slots remaining`}
+              {event.registeredUsers}{" "}
+              {event.registeredUsers === 1 ? "person" : "people"} attending
             </Typography>
           </Box>
 
@@ -90,6 +87,7 @@ export default function KioskEventCard(
 
           {event.streetLine && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <LocationPinIcon fontSize="small" />
               <Typography variant="body2">{event.streetLine}</Typography>
             </Box>
           )}

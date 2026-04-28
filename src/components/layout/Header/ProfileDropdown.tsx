@@ -71,23 +71,36 @@ export default function ProfileDropdown(): React.ReactElement {
           horizontal: "right",
         }}
       >
-        <MenuItem
-          onClick={() => {
-            void router.push("/account/update-profile");
-            handleClose();
-          }}
-        >
-          Update profile
-        </MenuItem>
-        {session?.user?.role === "user" && (
+        {session?.user?.role === "kiosk" ? (
           <MenuItem
             onClick={() => {
-              void router.push("/account/manage-hours");
+              void router.push("/kiosk");
               handleClose();
             }}
           >
-            My hours
+            Today&apos;s Events
           </MenuItem>
+        ) : (
+          <>
+            <MenuItem
+              onClick={() => {
+                void router.push("/account/update-profile");
+                handleClose();
+              }}
+            >
+              Update profile
+            </MenuItem>
+            {session?.user?.role === "user" && (
+              <MenuItem
+                onClick={() => {
+                  void router.push("/account/manage-hours");
+                  handleClose();
+                }}
+              >
+                My hours
+              </MenuItem>
+            )}
+          </>
         )}
         <MenuItem
           onClick={() => {
