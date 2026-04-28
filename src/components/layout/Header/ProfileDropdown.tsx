@@ -90,7 +90,8 @@ export default function ProfileDropdown(): React.ReactElement {
             >
               Update profile
             </MenuItem>
-            {(session?.user?.role === "user" || session?.user?.role === "admin") && (
+            {(session?.user?.role === "user" ||
+              session?.user?.role === "admin") && (
               <MenuItem
                 onClick={() => {
                   void router.push("/account/manage-hours");
