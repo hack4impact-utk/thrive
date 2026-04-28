@@ -93,6 +93,7 @@ type FiltersProps = {
   onSearchChange: (value: string) => void;
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
+  keepOrder?: boolean;
 };
 
 export default function Filters({
@@ -100,6 +101,7 @@ export default function Filters({
   onSearchChange,
   filters,
   onFiltersChange,
+  keepOrder = false,
 }: FiltersProps): React.ReactElement {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
@@ -124,7 +126,7 @@ export default function Filters({
     <Box
       sx={{
         display: "flex",
-        flexDirection: { xs: "row-reverse", md: "row" },
+        flexDirection: keepOrder ? "row" : { xs: "row-reverse", md: "row" },
         alignItems: "center",
         gap: 1,
       }}

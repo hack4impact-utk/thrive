@@ -147,6 +147,7 @@ export default function HomePageContent({
           onSearchChange={setSearchQuery}
           filters={filters}
           onFiltersChange={setFilters}
+          keepOrder
         />
       </Box>
 
