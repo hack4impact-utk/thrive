@@ -55,5 +55,5 @@ export async function getUpcomingEvents(): Promise<EventRow[]> {
         lte(events.eventDate, threeMonthsStr),
       ),
     )
-    .orderBy(asc(events.eventDate));
+    .orderBy(asc(events.eventDate), asc(events.startTime));
 }
