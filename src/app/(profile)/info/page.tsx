@@ -107,7 +107,7 @@ export default function BasicInfoForm(): React.ReactElement {
     fetch("/api/locations")
       .then((r) => r.json())
       .then(setLocationOptions)
-      .catch(() => {});
+      .catch(Object);
   }, []);
 
   const [form, setForm] = React.useState<BasicInfoFormState>({

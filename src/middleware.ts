@@ -45,7 +45,13 @@ export default withAuth(
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
-    if (isLoggedIn && !infoFilled && !isInfoPage && !isApiRoute && role !== "kiosk") {
+    if (
+      isLoggedIn &&
+      !infoFilled &&
+      !isInfoPage &&
+      !isApiRoute &&
+      role !== "kiosk"
+    ) {
       return NextResponse.redirect(new URL("/info", request.url));
     }
 
