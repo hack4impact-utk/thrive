@@ -9,10 +9,15 @@ type SnackbarMessage = {
   message: string;
   severity: SnackbarSeverity;
   key: number;
+  duration?: number;
 };
 
 type SnackbarContextValue = {
-  showSnackbar: (message: string, severity?: SnackbarSeverity) => void;
+  showSnackbar: (
+    message: string,
+    severity?: SnackbarSeverity,
+    duration?: number,
+  ) => void;
 };
 
 export const SnackbarContext = React.createContext<SnackbarContextValue>({
@@ -42,8 +47,15 @@ export default function SnackbarProvider({
   }, [queue, current]);
 
   const showSnackbar = React.useCallback(
-    (message: string, severity: SnackbarSeverity = "success") => {
-      setQueue((prev) => [...prev, { message, severity, key: Date.now() }]);
+    (
+      message: string,
+      severity: SnackbarSeverity = "success",
+      duration?: number,
+    ) => {
+      setQueue((prev) => [
+        ...prev,
+        { message, severity, key: Date.now(), duration },
+      ]);
     },
     [],
   );
@@ -66,7 +78,7 @@ export default function SnackbarProvider({
       <Snackbar
         key={current?.key}
         open={open}
-        autoHideDuration={4000}
+        autoHideDuration={current?.duration ?? 4000}
         onClose={handleClose}
         TransitionProps={{ onExited: handleExited }}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

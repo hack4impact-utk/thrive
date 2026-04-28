@@ -22,6 +22,7 @@ async function getUsers(): Promise<UserRecord[]> {
       phoneNumber: userInfo.phoneNumber,
       hoursVolunteered: userInfo.hoursVolunteered,
       infoFilled: users.infoFilled,
+      onboarded: users.onboarded,
       role: users.role,
       locationName: locations.name,
       preferredNeighborhood: userInfo.preferredNeighborhood,

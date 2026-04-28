@@ -11,6 +11,7 @@ export type AttendeeResult = {
   firstName: string;
   lastName: string;
   email: string | null;
+  onboarded: boolean;
   attended: boolean;
 };
 
@@ -35,6 +36,7 @@ export async function searchEventAttendees(
       firstName: userInfo.firstName,
       lastName: userInfo.lastName,
       email: users.email,
+      onboarded: users.onboarded,
       attended: eventAttendees.attended,
     })
     .from(eventAttendees)

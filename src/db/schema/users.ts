@@ -13,4 +13,5 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   locationId: uuid("location_id").references(() => locations.id),
+  onboarded: boolean("onboarded").notNull().default(false),
 });

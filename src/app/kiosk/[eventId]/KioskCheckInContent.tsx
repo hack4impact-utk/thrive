@@ -56,8 +56,21 @@ export default function KioskCheckInContent({
     }
   }
 
-  async function handleCheckIn(userId: string, name: string): Promise<void> {
+  async function handleCheckIn(
+    userId: string,
+    name: string,
+    onboarded: boolean,
+  ): Promise<void> {
     if (checkInPending) return;
+
+    if (!onboarded) {
+      showSnackbar(
+        `${name} has not completed onboarding. Please see a manager.`,
+        "warning",
+        5000,
+      );
+    }
+
     setCheckInPending(true);
     try {
       await checkInAttendee(eventId, userId);
@@ -201,6 +214,7 @@ export default function KioskCheckInContent({
                         handleCheckIn(
                           attendee.userId,
                           `${attendee.firstName} ${attendee.lastName}`,
+                          attendee.onboarded,
                         )
                       }
                     >

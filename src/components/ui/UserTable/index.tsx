@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
+import OnboardingCell from "./OnboardingCell";
 import RoleCell, { type LocationOption } from "./RoleCell";
 
 export type UserRecord = {
@@ -33,6 +34,7 @@ export type UserRecord = {
   phoneNumber: string | null;
   hoursVolunteered: number | null;
   infoFilled: boolean;
+  onboarded: boolean;
   role: string;
   locationName: string | null;
   preferredNeighborhood: string | null;
@@ -152,6 +154,10 @@ function UserRow({
       </TableCell>
 
       <TableCell sx={{ py: 1.5 }}>
+        <OnboardingCell userId={user.id} onboarded={user.onboarded} />
+      </TableCell>
+
+      <TableCell sx={{ py: 1.5 }}>
         <RoleCell
           userId={user.id}
           currentRole={user.role}
@@ -186,7 +192,12 @@ export default function UserTable({
   onHoursSortClear,
 }: UserTableProps): React.ReactElement {
   const staticLeftCols = ["Name", "Email", "Phone"];
-  const staticRightCols = ["Role", "Assigned Location", "Neighborhood"];
+  const staticRightCols = [
+    "Onboarding",
+    "Role",
+    "Assigned Location",
+    "Neighborhood",
+  ];
 
   return (
     <TableContainer
@@ -271,7 +282,7 @@ export default function UserTable({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={7} sx={{ border: 0, py: 6 }}>
+              <TableCell colSpan={8} sx={{ border: 0, py: 6 }}>
                 <Stack alignItems="center" spacing={0.5}>
                   <Typography variant="body2" fontWeight={600}>
                     No users found
