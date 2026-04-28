@@ -99,6 +99,17 @@ type BasicInfoFormState = {
 };
 
 export default function BasicInfoForm(): React.ReactElement {
+  const [locationOptions, setLocationOptions] = React.useState<
+    { name: string }[]
+  >([]);
+
+  React.useEffect(() => {
+    fetch("/api/locations")
+      .then((r) => r.json())
+      .then(setLocationOptions)
+      .catch(() => {});
+  }, []);
+
   const [form, setForm] = React.useState<BasicInfoFormState>({
     firstName: "",
     lastName: "",
@@ -338,16 +349,9 @@ export default function BasicInfoForm(): React.ReactElement {
           onChange={handleChange}
           label="Neighborhood"
         >
-          {[
-            "Lonsdale",
-            "Parkridge",
-            "New Hopewell",
-            "Papermill",
-            "West View",
-            "Westland",
-          ].map((loc) => (
-            <MenuItem key={loc} value={loc}>
-              {loc}
+          {locationOptions.map((loc) => (
+            <MenuItem key={loc.name} value={loc.name}>
+              {loc.name}
             </MenuItem>
           ))}
         </Select>

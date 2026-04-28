@@ -8,6 +8,7 @@ export default withAuth(
 
     const isKioskPage = pathname.startsWith("/kiosk");
     const isInfoPage = pathname.startsWith("/info");
+    const isApiRoute = pathname.startsWith("/api");
     const isProtectedRoute = pathname.startsWith("/dashboard");
     const isAdminOnlyDashboardRoute = pathname.startsWith(
       "/dashboard/events-library",
@@ -44,7 +45,7 @@ export default withAuth(
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
-    if (isLoggedIn && !infoFilled && !isInfoPage && role !== "kiosk") {
+    if (isLoggedIn && !infoFilled && !isInfoPage && !isApiRoute && role !== "kiosk") {
       return NextResponse.redirect(new URL("/info", request.url));
     }
 
