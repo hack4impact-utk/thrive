@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 import db from "@/db";
@@ -75,6 +76,28 @@ export async function POST(req: Request): Promise<Response> {
     });
 
     return NextResponse.json({ ok: true }, { status: 201 });
+  } catch {
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PATCH(req: Request): Promise<Response> {
+  try {
+    const { id } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    }
+
+    await db
+      .update(recurringEvents)
+      .set({ active: false })
+      .where(eq(recurringEvents.id, id));
+
+    return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json(
       { error: "Internal server error" },
