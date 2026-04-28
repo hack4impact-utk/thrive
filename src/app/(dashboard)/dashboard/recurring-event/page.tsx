@@ -30,9 +30,11 @@ type Location = {
   postalCode: string;
 };
 
-type CreateEventFormState = {
+type RecurringEventFormState = {
   title: string;
-  eventDate: string;
+  frequency: string;
+  startDate: string;
+  endDate: string;
   startTime: string;
   endTime: string;
   capacity: string;
@@ -41,13 +43,22 @@ type CreateEventFormState = {
 };
 
 type FormErrors = Partial<
-  Record<keyof CreateEventFormState | "capacity", string>
+  Record<keyof RecurringEventFormState | "capacity", string>
 >;
 
+const FREQUENCY_OPTIONS = [
+  { value: "daily", label: "Daily" },
+  { value: "weekly", label: "Weekly" },
+  { value: "biweekly", label: "Every 2 weeks" },
+  { value: "monthly", label: "Monthly" },
+];
+
 export default function RecurringEventCreationForm(): React.ReactElement {
-  const [form, setForm] = React.useState<CreateEventFormState>({
+  const [form, setForm] = React.useState<RecurringEventFormState>({
     title: "",
-    eventDate: "",
+    frequency: "",
+    startDate: "",
+    endDate: "",
     startTime: "",
     endTime: "",
     capacity: "",
@@ -63,10 +74,9 @@ export default function RecurringEventCreationForm(): React.ReactElement {
   const { showSnackbar } = useSnackbar();
 
   React.useEffect(() => {
-    fetch("/api/locations")
+    void fetch("/api/locations")
       .then((r) => r.json())
-      .then(setLocationOptions)
-      .catch(console.error);
+      .then(setLocationOptions);
   }, []);
 
   function handleChange(
@@ -87,7 +97,10 @@ export default function RecurringEventCreationForm(): React.ReactElement {
     if (!form.description.trim())
       newErrors.description = "Description is required";
     if (!form.locationId) newErrors.locationId = "Location is required";
-    if (!form.eventDate) newErrors.eventDate = "Event date is required";
+    if (!form.frequency) newErrors.frequency = "Frequency is required";
+    if (!form.startDate) newErrors.startDate = "Start date is required";
+    if (form.endDate && form.endDate < form.startDate)
+      newErrors.endDate = "End date must be after start date";
     if (!form.startTime) newErrors.startTime = "Start time is required";
     if (!form.endTime) newErrors.endTime = "End time is required";
     if (!unlimitedCapacity && !form.capacity)
@@ -98,12 +111,14 @@ export default function RecurringEventCreationForm(): React.ReactElement {
       return;
     }
 
-    const res = await fetch("/api/events", {
+    const res = await fetch("/api/recurring-events", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: form.title,
-        eventDate: form.eventDate,
+        frequency: form.frequency,
+        startDate: form.startDate,
+        endDate: form.endDate || null,
         startTime: form.startTime,
         endTime: form.endTime,
         capacity: unlimitedCapacity ? null : Number(form.capacity),
@@ -114,17 +129,21 @@ export default function RecurringEventCreationForm(): React.ReactElement {
     });
 
     if (!res.ok) {
-      const text = await res.text();
-      console.error("Create recurring event failed:", res.status, text);
+      showSnackbar(
+        "Failed to create recurring event. Please try again.",
+        "error",
+      );
       return;
     }
 
     showSnackbar("Recurring event created successfully!", "success");
-    router.push("/");
+    router.push("/dashboard");
 
     setForm({
       title: "",
-      eventDate: "",
+      frequency: "",
+      startDate: "",
+      endDate: "",
       startTime: "",
       endTime: "",
       capacity: "",
@@ -192,18 +211,56 @@ export default function RecurringEventCreationForm(): React.ReactElement {
         )}
       </FormControl>
 
-      <TextField
-        name="eventDate"
-        type="date"
-        label="Event Date"
-        required
-        fullWidth
-        value={form.eventDate}
-        onChange={handleChange}
-        InputLabelProps={{ shrink: true }}
-        error={!!errors.eventDate}
-        helperText={errors.eventDate}
-      />
+      <FormControl fullWidth required error={!!errors.frequency}>
+        <InputLabel id="frequency-label">Frequency</InputLabel>
+        <Select
+          labelId="frequency-label"
+          value={form.frequency}
+          label="Frequency"
+          onChange={(e) => {
+            setForm((prev) => ({ ...prev, frequency: e.target.value }));
+            setErrors((prev) => ({ ...prev, frequency: undefined }));
+          }}
+        >
+          <MenuItem value="">
+            <em>Select frequency</em>
+          </MenuItem>
+          {FREQUENCY_OPTIONS.map((opt) => (
+            <MenuItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </MenuItem>
+          ))}
+        </Select>
+        {errors.frequency && (
+          <FormHelperText>{errors.frequency}</FormHelperText>
+        )}
+      </FormControl>
+
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <TextField
+          name="startDate"
+          type="date"
+          label="Start Date"
+          required
+          fullWidth
+          value={form.startDate}
+          onChange={handleChange}
+          InputLabelProps={{ shrink: true }}
+          error={!!errors.startDate}
+          helperText={errors.startDate}
+        />
+        <TextField
+          name="endDate"
+          type="date"
+          label="End Date (optional)"
+          fullWidth
+          value={form.endDate}
+          onChange={handleChange}
+          InputLabelProps={{ shrink: true }}
+          error={!!errors.endDate}
+          helperText={errors.endDate ?? "Leave blank for no end date"}
+        />
+      </Box>
 
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Box sx={{ display: "flex", gap: 2 }}>
