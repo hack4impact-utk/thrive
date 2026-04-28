@@ -1,5 +1,5 @@
 const RESEND_API_URL = "https://api.resend.com/emails";
-const FROM_ADDRESS = "Thrive <onboarding@resend.dev>";
+const FROM_ADDRESS = "Thrive <noreply@thrive.utkh4i.com>";
 
 type SendEmailOptions = {
   to: string;
