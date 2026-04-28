@@ -37,6 +37,7 @@ export type CalendarEvent = {
   streetLine: string | null;
   description: string;
   isRegistered?: boolean;
+  isAttended?: boolean;
 };
 
 type CalendarViewProps = {
@@ -69,6 +70,12 @@ const PILL_STYLES = {
     hoverBg: "action.hover",
     text: "primary.main",
     outlined: true,
+  },
+  attended: {
+    bg: "grey.200",
+    hoverBg: "grey.200",
+    text: "text.disabled",
+    outlined: false,
   },
   full: {
     bg: "grey.300",
@@ -317,11 +324,13 @@ export default function CalendarView({
                               const eventIsFull =
                                 event.capacity !== null &&
                                 event.capacity - eventRegisteredUsers <= 0;
-                              const pill = isRegistered
-                                ? PILL_STYLES.registered
-                                : eventIsFull
-                                  ? PILL_STYLES.full
-                                  : PILL_STYLES.canRegister;
+                              const pill = event.isAttended
+                                ? PILL_STYLES.attended
+                                : isRegistered
+                                  ? PILL_STYLES.registered
+                                  : eventIsFull
+                                    ? PILL_STYLES.full
+                                    : PILL_STYLES.canRegister;
 
                               return (
                                 <Box
@@ -521,31 +530,36 @@ export default function CalendarView({
                   {selectedEvent.description}
                 </Typography>
 
-                {/* Register / Unregister button */}
-                {status === "authenticated" && (
-                  <Button
-                    fullWidth
-                    variant={isRegistered ? "outlined" : "contained"}
-                    color="primary"
-                    disabled={isPending || (isFull && !isRegistered)}
-                    onClick={handleRegister}
-                    startIcon={
-                      isPending ? (
-                        <CircularProgress size={16} color="inherit" />
-                      ) : null
-                    }
-                  >
-                    {isPending
-                      ? isRegistered
-                        ? "Unregistering…"
-                        : "Registering…"
-                      : isFull && !isRegistered
-                        ? "Event Full"
-                        : isRegistered
-                          ? "Unregister"
-                          : "Register"}
-                  </Button>
-                )}
+                {/* Register / Unregister / Attended button */}
+                {status === "authenticated" &&
+                  (selectedEvent.isAttended ? (
+                    <Button fullWidth variant="outlined" disabled>
+                      Attended
+                    </Button>
+                  ) : (
+                    <Button
+                      fullWidth
+                      variant={isRegistered ? "outlined" : "contained"}
+                      color="primary"
+                      disabled={isPending || (isFull && !isRegistered)}
+                      onClick={handleRegister}
+                      startIcon={
+                        isPending ? (
+                          <CircularProgress size={16} color="inherit" />
+                        ) : null
+                      }
+                    >
+                      {isPending
+                        ? isRegistered
+                          ? "Unregistering…"
+                          : "Registering…"
+                        : isFull && !isRegistered
+                          ? "Event Full"
+                          : isRegistered
+                            ? "Unregister"
+                            : "Register"}
+                    </Button>
+                  ))}
               </Paper>
             );
           })()}

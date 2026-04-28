@@ -29,6 +29,7 @@ type VolunteerEventCardProps = {
   streetLine: string | null;
   description: string;
   isRegistered?: boolean;
+  isAttended?: boolean;
   regOverride?: RegOverride;
   onRegChange: (eventId: string, override: RegOverride) => void;
 };
@@ -71,15 +72,18 @@ export default function VolunteerEventCard(
           {status === "authenticated" && (
             <DefaultButton
               label={
-                isFull && !isRegistered
-                  ? "Event Full"
-                  : isRegistered
-                    ? "Unregister"
-                    : "Register"
+                event.isAttended
+                  ? "Attended"
+                  : isFull && !isRegistered
+                    ? "Event Full"
+                    : isRegistered
+                      ? "Unregister"
+                      : "Register"
               }
               href="/"
-              disabled={isFull && !isRegistered}
+              disabled={event.isAttended || (isFull && !isRegistered)}
               onClick={async () => {
+                if (event.isAttended) return;
                 if (isPending) return;
 
                 setIsPending(true);
@@ -124,7 +128,9 @@ export default function VolunteerEventCard(
                   setIsPending(false);
                 }
               }}
-              variant={isRegistered ? "outlined" : "contained"}
+              variant={
+                event.isAttended || isRegistered ? "outlined" : "contained"
+              }
             />
           )}
         </Box>

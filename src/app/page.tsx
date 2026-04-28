@@ -16,16 +16,23 @@ export default async function HomePage(): Promise<React.ReactElement> {
 
   const registrations = userId
     ? await db
-        .select({ eventId: eventAttendees.eventId })
+        .select({
+          eventId: eventAttendees.eventId,
+          attended: eventAttendees.attended,
+        })
         .from(eventAttendees)
         .where(eq(eventAttendees.userId, userId))
     : [];
 
   const registeredSet = new Set(registrations.map((r) => r.eventId));
+  const attendedSet = new Set(
+    registrations.filter((r) => r.attended).map((r) => r.eventId),
+  );
 
   const eventsWithState = events.map((e) => ({
     ...e,
     isRegistered: userId ? registeredSet.has(e.id) : false,
+    isAttended: userId ? attendedSet.has(e.id) : false,
   }));
 
   return (

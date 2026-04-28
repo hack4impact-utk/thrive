@@ -19,6 +19,7 @@ type HomePageClientProps = {
     streetLine: string | null;
     description: string;
     isRegistered?: boolean;
+    isAttended?: boolean;
   }[];
   regOverrides: Record<string, RegOverride>;
   onRegChange: (eventId: string, override: RegOverride) => void;
@@ -105,6 +106,7 @@ export default function ListView({
                 streetLine={event.streetLine}
                 description={event.description}
                 isRegistered={event.isRegistered}
+                isAttended={event.isAttended}
                 regOverride={regOverrides[event.id]}
                 onRegChange={onRegChange}
               />
