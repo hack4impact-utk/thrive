@@ -1,4 +1,4 @@
-import { pgTable, primaryKey, text, uuid } from "drizzle-orm/pg-core";
+import { boolean, pgTable, primaryKey, text, uuid } from "drizzle-orm/pg-core";
 
 import { events } from "./events";
 import { users } from "./users";
@@ -13,6 +13,8 @@ export const eventAttendees = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+
+    attended: boolean("attended").default(false).notNull(),
   },
   (table) => ({
     pk: primaryKey({
