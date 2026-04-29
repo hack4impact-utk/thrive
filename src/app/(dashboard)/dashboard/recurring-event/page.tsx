@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
 import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
@@ -19,7 +19,9 @@ type RecurringEventRow = {
   locationName: string | null;
 };
 
-async function getRecurringEvents(): Promise<RecurringEventRow[]> {
+async function getRecurringEvents(
+  locationId?: string,
+): Promise<RecurringEventRow[]> {
   return db
     .select({
       id: recurringEvents.id,
@@ -32,20 +34,32 @@ async function getRecurringEvents(): Promise<RecurringEventRow[]> {
     })
     .from(recurringEvents)
     .leftJoin(locations, eq(locations.id, recurringEvents.locationId))
+    .where(
+      locationId
+        ? and(eq(recurringEvents.locationId, locationId))
+        : undefined,
+    )
     .orderBy(asc(recurringEvents.startDate));
 }
 
 export default async function RecurringEventsPage(): Promise<React.ReactElement> {
   const session = await auth();
-  const callerRole = session?.user?.role ?? "";
-  const accentColor =
-    callerRole === "manager" ? ROLE_COLORS.manager : ROLE_COLORS.admin;
+  const role = session?.user?.role ?? "";
+  const isManager = role === "manager";
+  const managerLocationId = isManager
+    ? (session?.user?.locationId ?? undefined)
+    : undefined;
 
-  const patterns = await getRecurringEvents();
+  const accentColor = isManager ? ROLE_COLORS.manager : ROLE_COLORS.admin;
+  const patterns = await getRecurringEvents(managerLocationId);
 
   return (
     <PageContainer sx={{ py: { xs: 4, md: 6 } }}>
-      <RecurringEventsClient patterns={patterns} accentColor={accentColor} />
+      <RecurringEventsClient
+        patterns={patterns}
+        accentColor={accentColor}
+        showLocationFilter={!isManager}
+      />
     </PageContainer>
   );
 }

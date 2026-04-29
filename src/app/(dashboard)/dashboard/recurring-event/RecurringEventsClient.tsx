@@ -54,6 +54,7 @@ type RecurringEventRow = {
 type Props = {
   patterns: RecurringEventRow[];
   accentColor: string;
+  showLocationFilter?: boolean;
 };
 
 const FREQUENCY_LABELS: Record<string, string> = {
@@ -100,6 +101,7 @@ type FilterPopoverProps = {
   setShowStopped: (v: boolean) => void;
   activeFilterCount: number;
   onClear: () => void;
+  showLocationFilter: boolean;
 };
 
 function FilterPopover({
@@ -115,6 +117,7 @@ function FilterPopover({
   setShowStopped,
   activeFilterCount,
   onClear,
+  showLocationFilter,
 }: FilterPopoverProps): React.ReactElement {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
@@ -157,26 +160,28 @@ function FilterPopover({
             Filters
           </Typography>
 
-          <FormControl size="small" fullWidth>
-            <InputLabel id="recurring-filter-location-label">
-              Location
-            </InputLabel>
-            <Select
-              labelId="recurring-filter-location-label"
-              value={location}
-              label="Location"
-              onChange={(e) => setLocation(e.target.value)}
-            >
-              <MenuItem value="">
-                <em>All locations</em>
-              </MenuItem>
-              {locationOptions.map((loc) => (
-                <MenuItem key={loc} value={loc}>
-                  {loc}
+          {showLocationFilter && (
+            <FormControl size="small" fullWidth>
+              <InputLabel id="recurring-filter-location-label">
+                Location
+              </InputLabel>
+              <Select
+                labelId="recurring-filter-location-label"
+                value={location}
+                label="Location"
+                onChange={(e) => setLocation(e.target.value)}
+              >
+                <MenuItem value="">
+                  <em>All locations</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                {locationOptions.map((loc) => (
+                  <MenuItem key={loc} value={loc}>
+                    {loc}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
 
           <TextField
             label="Start date from"
@@ -321,6 +326,7 @@ function StopPatternButton({
 export default function RecurringEventsClient({
   patterns,
   accentColor,
+  showLocationFilter = true,
 }: Props): React.ReactElement {
   const [location, setLocation] = React.useState("");
   const [dateFrom, setDateFrom] = React.useState("");
@@ -351,9 +357,10 @@ export default function RecurringEventsClient({
     });
   }, [patterns, showStopped, location, dateFrom, dateTo]);
 
-  const activeFilterCount = [location, dateFrom || dateTo].filter(
-    Boolean,
-  ).length;
+  const activeFilterCount = [
+    showLocationFilter ? location : "",
+    dateFrom || dateTo,
+  ].filter(Boolean).length;
 
   function handleClear(): void {
     setLocation("");
@@ -395,6 +402,7 @@ export default function RecurringEventsClient({
             setShowStopped={setShowStopped}
             activeFilterCount={activeFilterCount}
             onClear={handleClear}
+            showLocationFilter={showLocationFilter}
           />
 
           <Button
