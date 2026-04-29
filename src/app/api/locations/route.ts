@@ -7,7 +7,11 @@ import { locations } from "@/db/schema/locations";
 
 export async function GET(): Promise<Response> {
   try {
-    const rows = await db.select().from(locations).orderBy(asc(locations.name));
+    const rows = await db
+      .select()
+      .from(locations)
+      .where(eq(locations.deleted, false))
+      .orderBy(asc(locations.name));
     return NextResponse.json(rows);
   } catch (error) {
     console.error("Failed to fetch locations", error);
