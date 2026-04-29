@@ -9,6 +9,7 @@ import Filters, { defaultFilters, type FilterState } from "@/features/filters";
 type EventsLibraryClientProps = {
   events: EventRecord[];
   accentColor: string;
+  showLocationFilter?: boolean;
 };
 
 function matchesFilters(
@@ -50,6 +51,7 @@ function matchesFilters(
 export default function EventsLibraryClient({
   events,
   accentColor,
+  showLocationFilter = true,
 }: EventsLibraryClientProps): React.ReactElement {
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
@@ -84,6 +86,7 @@ export default function EventsLibraryClient({
           filters={filters}
           onFiltersChange={setFilters}
           showRegistrationStatus={false}
+          showLocationFilter={showLocationFilter}
         />
       </Box>
 

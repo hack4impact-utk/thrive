@@ -15,12 +15,24 @@ export default async function EventsLibraryPage(): Promise<React.ReactElement> {
     redirect("/dashboard");
   }
 
-  const events = await getAllEvents();
-  const accentColor = role === "admin" ? ROLE_COLORS.admin : ROLE_COLORS.manager;
+  const allEvents = await getAllEvents();
+  const managerLocationId = session?.user?.locationId ?? null;
+  const isManager = role === "manager";
+
+  const events =
+    isManager && managerLocationId
+      ? allEvents.filter((e) => e.locationId === managerLocationId)
+      : allEvents;
+
+  const accentColor = isManager ? ROLE_COLORS.manager : ROLE_COLORS.admin;
 
   return (
     <PageContainer sx={{ py: { xs: 4, md: 6 } }}>
-      <EventsLibraryClient events={events} accentColor={accentColor} />
+      <EventsLibraryClient
+        events={events}
+        accentColor={accentColor}
+        showLocationFilter={!isManager}
+      />
     </PageContainer>
   );
 }

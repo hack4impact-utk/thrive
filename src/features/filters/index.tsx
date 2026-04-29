@@ -95,6 +95,7 @@ type FiltersProps = {
   onFiltersChange: (filters: FilterState) => void;
   keepOrder?: boolean;
   showRegistrationStatus?: boolean;
+  showLocationFilter?: boolean;
 };
 
 export default function Filters({
@@ -104,6 +105,7 @@ export default function Filters({
   onFiltersChange,
   keepOrder = false,
   showRegistrationStatus = true,
+  showLocationFilter = true,
 }: FiltersProps): React.ReactElement {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
@@ -120,7 +122,7 @@ export default function Filters({
   const activeFilterCount = [
     filters.dateFrom,
     filters.dateTo,
-    filters.locationName,
+    showLocationFilter ? filters.locationName : "",
     showRegistrationStatus ? filters.registrationStatus : "",
   ].filter(Boolean).length;
 
@@ -200,27 +202,29 @@ export default function Filters({
             />
           </LocalizationProvider>
 
-          <FormControl size="small" fullWidth>
-            <InputLabel id="filter-location-label">Location</InputLabel>
-            <Select
-              labelId="filter-location-label"
-              value={filters.locationName ?? ""}
-              label="Location"
-              onChange={(e) =>
-                onFiltersChange({ ...filters, locationName: e.target.value })
-              }
-            >
-              <MenuItem value="">
-                <em>Any location</em>
-              </MenuItem>
-              {locationOptions.map((loc) => (
-                <MenuItem key={loc.id} value={loc.name}>
-                  {loc.name} — {loc.streetLine}, {loc.city}, {loc.state}{" "}
-                  {loc.postalCode}
+          {showLocationFilter && (
+            <FormControl size="small" fullWidth>
+              <InputLabel id="filter-location-label">Location</InputLabel>
+              <Select
+                labelId="filter-location-label"
+                value={filters.locationName ?? ""}
+                label="Location"
+                onChange={(e) =>
+                  onFiltersChange({ ...filters, locationName: e.target.value })
+                }
+              >
+                <MenuItem value="">
+                  <em>Any location</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                {locationOptions.map((loc) => (
+                  <MenuItem key={loc.id} value={loc.name}>
+                    {loc.name} — {loc.streetLine}, {loc.city}, {loc.state}{" "}
+                    {loc.postalCode}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
 
           {showRegistrationStatus && (
             <FormControl size="small" fullWidth>
