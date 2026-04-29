@@ -11,7 +11,6 @@ import {
   Typography,
 } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material/Select";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import * as React from "react";
 
@@ -133,7 +132,6 @@ export default function BasicInfoForm(): React.ReactElement {
   });
 
   const { update } = useSession();
-  const router = useRouter();
   const { showSnackbar } = useSnackbar();
 
   const DIGIT_ONLY_FIELDS = new Set([
@@ -191,7 +189,7 @@ export default function BasicInfoForm(): React.ReactElement {
 
       await update();
       showSnackbar("Your information has been saved!", "success");
-      router.push("/");
+      window.location.assign("/");
     } catch (error) {
       console.error("add user info failed", error);
       alert("Error in adding information.");
