@@ -30,29 +30,26 @@ export async function attendEvent(eventId: string): Promise<void> {
     throw new Error("Event not found");
   }
 
-  const attendeeCount = await db
-    .select({ count: count() })
-    .from(eventAttendees)
-    .where(eq(eventAttendees.eventId, eventId));
+  await db.transaction(async (tx) => {
+    const [{ liveCount }] = await tx
+      .select({ liveCount: count() })
+      .from(eventAttendees)
+      .where(eq(eventAttendees.eventId, eventId));
 
-  if (event.capacity !== null && attendeeCount[0].count >= event.capacity) {
-    throw new Error("Event capacity reached");
-  }
+    if (event.capacity !== null && liveCount >= event.capacity) {
+      throw new Error("Event capacity reached");
+    }
 
-  const newCount = attendeeCount[0].count + 1;
+    await tx
+      .insert(eventAttendees)
+      .values({ eventId, userId: session.user.id })
+      .onConflictDoNothing();
 
-  await db
-    .update(events)
-    .set({ registeredUsers: newCount })
-    .where(eq(events.id, eventId));
-
-  await db
-    .insert(eventAttendees)
-    .values({
-      eventId,
-      userId: session.user.id,
-    })
-    .onConflictDoNothing();
+    await tx
+      .update(events)
+      .set({ registeredUsers: liveCount + 1 })
+      .where(eq(events.id, eventId));
+  });
 
   const info = await db.query.userInfo.findFirst({
     where: eq(userInfo.userId, session.user.id),

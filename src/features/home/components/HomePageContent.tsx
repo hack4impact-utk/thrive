@@ -60,6 +60,56 @@ export default function HomePageContent({
   const [regOverrides, setRegOverrides] = React.useState<
     Record<string, RegOverride>
   >({});
+  const [liveEvents, setLiveEvents] = React.useState<CalendarEvent[]>(events);
+
+  React.useEffect(() => {
+    const poll = async (): Promise<void> => {
+      try {
+        const res = await fetch("/api/events/live");
+        if (!res.ok) return;
+        const fresh: {
+          id: string;
+          registeredUsers: number | null;
+          capacity: number | null;
+        }[] = await res.json();
+
+        setLiveEvents((prev) =>
+          prev.map((e) => {
+            const update = fresh.find((f) => f.id === e.id);
+            return update
+              ? {
+                  ...e,
+                  registeredUsers: update.registeredUsers,
+                  capacity: update.capacity,
+                }
+              : e;
+          }),
+        );
+
+        setRegOverrides((prev) => {
+          if (Object.keys(prev).length === 0) return prev;
+          const updated = { ...prev };
+          for (const f of fresh) {
+            if (updated[f.id]) {
+              updated[f.id] = {
+                ...updated[f.id],
+                registeredUsers: f.registeredUsers ?? 0,
+              };
+            }
+          }
+          return updated;
+        });
+      } catch (error) {
+        void error;
+      }
+    };
+
+    const interval = setInterval(() => {
+      void poll();
+    }, 5000);
+
+    return (): void => clearInterval(interval);
+  }, []);
 
   const handleRegChange = React.useCallback(
     (eventId: string, override: RegOverride): void => {
@@ -74,12 +124,12 @@ export default function HomePageContent({
 
   const filteredEvents = React.useMemo(
     () =>
-      events.filter(
+      liveEvents.filter(
         (event) =>
           matchesSearch(searchQuery, event.title) &&
           matchesFilters(event, filters),
       ),
-    [events, searchQuery, filters],
+    [liveEvents, searchQuery, filters],
   );
 
   return (

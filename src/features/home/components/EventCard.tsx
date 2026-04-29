@@ -113,7 +113,7 @@ export default function VolunteerEventCard(
                   if (error instanceof Error) {
                     if (error.message === "Event capacity reached") {
                       showSnackbar(
-                        "Sorry, this event is full! You cannot register.",
+                        "Someone just grabbed the last spot — this event is now full.",
                         "error",
                       );
                     } else {
