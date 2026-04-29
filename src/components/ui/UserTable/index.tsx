@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
+import LocationCell from "./LocationCell";
 import OnboardingCell from "./OnboardingCell";
 import RoleCell, { type LocationOption } from "./RoleCell";
 
@@ -36,6 +37,7 @@ export type UserRecord = {
   infoFilled: boolean;
   onboarded: boolean;
   role: string;
+  locationId: string | null;
   locationName: string | null;
   preferredNeighborhood: string | null;
 };
@@ -168,9 +170,13 @@ function UserRow({
       </TableCell>
 
       <TableCell sx={{ py: 1.5 }}>
-        <Typography variant="body2" color="text.secondary">
-          {user.locationName ?? "—"}
-        </Typography>
+        <LocationCell
+          userId={user.id}
+          currentLocationId={user.locationId}
+          currentLocationName={user.locationName}
+          callerRole={callerRole}
+          locations={locationOptions}
+        />
       </TableCell>
 
       <TableCell sx={{ py: 1.5 }}>
