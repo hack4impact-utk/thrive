@@ -270,7 +270,8 @@ export default async function EventAttendeesPage({
                         No attendees yet.
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Registered attendees will appear here once users sign up.
+                        Registered attendees will appear here once users sign
+                        up.
                       </Typography>
                     </Stack>
                   </TableCell>

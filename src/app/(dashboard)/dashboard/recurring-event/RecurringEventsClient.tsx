@@ -258,7 +258,9 @@ export default function RecurringEventsClient({
                       variant="outlined"
                     />
                   </TableCell>
-                  <TableCell sx={{ width: 48, p: 0, pr: 1, textAlign: "right" }}>
+                  <TableCell
+                    sx={{ width: 48, p: 0, pr: 1, textAlign: "right" }}
+                  >
                     {pattern.active && <StopPatternButton pattern={pattern} />}
                   </TableCell>
                 </TableRow>

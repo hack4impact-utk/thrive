@@ -20,7 +20,13 @@ import { notFound } from "next/navigation";
 import React from "react";
 
 import db from "@/db";
-import { eventAttendees, events, locations, userInfo, users } from "@/db/schema";
+import {
+  eventAttendees,
+  events,
+  locations,
+  userInfo,
+  users,
+} from "@/db/schema";
 import { ROLE_COLORS } from "@/lib/role-colors";
 
 type UserDetailRecord = {
@@ -105,7 +111,8 @@ function formatOptionalValue(value: string | null | undefined): string {
 }
 
 function formatBirthDate(user: UserDetailRecord): string {
-  if (!user.birthMonth || !user.birthDay || !user.birthYear) return "Not provided";
+  if (!user.birthMonth || !user.birthDay || !user.birthYear)
+    return "Not provided";
   const date = new Date(user.birthYear, user.birthMonth - 1, user.birthDay);
   return new Intl.DateTimeFormat("en-US", {
     month: "long",
@@ -547,10 +554,7 @@ export default async function UserProfilePanel({
                     event.endTime,
                   );
                   return (
-                    <TableRow
-                      key={i}
-                      sx={{ "&:last-child td": { border: 0 } }}
-                    >
+                    <TableRow key={i} sx={{ "&:last-child td": { border: 0 } }}>
                       <TableCell sx={{ py: 1.5, fontWeight: 500 }}>
                         {event.title}
                       </TableCell>
