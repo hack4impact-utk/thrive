@@ -10,9 +10,9 @@ export default withAuth(
     const isInfoPage = pathname.startsWith("/info");
     const isApiRoute = pathname.startsWith("/api");
     const isProtectedRoute = pathname.startsWith("/dashboard");
-    const isAdminOnlyDashboardRoute = pathname.startsWith(
-      "/dashboard/events-library",
-    );
+    const isAdminOnlyDashboardRoute =
+      pathname.startsWith("/dashboard/manage-locations") ||
+      pathname.startsWith("/dashboard/volunteer-hours");
 
     const infoFilled = request.nextauth.token?.user?.infoFilled;
     const role = request.nextauth.token?.user?.role as

@@ -27,6 +27,7 @@ type DashboardAction = {
   description: string;
   href: string;
   icon: ElementType;
+  adminOnly?: boolean;
 };
 
 const actions: DashboardAction[] = [
@@ -54,6 +55,7 @@ const actions: DashboardAction[] = [
     description: "Add named venues that can be assigned to events.",
     href: "/dashboard/manage-locations",
     icon: PlaceIcon,
+    adminOnly: true,
   },
   {
     title: "User Management",
@@ -68,6 +70,7 @@ const actions: DashboardAction[] = [
       "Track hours volunteered across all locations and date ranges.",
     href: "/dashboard/volunteer-hours",
     icon: VolunteerActivismIcon,
+    adminOnly: true,
   },
 ];
 
@@ -192,17 +195,19 @@ export default async function DashboardHubPage(): Promise<React.ReactElement> {
         </Box>
 
         <Grid container spacing={2}>
-          {actions.map((action) => (
-            <Grid key={action.title} size={{ xs: 12, sm: 6, md: 4 }}>
-              <ActionCard
-                title={action.title}
-                description={action.description}
-                href={action.href}
-                icon={action.icon}
-                color={roleColor}
-              />
-            </Grid>
-          ))}
+          {actions
+            .filter((action) => !action.adminOnly || role === "admin")
+            .map((action) => (
+              <Grid key={action.title} size={{ xs: 12, sm: 6, md: 4 }}>
+                <ActionCard
+                  title={action.title}
+                  description={action.description}
+                  href={action.href}
+                  icon={action.icon}
+                  color={roleColor}
+                />
+              </Grid>
+            ))}
         </Grid>
       </Stack>
     </PageContainer>
