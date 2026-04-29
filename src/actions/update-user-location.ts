@@ -17,10 +17,7 @@ export async function updateUserLocation(
     throw new Error("Unauthorized");
   }
 
-  await db
-    .update(users)
-    .set({ locationId })
-    .where(eq(users.id, targetUserId));
+  await db.update(users).set({ locationId }).where(eq(users.id, targetUserId));
 
   revalidatePath("/dashboard/user-management");
 }

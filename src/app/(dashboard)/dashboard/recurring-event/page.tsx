@@ -35,9 +35,7 @@ async function getRecurringEvents(
     .from(recurringEvents)
     .leftJoin(locations, eq(locations.id, recurringEvents.locationId))
     .where(
-      locationId
-        ? and(eq(recurringEvents.locationId, locationId))
-        : undefined,
+      locationId ? and(eq(recurringEvents.locationId, locationId)) : undefined,
     )
     .orderBy(asc(recurringEvents.startDate));
 }

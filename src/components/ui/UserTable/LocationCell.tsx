@@ -37,9 +37,7 @@ export default function LocationCell({
   locations,
 }: LocationCellProps): React.ReactElement {
   const [locationId, setLocationId] = useState(currentLocationId ?? "");
-  const [locationName, setLocationName] = useState(
-    currentLocationName ?? null,
-  );
+  const [locationName, setLocationName] = useState(currentLocationName ?? null);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(currentLocationId ?? "");
   const [loading, setLoading] = useState(false);
@@ -70,9 +68,7 @@ export default function LocationCell({
     try {
       await updateUserLocation(userId, selected || null);
       setLocationId(selected);
-      setLocationName(
-        locations.find((l) => l.id === selected)?.name ?? null,
-      );
+      setLocationName(locations.find((l) => l.id === selected)?.name ?? null);
       handleClose();
     } catch {
       setError("Failed to update location. Please try again.");
@@ -109,7 +105,11 @@ export default function LocationCell({
         </Typography>
         <ArrowDropDownRoundedIcon
           className="loc-arrow"
-          sx={{ fontSize: 18, color: "text.disabled", transition: "color 0.15s" }}
+          sx={{
+            fontSize: 18,
+            color: "text.disabled",
+            transition: "color 0.15s",
+          }}
         />
       </Box>
 
@@ -123,7 +123,9 @@ export default function LocationCell({
         <DialogTitle sx={{ fontWeight: 700, pb: 0.5 }}>
           Change assigned location
         </DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
           <Typography variant="body2" color="text.secondary">
             Select a new assigned location below.
           </Typography>
