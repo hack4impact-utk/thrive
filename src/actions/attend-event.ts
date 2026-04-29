@@ -61,7 +61,7 @@ export async function attendEvent(eventId: string): Promise<void> {
           eq(eventAttendees.userId, session.user.id),
         ),
       );
-    throw new Error("Event capacity reached");
+    throw new Error("Registration conflict");
   }
 
   await db

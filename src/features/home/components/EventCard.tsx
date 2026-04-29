@@ -111,11 +111,13 @@ export default function VolunteerEventCard(
                   }
                 } catch (error) {
                   if (error instanceof Error) {
-                    if (error.message === "Event capacity reached") {
+                    if (error.message === "Registration conflict") {
                       showSnackbar(
-                        "Someone just grabbed the last spot — this event is now full.",
+                        "Someone else registered at the same time and took the last spot. You were not registered.",
                         "error",
                       );
+                    } else if (error.message === "Event capacity reached") {
+                      showSnackbar("This event is already full.", "error");
                     } else {
                       showSnackbar(
                         "Something went wrong. Please try again.",
