@@ -137,6 +137,7 @@ export default function BasicInfoForm(): React.ReactElement {
     medicalNotes: "",
   });
 
+  const [submitting, setSubmitting] = React.useState(false);
   const { update } = useSession();
   const { showSnackbar } = useSnackbar();
 
@@ -164,6 +165,7 @@ export default function BasicInfoForm(): React.ReactElement {
     e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> {
     e.preventDefault();
+    setSubmitting(true);
 
     try {
       await addUserInfo({
@@ -197,7 +199,8 @@ export default function BasicInfoForm(): React.ReactElement {
       showSnackbar("Your information has been saved!", "success");
       globalThis.location.assign("/");
     } catch (error) {
-      console.error("add user info failed", error);
+      void error;
+      setSubmitting(false);
       alert("Error in adding information.");
     }
   }
@@ -208,6 +211,7 @@ export default function BasicInfoForm(): React.ReactElement {
       description="* indicates required field"
       submitLabel="Submit"
       onSubmit={handleSubmit}
+      submitting={submitting}
     >
       <Box sx={{ display: "flex", gap: 2 }}>
         <TextField

@@ -11,6 +11,7 @@ type FormLayoutProps = {
   children: React.ReactNode;
   submitLabel: string;
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void | Promise<void>;
+  submitting?: boolean;
 };
 
 export default function FormLayout({
@@ -19,6 +20,7 @@ export default function FormLayout({
   children,
   submitLabel,
   onSubmit,
+  submitting,
 }: FormLayoutProps): React.ReactElement {
   return (
     <Box
@@ -63,7 +65,7 @@ export default function FormLayout({
 
             {children}
 
-            <SubmitFormButton label={submitLabel} />
+            <SubmitFormButton label={submitLabel} disabled={submitting} />
           </Box>
         </CardContent>
       </Card>
