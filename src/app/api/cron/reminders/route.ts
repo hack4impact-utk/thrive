@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import db from "@/db";
 import { eventAttendees, events, users } from "@/db/schema";
-import { sendEmail } from "@/lib/email";
+import { buildEmailHtml, formatEmailTime, sendEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -37,13 +37,32 @@ export async function POST(request: Request): Promise<Response> {
           sendEmail({
             to: r.userEmail!,
             subject: `Reminder: "${r.eventTitle}" is today!`,
-            html: `
-              <p>Hi${r.userName ? ` ${r.userName}` : ""},</p>
-              <p>This is a friendly reminder that you are registered for <strong>${r.eventTitle}</strong> today.</p>
-              <p><strong>Time:</strong> ${r.startTime} – ${r.endTime}</p>
-              <p>We look forward to seeing you there!</p>
-              <p>— The Thrive Team</p>
-            `,
+            html: buildEmailHtml(`
+              <p style="margin:0 0 8px;font-size:16px;color:#22305B;font-weight:600;">
+                Hi${r.userName ? ` ${r.userName}` : ""},
+              </p>
+              <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.6;">
+                This is a friendly reminder that you are registered for an event happening <strong>today</strong>.
+              </p>
+
+              <table width="100%" cellpadding="0" cellspacing="0"
+                     style="background:#f7faf9;border-left:4px solid #22A27E;border-radius:4px;padding:20px;margin-bottom:24px;">
+                <tr>
+                  <td>
+                    <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#22305B;">
+                      ${r.eventTitle}
+                    </p>
+                    <p style="margin:0;font-size:14px;color:#555555;">
+                      <strong style="color:#22305B;">Time:</strong>&nbsp;${formatEmailTime(r.startTime)} – ${formatEmailTime(r.endTime)}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0;font-size:15px;color:#444444;line-height:1.6;">
+                We look forward to seeing you there!
+              </p>
+            `),
           }),
         ),
     );

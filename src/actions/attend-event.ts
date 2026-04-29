@@ -4,7 +4,12 @@ import { count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
-import { sendEmail } from "@/lib/email";
+import {
+  buildEmailHtml,
+  formatEmailDate,
+  formatEmailTime,
+  sendEmail,
+} from "@/lib/email";
 import getUserSession from "@/utils/auth/get-user-session";
 
 export async function attendEvent(eventId: string): Promise<void> {
@@ -52,14 +57,35 @@ export async function attendEvent(eventId: string): Promise<void> {
     await sendEmail({
       to: session.user.email,
       subject: `You're registered for "${event.title}"!`,
-      html: `
-        <p>Hi${session.user.name ? ` ${session.user.name}` : ""},</p>
-        <p>You have successfully registered for <strong>${event.title}</strong>.</p>
-        <p><strong>Date:</strong> ${event.eventDate}<br/>
-        <strong>Time:</strong> ${event.startTime} – ${event.endTime}</p>
-        <p>We look forward to seeing you there!</p>
-        <p>— The Thrive Team</p>
-      `,
+      html: buildEmailHtml(`
+        <p style="margin:0 0 8px;font-size:16px;color:#22305B;font-weight:600;">
+          Hi${session.user.name ? ` ${session.user.name}` : ""},
+        </p>
+        <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.6;">
+          You're all set! You have successfully registered for the event below.
+        </p>
+
+        <table width="100%" cellpadding="0" cellspacing="0"
+               style="background:#f7faf9;border-left:4px solid #22A27E;border-radius:4px;padding:20px;margin-bottom:24px;">
+          <tr>
+            <td>
+              <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#22305B;">
+                ${event.title}
+              </p>
+              <p style="margin:0 0 6px;font-size:14px;color:#555555;">
+                <strong style="color:#22305B;">Date:</strong>&nbsp;${formatEmailDate(event.eventDate)}
+              </p>
+              <p style="margin:0;font-size:14px;color:#555555;">
+                <strong style="color:#22305B;">Time:</strong>&nbsp;${formatEmailTime(event.startTime)} – ${formatEmailTime(event.endTime)}
+              </p>
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin:0;font-size:15px;color:#444444;line-height:1.6;">
+          We look forward to seeing you there!
+        </p>
+      `),
     }).catch(console.error);
   }
 }

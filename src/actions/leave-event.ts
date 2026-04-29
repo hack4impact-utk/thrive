@@ -4,7 +4,7 @@ import { and, count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
-import { sendEmail } from "@/lib/email";
+import { buildEmailHtml, sendEmail } from "@/lib/email";
 import getUserSession from "@/utils/auth/get-user-session";
 
 export async function leaveEvent(eventId: string): Promise<void> {
@@ -48,12 +48,30 @@ export async function leaveEvent(eventId: string): Promise<void> {
     await sendEmail({
       to: session.user.email,
       subject: `You've unregistered from "${event.title}"`,
-      html: `
-        <p>Hi${session.user.name ? ` ${session.user.name}` : ""},</p>
-        <p>You have successfully unregistered from <strong>${event.title}</strong>.</p>
-        <p>If this was a mistake, you can re-register on the Thrive homepage.</p>
-        <p>— The Thrive Team</p>
-      `,
+      html: buildEmailHtml(`
+        <p style="margin:0 0 8px;font-size:16px;color:#22305B;font-weight:600;">
+          Hi${session.user.name ? ` ${session.user.name}` : ""},
+        </p>
+        <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.6;">
+          You have been successfully unregistered from the following event:
+        </p>
+
+        <table width="100%" cellpadding="0" cellspacing="0"
+               style="background:#fdf7f7;border-left:4px solid #d9534f;border-radius:4px;padding:20px;margin-bottom:24px;">
+          <tr>
+            <td>
+              <p style="margin:0;font-size:18px;font-weight:700;color:#22305B;">
+                ${event.title}
+              </p>
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin:0;font-size:15px;color:#444444;line-height:1.6;">
+          If this was a mistake, you can re-register anytime on the
+          <a href="https://thrive.utkh4i.com" style="color:#22A27E;text-decoration:none;font-weight:600;">Thrive volunteer site</a>.
+        </p>
+      `),
     }).catch(console.error);
   }
 }
