@@ -214,7 +214,13 @@ export default function UserTable({
         <TableHead>
           <TableRow>
             {staticLeftCols.map((col) => (
-              <TableCell key={col} sx={headerCellSx(accentColor)}>
+              <TableCell
+                key={col}
+                sx={{
+                  ...headerCellSx(accentColor),
+                  ...(col === "Name" && { minWidth: 200 }),
+                }}
+              >
                 {col}
               </TableCell>
             ))}
