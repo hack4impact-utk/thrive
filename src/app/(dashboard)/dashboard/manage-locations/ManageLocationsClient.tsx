@@ -1,8 +1,10 @@
 "use client";
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import PlaceIcon from "@mui/icons-material/Place";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import SearchIcon from "@mui/icons-material/Search";
 import {
+  alpha,
   Box,
   Button,
   Dialog,
@@ -11,21 +13,52 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  InputBase,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import { useSnackbar } from "@/providers/snackbar-provider";
+
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": { backgroundColor: alpha(theme.palette.common.white, 0.25) },
+  width: "auto",
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  width: "100%",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "6ch",
+    "&:focus": { width: "10ch" },
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": { width: "20ch" },
+    },
+  },
+}));
 
 type Location = {
   id: string;
@@ -78,8 +111,11 @@ function DeleteLocationButton({
       <Tooltip title="Delete location" arrow>
         <IconButton
           size="small"
-          onClick={() => setOpen(true)}
-          sx={{ color: "text.secondary", "&:hover": { color: "error.main" } }}
+          onClick={(e) => {
+            e.preventDefault();
+            setOpen(true);
+          }}
+          sx={{ color: "text.disabled", "&:hover": { color: "error.main" } }}
         >
           <DeleteOutlineIcon fontSize="small" />
         </IconButton>
@@ -121,117 +157,157 @@ function DeleteLocationButton({
   );
 }
 
+function LocationRow({
+  location,
+  isLast,
+}: {
+  location: Location;
+  isLast: boolean;
+}): React.ReactElement {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        px: 3,
+        py: 2,
+        borderBottom: isLast ? "none" : "1px solid",
+        borderColor: "divider",
+        transition: "background-color 120ms ease",
+        "&:hover": { bgcolor: alpha("#4b6287", 0.03) },
+      }}
+    >
+      <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
+        <Typography variant="body1" sx={{ fontWeight: 600 }}>
+          {location.name}
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            color: "text.secondary",
+          }}
+        >
+          <LocationOnIcon sx={{ fontSize: 14 }} />
+          <Typography variant="caption">
+            {location.streetLine}, {location.city}, {location.state}{" "}
+            {location.postalCode}
+          </Typography>
+        </Box>
+      </Stack>
+
+      <DeleteLocationButton location={location} />
+    </Box>
+  );
+}
+
 export default function ManageLocationsClient({
   locations,
 }: Props): React.ReactElement {
+  const [search, setSearch] = React.useState("");
+
+  const filtered = React.useMemo(
+    () =>
+      locations.filter(
+        (loc) =>
+          loc.name.toLowerCase().includes(search.toLowerCase()) ||
+          loc.streetLine.toLowerCase().includes(search.toLowerCase()) ||
+          loc.city.toLowerCase().includes(search.toLowerCase()),
+      ),
+    [locations, search],
+  );
+
   return (
-    <>
+    <Stack spacing={4}>
       <Box
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", md: "row" },
           alignItems: "flex-start",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
+          justifyContent: { md: "space-between" },
           gap: 2,
-          mb: 2.5,
         }}
       >
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700 }}>
+          <Typography variant="h5" fontWeight={700} gutterBottom>
             Manage Locations
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
+          <Typography variant="body2" color="text.secondary">
             All venues available for assignment to events.
           </Typography>
         </Box>
 
-        <Button
-          component={Link}
-          href="/dashboard/create-location"
-          variant="contained"
-          startIcon={<PlaceIcon />}
-          sx={{ flexShrink: 0 }}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "row-reverse", md: "row" },
+            alignItems: "center",
+            gap: 1,
+          }}
         >
-          Add Location
-        </Button>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search"
+              inputProps={{ "aria-label": "search" }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </Search>
+          <Button
+            component={Link}
+            href="/dashboard/create-location"
+            variant="contained"
+            startIcon={<LocationOnIcon />}
+          >
+            Add Location
+          </Button>
+        </Box>
       </Box>
 
-      <TableContainer
-        component={Paper}
-        elevation={0}
-        sx={{
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 2,
-          overflow: "hidden",
-        }}
-      >
-        <Table size="small" stickyHeader>
-          <TableHead>
-            <TableRow>
-              {["Name", "Address", ""].map((heading, i) => (
-                <TableCell
-                  key={i}
-                  sx={{
-                    fontWeight: 700,
-                    letterSpacing: 1.1,
-                    color: "#4b6287",
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    bgcolor: "#dfe7f2",
-                    borderBottom: "1px solid #cfd8e6",
-                    ...(i === 2 && { width: 48, p: 0 }),
-                  }}
-                >
-                  {heading}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {locations.length > 0 ? (
-              locations.map((loc) => (
-                <TableRow
-                  key={loc.id}
-                  hover
-                  sx={{ "&:last-child td": { borderBottom: 0 } }}
-                >
-                  <TableCell>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {loc.name}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" color="text.secondary">
-                      {loc.streetLine}, {loc.city}, {loc.state} {loc.postalCode}
-                    </Typography>
-                  </TableCell>
-                  <TableCell
-                    sx={{ width: 48, p: 0, pr: 1, textAlign: "right" }}
-                  >
-                    <DeleteLocationButton location={loc} />
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={3} sx={{ px: 3, py: 5, border: 0 }}>
-                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                    No locations yet.
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mt: 0.75 }}
-                  >
-                    Add a location above to get started.
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+      {filtered.length === 0 ? (
+        <Paper
+          elevation={0}
+          sx={{
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 2,
+            py: 8,
+          }}
+        >
+          <Stack alignItems="center" spacing={0.5}>
+            <Typography variant="body2" fontWeight={600}>
+              {locations.length === 0 ? "No locations yet." : "No results found."}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {locations.length === 0
+                ? "Add a location above to get started."
+                : "Try a different search term."}
+            </Typography>
+          </Stack>
+        </Paper>
+      ) : (
+        <Paper
+          elevation={0}
+          sx={{
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 2,
+            overflow: "hidden",
+          }}
+        >
+          {filtered.map((loc, i) => (
+            <LocationRow
+              key={loc.id}
+              location={loc}
+              isLast={i === filtered.length - 1}
+            />
+          ))}
+        </Paper>
+      )}
+    </Stack>
   );
 }
