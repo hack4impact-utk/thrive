@@ -100,7 +100,13 @@ type BasicInfoFormState = {
 
 export default function BasicInfoForm(): React.ReactElement {
   const [locationOptions, setLocationOptions] = React.useState<
-    { name: string }[]
+    {
+      name: string;
+      streetLine: string;
+      city: string;
+      state: string;
+      postalCode: string;
+    }[]
   >([]);
 
   React.useEffect(() => {
@@ -189,7 +195,7 @@ export default function BasicInfoForm(): React.ReactElement {
 
       await update();
       showSnackbar("Your information has been saved!", "success");
-      window.location.assign("/");
+      globalThis.location.assign("/");
     } catch (error) {
       console.error("add user info failed", error);
       alert("Error in adding information.");
@@ -347,15 +353,25 @@ export default function BasicInfoForm(): React.ReactElement {
           value={form.preferredNeighborhood}
           onChange={handleChange}
           label="Preferred Volunteer Location"
+          MenuProps={{
+            PaperProps: { sx: { overflowX: "auto" } },
+            MenuListProps: { sx: { minWidth: "max-content" } },
+          }}
         >
           {locationOptions.map((loc) => (
-            <MenuItem key={loc.name} value={loc.name}>
-              {loc.name}
+            <MenuItem
+              key={loc.name}
+              value={loc.name}
+              sx={{ whiteSpace: "nowrap", pr: 3 }}
+            >
+              {loc.name} — {loc.streetLine}, {loc.city}, {loc.state}{" "}
+              {loc.postalCode}
             </MenuItem>
           ))}
         </Select>
         <FormHelperText>
-          Choose the Knoxville neighborhood where you&apos;d prefer to volunteer.
+          Choose the Knoxville neighborhood where you&apos;d prefer to
+          volunteer.
         </FormHelperText>
       </FormControl>
 

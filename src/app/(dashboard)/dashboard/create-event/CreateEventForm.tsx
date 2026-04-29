@@ -197,12 +197,20 @@ export default function CreateEventForm({
               setForm((prev) => ({ ...prev, locationId: e.target.value }));
               setErrors((prev) => ({ ...prev, locationId: undefined }));
             }}
+            MenuProps={{
+              PaperProps: { sx: { overflowX: "auto" } },
+              MenuListProps: { sx: { minWidth: "max-content" } },
+            }}
           >
-            <MenuItem value="">
+            <MenuItem value="" sx={{ whiteSpace: "nowrap", pr: 3 }}>
               <em>No location selected</em>
             </MenuItem>
             {locationOptions.map((loc) => (
-              <MenuItem key={loc.id} value={loc.id}>
+              <MenuItem
+                key={loc.id}
+                value={loc.id}
+                sx={{ whiteSpace: "nowrap", pr: 3 }}
+              >
                 {loc.name} — {loc.streetLine}, {loc.city}, {loc.state}{" "}
                 {loc.postalCode}
               </MenuItem>

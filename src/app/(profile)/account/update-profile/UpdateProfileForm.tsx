@@ -160,6 +160,23 @@ export default function UpdateProfileForm({
     medicalNotes: initialValues.medicalNotes ?? "",
   });
 
+  const [locationOptions, setLocationOptions] = React.useState<
+    {
+      name: string;
+      streetLine: string;
+      city: string;
+      state: string;
+      postalCode: string;
+    }[]
+  >([]);
+
+  React.useEffect(() => {
+    fetch("/api/locations")
+      .then((r) => r.json())
+      .then(setLocationOptions)
+      .catch(Object);
+  }, []);
+
   const { update } = useSession();
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
@@ -377,22 +394,25 @@ export default function UpdateProfileForm({
           value={form.preferredNeighborhood}
           onChange={handleChange}
           label="Preferred Volunteer Location"
+          MenuProps={{
+            PaperProps: { sx: { overflowX: "auto" } },
+            MenuListProps: { sx: { minWidth: "max-content" } },
+          }}
         >
-          {[
-            "Lonsdale",
-            "Parkridge",
-            "New Hopewell",
-            "Papermill",
-            "West View",
-            "Westland",
-          ].map((loc) => (
-            <MenuItem key={loc} value={loc}>
-              {loc}
+          {locationOptions.map((loc) => (
+            <MenuItem
+              key={loc.name}
+              value={loc.name}
+              sx={{ whiteSpace: "nowrap", pr: 3 }}
+            >
+              {loc.name} — {loc.streetLine}, {loc.city}, {loc.state}{" "}
+              {loc.postalCode}
             </MenuItem>
           ))}
         </Select>
         <FormHelperText>
-          Choose the Knoxville neighborhood where you&apos;d prefer to volunteer.
+          Choose the Knoxville neighborhood where you&apos;d prefer to
+          volunteer.
         </FormHelperText>
       </FormControl>
 
