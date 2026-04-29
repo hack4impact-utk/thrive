@@ -3,6 +3,7 @@
 import {
   Box,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -342,12 +343,12 @@ export default function BasicInfoForm(): React.ReactElement {
       <Typography variant="h6">Preferences</Typography>
 
       <FormControl fullWidth required>
-        <InputLabel>Neighborhood</InputLabel>
+        <InputLabel>Preferred Volunteer Location</InputLabel>
         <Select
           name="preferredNeighborhood"
           value={form.preferredNeighborhood}
           onChange={handleChange}
-          label="Neighborhood"
+          label="Preferred Volunteer Location"
         >
           {locationOptions.map((loc) => (
             <MenuItem key={loc.name} value={loc.name}>
@@ -355,6 +356,9 @@ export default function BasicInfoForm(): React.ReactElement {
             </MenuItem>
           ))}
         </Select>
+        <FormHelperText>
+          Choose the Knoxville neighborhood where you&apos;d prefer to volunteer.
+        </FormHelperText>
       </FormControl>
 
       <FormControl fullWidth required>

@@ -3,6 +3,7 @@
 import {
   Box,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -370,12 +371,12 @@ export default function UpdateProfileForm({
       <Typography variant="h6">Preferences</Typography>
 
       <FormControl fullWidth required>
-        <InputLabel>Neighborhood</InputLabel>
+        <InputLabel>Preferred Volunteer Location</InputLabel>
         <Select
           name="preferredNeighborhood"
           value={form.preferredNeighborhood}
           onChange={handleChange}
-          label="Neighborhood"
+          label="Preferred Volunteer Location"
         >
           {[
             "Lonsdale",
@@ -390,6 +391,9 @@ export default function UpdateProfileForm({
             </MenuItem>
           ))}
         </Select>
+        <FormHelperText>
+          Choose the Knoxville neighborhood where you&apos;d prefer to volunteer.
+        </FormHelperText>
       </FormControl>
 
       <FormControl fullWidth required>
