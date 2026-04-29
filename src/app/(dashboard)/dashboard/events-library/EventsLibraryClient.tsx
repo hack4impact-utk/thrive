@@ -83,6 +83,7 @@ export default function EventsLibraryClient({
           onSearchChange={setSearchQuery}
           filters={filters}
           onFiltersChange={setFilters}
+          showRegistrationStatus={false}
         />
       </Box>
 

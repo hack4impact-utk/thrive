@@ -94,6 +94,7 @@ type FiltersProps = {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
   keepOrder?: boolean;
+  showRegistrationStatus?: boolean;
 };
 
 export default function Filters({
@@ -102,6 +103,7 @@ export default function Filters({
   filters,
   onFiltersChange,
   keepOrder = false,
+  showRegistrationStatus = true,
 }: FiltersProps): React.ReactElement {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
@@ -119,7 +121,7 @@ export default function Filters({
     filters.dateFrom,
     filters.dateTo,
     filters.locationName,
-    filters.registrationStatus,
+    showRegistrationStatus ? filters.registrationStatus : "",
   ].filter(Boolean).length;
 
   return (
@@ -220,29 +222,31 @@ export default function Filters({
             </Select>
           </FormControl>
 
-          <FormControl size="small" fullWidth>
-            <InputLabel id="filter-status-label">
-              Registration Status
-            </InputLabel>
-            <Select
-              labelId="filter-status-label"
-              value={filters.registrationStatus ?? ""}
-              label="Registration Status"
-              onChange={(e) =>
-                onFiltersChange({
-                  ...filters,
-                  registrationStatus: e.target.value as RegistrationStatus,
-                })
-              }
-            >
-              <MenuItem value="">
-                <em>Any</em>
-              </MenuItem>
-              <MenuItem value="available">Available</MenuItem>
-              <MenuItem value="going">Going</MenuItem>
-              <MenuItem value="full">Full</MenuItem>
-            </Select>
-          </FormControl>
+          {showRegistrationStatus && (
+            <FormControl size="small" fullWidth>
+              <InputLabel id="filter-status-label">
+                Registration Status
+              </InputLabel>
+              <Select
+                labelId="filter-status-label"
+                value={filters.registrationStatus ?? ""}
+                label="Registration Status"
+                onChange={(e) =>
+                  onFiltersChange({
+                    ...filters,
+                    registrationStatus: e.target.value as RegistrationStatus,
+                  })
+                }
+              >
+                <MenuItem value="">
+                  <em>Any</em>
+                </MenuItem>
+                <MenuItem value="available">Available</MenuItem>
+                <MenuItem value="going">Going</MenuItem>
+                <MenuItem value="full">Full</MenuItem>
+              </Select>
+            </FormControl>
+          )}
 
           {activeFilterCount > 0 && (
             <Button
