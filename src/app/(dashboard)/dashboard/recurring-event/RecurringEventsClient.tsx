@@ -207,7 +207,13 @@ export default function RecurringEventsClient({
             <TableRow>
               {["Title", "Frequency", "Location", "Dates", "Status"].map(
                 (heading) => (
-                  <TableCell key={heading} sx={headerCellSx(accentColor)}>
+                  <TableCell
+                    key={heading}
+                    sx={{
+                      ...headerCellSx(accentColor),
+                      minWidth: heading === "Dates" ? 210 : 180,
+                    }}
+                  >
                     {heading}
                   </TableCell>
                 ),
