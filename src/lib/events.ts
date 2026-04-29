@@ -38,11 +38,14 @@ export async function getAllEvents(): Promise<EventRow[]> {
 
 export async function getUpcomingEvents(): Promise<EventRow[]> {
   const today = new Date();
-  const threeMonthsFromNow = new Date(today);
-  threeMonthsFromNow.setMonth(today.getMonth() + 3);
+  const endOfWindowMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 3,
+    0,
+  );
 
   const todayStr = today.toISOString().split("T")[0];
-  const threeMonthsStr = threeMonthsFromNow.toISOString().split("T")[0];
+  const threeMonthsStr = endOfWindowMonth.toISOString().split("T")[0];
 
   return db
     .select(eventWithLocation)
