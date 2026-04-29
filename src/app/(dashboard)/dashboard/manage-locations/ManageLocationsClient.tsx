@@ -2,7 +2,6 @@
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   alpha,
   Box,
@@ -13,52 +12,16 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
-  InputBase,
   Paper,
   Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import { useSnackbar } from "@/providers/snackbar-provider";
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": { backgroundColor: alpha(theme.palette.common.white, 0.25) },
-  width: "auto",
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "6ch",
-    "&:focus": { width: "10ch" },
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": { width: "20ch" },
-    },
-  },
-}));
 
 type Location = {
   id: string;
@@ -205,19 +168,6 @@ function LocationRow({
 export default function ManageLocationsClient({
   locations,
 }: Props): React.ReactElement {
-  const [search, setSearch] = React.useState("");
-
-  const filtered = React.useMemo(
-    () =>
-      locations.filter(
-        (loc) =>
-          loc.name.toLowerCase().includes(search.toLowerCase()) ||
-          loc.streetLine.toLowerCase().includes(search.toLowerCase()) ||
-          loc.city.toLowerCase().includes(search.toLowerCase()),
-      ),
-    [locations, search],
-  );
-
   return (
     <Stack spacing={4}>
       <Box
@@ -238,37 +188,17 @@ export default function ManageLocationsClient({
           </Typography>
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "row-reverse", md: "row" },
-            alignItems: "center",
-            gap: 1,
-          }}
+        <Button
+          component={Link}
+          href="/dashboard/create-location"
+          variant="contained"
+          startIcon={<LocationOnIcon />}
         >
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search"
-              inputProps={{ "aria-label": "search" }}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </Search>
-          <Button
-            component={Link}
-            href="/dashboard/create-location"
-            variant="contained"
-            startIcon={<LocationOnIcon />}
-          >
-            Add Location
-          </Button>
-        </Box>
+          Add Location
+        </Button>
       </Box>
 
-      {filtered.length === 0 ? (
+      {locations.length === 0 ? (
         <Paper
           elevation={0}
           sx={{
@@ -280,12 +210,10 @@ export default function ManageLocationsClient({
         >
           <Stack alignItems="center" spacing={0.5}>
             <Typography variant="body2" fontWeight={600}>
-              {locations.length === 0 ? "No locations yet." : "No results found."}
+              No locations yet.
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {locations.length === 0
-                ? "Add a location above to get started."
-                : "Try a different search term."}
+              Add a location above to get started.
             </Typography>
           </Stack>
         </Paper>
@@ -299,11 +227,11 @@ export default function ManageLocationsClient({
             overflow: "hidden",
           }}
         >
-          {filtered.map((loc, i) => (
+          {locations.map((loc, i) => (
             <LocationRow
               key={loc.id}
               location={loc}
-              isLast={i === filtered.length - 1}
+              isLast={i === locations.length - 1}
             />
           ))}
         </Paper>
