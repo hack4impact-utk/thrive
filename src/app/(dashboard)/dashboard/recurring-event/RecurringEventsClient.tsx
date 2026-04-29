@@ -2,18 +2,27 @@
 
 import AutoModeIcon from "@mui/icons-material/AutoMode";
 import BlockIcon from "@mui/icons-material/Block";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   alpha,
+  Badge,
   Box,
   Button,
+  Checkbox,
   Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
+  FormControlLabel,
   IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
+  Popover,
+  Select,
   Stack,
   type SxProps,
   Table,
@@ -22,6 +31,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -74,6 +84,156 @@ function formatDate(dateStr: string): string {
     year: "numeric",
   });
 }
+
+// ── Filter popover ────────────────────────────────────────────────────────────
+
+type FilterPopoverProps = {
+  accentColor: string;
+  locationOptions: string[];
+  location: string;
+  setLocation: (v: string) => void;
+  dateFrom: string;
+  setDateFrom: (v: string) => void;
+  dateTo: string;
+  setDateTo: (v: string) => void;
+  showStopped: boolean;
+  setShowStopped: (v: boolean) => void;
+  activeFilterCount: number;
+  onClear: () => void;
+};
+
+function FilterPopover({
+  accentColor,
+  locationOptions,
+  location,
+  setLocation,
+  dateFrom,
+  setDateFrom,
+  dateTo,
+  setDateTo,
+  showStopped,
+  setShowStopped,
+  activeFilterCount,
+  onClear,
+}: FilterPopoverProps): React.ReactElement {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null,
+  );
+
+  return (
+    <>
+      <Badge badgeContent={activeFilterCount || null} color="primary">
+        <Button
+          variant="outlined"
+          startIcon={<FilterListIcon />}
+          onClick={(e) => setAnchorEl(e.currentTarget)}
+          sx={{
+            color: "text.secondary",
+            borderColor: "divider",
+            "&:hover": { bgcolor: alpha(accentColor, 0.04) },
+          }}
+        >
+          Filter
+        </Button>
+      </Badge>
+
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Box
+          sx={{
+            p: 2.5,
+            width: 280,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <Typography variant="subtitle2" fontWeight={700}>
+            Filters
+          </Typography>
+
+          <FormControl size="small" fullWidth>
+            <InputLabel id="recurring-filter-location-label">
+              Location
+            </InputLabel>
+            <Select
+              labelId="recurring-filter-location-label"
+              value={location}
+              label="Location"
+              onChange={(e) => setLocation(e.target.value)}
+            >
+              <MenuItem value="">
+                <em>All locations</em>
+              </MenuItem>
+              {locationOptions.map((loc) => (
+                <MenuItem key={loc} value={loc}>
+                  {loc}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <TextField
+            label="Start date from"
+            type="date"
+            size="small"
+            fullWidth
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            inputProps={{ max: dateTo || undefined }}
+          />
+
+          <TextField
+            label="Start date to"
+            type="date"
+            size="small"
+            fullWidth
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            inputProps={{ min: dateFrom || undefined }}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                size="small"
+                checked={showStopped}
+                onChange={(e) => setShowStopped(e.target.checked)}
+                sx={{
+                  color: alpha(accentColor, 0.5),
+                  "&.Mui-checked": { color: accentColor },
+                }}
+              />
+            }
+            label={
+              <Typography variant="body2">Show stopped templates</Typography>
+            }
+          />
+
+          {activeFilterCount > 0 && (
+            <Button
+              variant="text"
+              size="small"
+              onClick={onClear}
+              sx={{ alignSelf: "flex-start", color: accentColor, p: 0 }}
+            >
+              Clear filters
+            </Button>
+          )}
+        </Box>
+      </Popover>
+    </>
+  );
+}
+
+// ── Stop button ───────────────────────────────────────────────────────────────
 
 function StopPatternButton({
   pattern,
@@ -156,40 +316,92 @@ function StopPatternButton({
   );
 }
 
+// ── Main component ────────────────────────────────────────────────────────────
+
 export default function RecurringEventsClient({
   patterns,
   accentColor,
 }: Props): React.ReactElement {
+  const [location, setLocation] = React.useState("");
+  const [dateFrom, setDateFrom] = React.useState("");
+  const [dateTo, setDateTo] = React.useState("");
+  const [showStopped, setShowStopped] = React.useState(false);
+
+  const locationOptions = React.useMemo(() => {
+    const seen = new Set<string>();
+    const result: string[] = [];
+    for (const p of patterns) {
+      if (p.locationName && !seen.has(p.locationName)) {
+        seen.add(p.locationName);
+        result.push(p.locationName);
+      }
+    }
+    return result.sort();
+  }, [patterns]);
+
+  const filtered = React.useMemo(() => {
+    return patterns.filter((p) => {
+      if (!showStopped && !p.active) return false;
+      if (location && p.locationName !== location) return false;
+      // Date range overlap: pattern overlaps [dateFrom, dateTo] if
+      // pattern.startDate <= dateTo AND (pattern.endDate is null OR pattern.endDate >= dateFrom)
+      if (dateTo && p.startDate > dateTo) return false;
+      if (dateFrom && p.endDate && p.endDate < dateFrom) return false;
+      return true;
+    });
+  }, [patterns, showStopped, location, dateFrom, dateTo]);
+
+  const activeFilterCount = [location, dateFrom || dateTo].filter(
+    Boolean,
+  ).length;
+
+  function handleClear(): void {
+    setLocation("");
+    setDateFrom("");
+    setDateTo("");
+  }
+
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: 2,
-          mb: 2.5,
-        }}
-      >
-        <Box>
-          <Typography variant="h5" fontWeight={700} gutterBottom>
-            Recurring Templates
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-            Patterns that automatically generate events each day they occur.
-          </Typography>
-        </Box>
+      <Box sx={{ mb: 2.5 }}>
+        <Typography variant="h5" fontWeight={700} gutterBottom>
+          Recurring Templates
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75, mb: 2 }}>
+          Patterns that automatically generate events each day they occur.
+        </Typography>
 
-        <Button
-          component={Link}
-          href="/dashboard/recurring-event/create"
-          variant="contained"
-          startIcon={<AutoModeIcon />}
-          sx={{ flexShrink: 0 }}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-          Create Recurring Event
-        </Button>
+          <FilterPopover
+            accentColor={accentColor}
+            locationOptions={locationOptions}
+            location={location}
+            setLocation={setLocation}
+            dateFrom={dateFrom}
+            setDateFrom={setDateFrom}
+            dateTo={dateTo}
+            setDateTo={setDateTo}
+            showStopped={showStopped}
+            setShowStopped={setShowStopped}
+            activeFilterCount={activeFilterCount}
+            onClear={handleClear}
+          />
+
+          <Button
+            component={Link}
+            href="/dashboard/recurring-event/create"
+            variant="contained"
+            startIcon={<AutoModeIcon />}
+          >
+            Create Recurring Event
+          </Button>
+        </Box>
       </Box>
 
       <TableContainer
@@ -224,8 +436,8 @@ export default function RecurringEventsClient({
             </TableRow>
           </TableHead>
           <TableBody>
-            {patterns.length > 0 ? (
-              patterns.map((pattern) => (
+            {filtered.length > 0 ? (
+              filtered.map((pattern) => (
                 <TableRow
                   key={pattern.id}
                   sx={{
@@ -276,10 +488,16 @@ export default function RecurringEventsClient({
                 <TableCell colSpan={6} sx={{ border: 0, py: 6 }}>
                   <Stack alignItems="center" spacing={0.5}>
                     <Typography variant="body2" fontWeight={600}>
-                      No recurring events yet.
+                      {patterns.filter((p) => p.active).length === 0 &&
+                      !showStopped
+                        ? "No active recurring templates."
+                        : "No templates match the current filters."}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Create one above to get started.
+                      {patterns.filter((p) => p.active).length === 0 &&
+                      !showStopped
+                        ? "Create one above to get started."
+                        : "Try adjusting or clearing the filters."}
                     </Typography>
                   </Stack>
                 </TableCell>
