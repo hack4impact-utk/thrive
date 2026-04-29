@@ -4,6 +4,8 @@ import PageContainer from "@/components/layout/PageContainer";
 import db from "@/db";
 import { locations } from "@/db/schema/locations";
 import { recurringEvents } from "@/db/schema/recurring-events";
+import { auth } from "@/lib/auth";
+import { ROLE_COLORS } from "@/lib/role-colors";
 
 import RecurringEventsClient from "./RecurringEventsClient";
 
@@ -34,11 +36,16 @@ async function getRecurringEvents(): Promise<RecurringEventRow[]> {
 }
 
 export default async function RecurringEventsPage(): Promise<React.ReactElement> {
+  const session = await auth();
+  const callerRole = session?.user?.role ?? "";
+  const accentColor =
+    callerRole === "manager" ? ROLE_COLORS.manager : ROLE_COLORS.admin;
+
   const patterns = await getRecurringEvents();
 
   return (
-    <PageContainer sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
-      <RecurringEventsClient patterns={patterns} />
+    <PageContainer sx={{ py: { xs: 4, md: 6 } }}>
+      <RecurringEventsClient patterns={patterns} accentColor={accentColor} />
     </PageContainer>
   );
 }

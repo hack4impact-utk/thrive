@@ -3,6 +3,7 @@
 import AutoModeIcon from "@mui/icons-material/AutoMode";
 import BlockIcon from "@mui/icons-material/Block";
 import {
+  alpha,
   Box,
   Button,
   Chip,
@@ -13,6 +14,8 @@ import {
   DialogTitle,
   IconButton,
   Paper,
+  Stack,
+  type SxProps,
   Table,
   TableBody,
   TableCell,
@@ -40,6 +43,7 @@ type RecurringEventRow = {
 
 type Props = {
   patterns: RecurringEventRow[];
+  accentColor: string;
 };
 
 const FREQUENCY_LABELS: Record<string, string> = {
@@ -48,6 +52,19 @@ const FREQUENCY_LABELS: Record<string, string> = {
   biweekly: "Every 2 weeks",
   monthly: "Monthly",
 };
+
+const headerCellSx = (accentColor: string): SxProps => ({
+  fontWeight: 700,
+  fontSize: "0.7rem",
+  letterSpacing: 0.9,
+  textTransform: "uppercase" as const,
+  color: alpha(accentColor, 0.7),
+  bgcolor: alpha(accentColor, 0.04),
+  borderBottom: "1px solid",
+  borderBottomColor: alpha(accentColor, 0.12),
+  py: 1.5,
+  whiteSpace: "nowrap" as const,
+});
 
 function formatDate(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
@@ -141,6 +158,7 @@ function StopPatternButton({
 
 export default function RecurringEventsClient({
   patterns,
+  accentColor,
 }: Props): React.ReactElement {
   return (
     <>
@@ -155,7 +173,7 @@ export default function RecurringEventsClient({
         }}
       >
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 700 }}>
+          <Typography variant="h5" fontWeight={700} gutterBottom>
             Recurring Templates
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
@@ -181,31 +199,22 @@ export default function RecurringEventsClient({
           border: "1px solid",
           borderColor: "divider",
           borderRadius: 2,
-          overflow: "hidden",
+          overflow: "auto",
         }}
       >
         <Table size="small" stickyHeader>
           <TableHead>
             <TableRow>
-              {["Title", "Frequency", "Location", "Dates", "Status", ""].map(
-                (heading, i) => (
-                  <TableCell
-                    key={i}
-                    sx={{
-                      fontWeight: 700,
-                      letterSpacing: 1.1,
-                      color: "#4b6287",
-                      fontSize: 12,
-                      textTransform: "uppercase",
-                      bgcolor: "#dfe7f2",
-                      borderBottom: "1px solid #cfd8e6",
-                      ...(i === 5 && { width: 48, p: 0 }),
-                    }}
-                  >
+              {["Title", "Frequency", "Location", "Dates", "Status"].map(
+                (heading) => (
+                  <TableCell key={heading} sx={headerCellSx(accentColor)}>
                     {heading}
                   </TableCell>
                 ),
               )}
+              <TableCell
+                sx={{ ...headerCellSx(accentColor), width: 48, p: 0 }}
+              />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -213,34 +222,35 @@ export default function RecurringEventsClient({
               patterns.map((pattern) => (
                 <TableRow
                   key={pattern.id}
-                  hover
                   sx={{
-                    "&:last-child td": { borderBottom: 0 },
+                    "&:last-child td": { border: 0 },
+                    "&:hover": { bgcolor: alpha(accentColor, 0.03) },
+                    transition: "background-color 120ms ease",
                     opacity: pattern.active ? 1 : 0.55,
                   }}
                 >
-                  <TableCell>
+                  <TableCell sx={{ py: 1.5 }}>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
                       {pattern.title}
                     </Typography>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ py: 1.5 }}>
                     <Typography variant="body2" color="text.secondary">
                       {FREQUENCY_LABELS[pattern.frequency] ?? pattern.frequency}
                     </Typography>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ py: 1.5 }}>
                     <Typography variant="body2" color="text.secondary">
                       {pattern.locationName ?? "—"}
                     </Typography>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ py: 1.5 }}>
                     <Typography variant="body2" color="text.secondary">
                       {formatDate(pattern.startDate)} —{" "}
                       {pattern.endDate ? formatDate(pattern.endDate) : "No end"}
                     </Typography>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ py: 1.5 }}>
                     <Chip
                       label={pattern.active ? "Active" : "Stopped"}
                       color={pattern.active ? "success" : "default"}
@@ -248,26 +258,22 @@ export default function RecurringEventsClient({
                       variant="outlined"
                     />
                   </TableCell>
-                  <TableCell
-                    sx={{ width: 48, p: 0, pr: 1, textAlign: "right" }}
-                  >
+                  <TableCell sx={{ width: 48, p: 0, pr: 1, textAlign: "right" }}>
                     {pattern.active && <StopPatternButton pattern={pattern} />}
                   </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} sx={{ px: 3, py: 5, border: 0 }}>
-                  <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                    No recurring events yet.
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mt: 0.75 }}
-                  >
-                    Create one above to get started.
-                  </Typography>
+                <TableCell colSpan={6} sx={{ border: 0, py: 6 }}>
+                  <Stack alignItems="center" spacing={0.5}>
+                    <Typography variant="body2" fontWeight={600}>
+                      No recurring events yet.
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Create one above to get started.
+                    </Typography>
+                  </Stack>
                 </TableCell>
               </TableRow>
             )}
