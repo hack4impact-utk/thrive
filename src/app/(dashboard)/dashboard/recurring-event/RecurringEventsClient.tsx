@@ -367,7 +367,11 @@ export default function RecurringEventsClient({
         <Typography variant="h5" fontWeight={700} gutterBottom>
           Recurring Templates
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75, mb: 2 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mt: 0.75, mb: 2 }}
+        >
           Patterns that automatically generate events each day they occur.
         </Typography>
 
