@@ -4,6 +4,7 @@ import { and, count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
+import { userInfo } from "@/db/schema/user-info";
 import { buildEmailHtml, sendEmail } from "@/lib/email";
 import getUserSession from "@/utils/auth/get-user-session";
 
@@ -44,7 +45,12 @@ export async function leaveEvent(eventId: string): Promise<void> {
       ),
     );
 
-  if (session.user.email) {
+  const info = await db.query.userInfo.findFirst({
+    where: eq(userInfo.userId, session.user.id),
+    columns: { emailUnregistrationReminder: true },
+  });
+
+  if (session.user.email && info?.emailUnregistrationReminder !== false) {
     await sendEmail({
       to: session.user.email,
       subject: `You've unregistered from "${event.title}"`,

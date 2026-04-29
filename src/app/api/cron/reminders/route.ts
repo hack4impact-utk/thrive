@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import db from "@/db";
 import { eventAttendees, events, users } from "@/db/schema";
+import { userInfo } from "@/db/schema/user-info";
 import { buildEmailHtml, formatEmailTime, sendEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
@@ -24,15 +25,17 @@ export async function POST(request: Request): Promise<Response> {
         eventTitle: events.title,
         startTime: events.startTime,
         endTime: events.endTime,
+        emailDayOfReminder: userInfo.emailDayOfReminder,
       })
       .from(eventAttendees)
       .innerJoin(events, eq(eventAttendees.eventId, events.id))
       .innerJoin(users, eq(eventAttendees.userId, users.id))
+      .leftJoin(userInfo, eq(userInfo.userId, users.id))
       .where(and(eq(events.eventDate, today), eq(events.deleted, false)));
 
     await Promise.allSettled(
       registrations
-        .filter((r) => !!r.userEmail)
+        .filter((r) => !!r.userEmail && r.emailDayOfReminder !== false)
         .map((r) =>
           sendEmail({
             to: r.userEmail!,

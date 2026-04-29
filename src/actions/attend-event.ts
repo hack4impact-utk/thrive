@@ -4,6 +4,7 @@ import { count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
+import { userInfo } from "@/db/schema/user-info";
 import {
   buildEmailHtml,
   formatEmailDate,
@@ -53,7 +54,12 @@ export async function attendEvent(eventId: string): Promise<void> {
     })
     .onConflictDoNothing();
 
-  if (session.user.email) {
+  const info = await db.query.userInfo.findFirst({
+    where: eq(userInfo.userId, session.user.id),
+    columns: { emailRegistrationReminder: true },
+  });
+
+  if (session.user.email && info?.emailRegistrationReminder !== false) {
     await sendEmail({
       to: session.user.email,
       subject: `You're registered for "${event.title}"!`,

@@ -1,4 +1,11 @@
-import { integer, numeric, pgTable, text, varchar } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  numeric,
+  pgTable,
+  text,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 import { users } from "./users";
 
@@ -40,4 +47,12 @@ export const userInfo = pgTable("user_info", {
   referralSource: varchar("referral_source", { length: 100 }).notNull(),
 
   medicalNotes: text("medical_notes"),
+
+  emailRegistrationReminder: boolean("email_registration_reminder")
+    .notNull()
+    .default(true),
+  emailUnregistrationReminder: boolean("email_unregistration_reminder")
+    .notNull()
+    .default(true),
+  emailDayOfReminder: boolean("email_day_of_reminder").notNull().default(true),
 });

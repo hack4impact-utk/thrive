@@ -100,6 +100,14 @@ export default function ProfileDropdown(): React.ReactElement {
                 My hours
               </MenuItem>
             )}
+            <MenuItem
+              onClick={() => {
+                void router.push("/account/notifications");
+                handleClose();
+              }}
+            >
+              Notifications
+            </MenuItem>
           </>
         )}
         <MenuItem
