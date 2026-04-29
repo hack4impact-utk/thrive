@@ -15,9 +15,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import * as React from "react";
 
 export type AttendeeEntry = {
+  userId: string;
   volunteerName: string;
   eventTitle: string;
   eventDate: string;
@@ -146,7 +148,18 @@ function LocationDetailRow({
                       borderColor: "divider",
                     }}
                   >
-                    <Typography variant="body2" fontWeight={500} noWrap>
+                    <Typography
+                      component={Link}
+                      href={`/dashboard/user-management/${a.userId}`}
+                      variant="body2"
+                      fontWeight={500}
+                      noWrap
+                      sx={{
+                        color: accentColor,
+                        textDecoration: "none",
+                        "&:hover": { textDecoration: "underline" },
+                      }}
+                    >
                       {a.volunteerName}
                     </Typography>
                     <Typography

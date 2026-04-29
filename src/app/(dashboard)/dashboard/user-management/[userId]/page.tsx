@@ -1,9 +1,8 @@
-import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { Box, Button, Stack } from "@mui/material";
-import Link from "next/link";
+import { Box, Stack } from "@mui/material";
 import { redirect } from "next/navigation";
 
 import PageContainer from "@/components/layout/PageContainer";
+import BackButton from "@/components/ui/BackButton";
 import UserProfilePanel from "@/components/ui/UserProfilePanel";
 import { auth } from "@/lib/auth";
 import { ROLE_COLORS } from "@/lib/role-colors";
@@ -29,22 +28,7 @@ export default async function UserDetailPage({
     <PageContainer sx={{ py: { xs: 4, md: 6 } }}>
       <Stack spacing={3}>
         <Box>
-          <Button
-            component={Link}
-            href="/dashboard/user-management"
-            startIcon={<ArrowBackRoundedIcon />}
-            size="small"
-            disableRipple
-            sx={{
-              color: "text.secondary",
-              textTransform: "none",
-              fontWeight: 500,
-              px: 0,
-              "&:hover": { bgcolor: "transparent", color: accentColor },
-            }}
-          >
-            User Management
-          </Button>
+          <BackButton label="Back" accentColor={accentColor} />
         </Box>
 
         <UserProfilePanel userId={userId} accentColor={accentColor} />

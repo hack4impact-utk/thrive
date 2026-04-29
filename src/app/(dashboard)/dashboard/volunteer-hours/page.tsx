@@ -58,6 +58,7 @@ export default async function VolunteerHoursPage({
         locationName: locations.name,
         startTime: events.startTime,
         endTime: events.endTime,
+        userId: eventAttendees.userId,
         firstName: userInfo.firstName,
         lastName: userInfo.lastName,
         eventTitle: events.title,
@@ -90,6 +91,7 @@ export default async function VolunteerHoursPage({
     const h = calcHours(row.startTime, row.endTime);
     loc.hours += h;
     loc.attendees.push({
+      userId: row.userId,
       volunteerName:
         [row.firstName, row.lastName].filter(Boolean).join(" ") || "Unknown",
       eventTitle: row.eventTitle,
