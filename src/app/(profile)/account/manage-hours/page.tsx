@@ -18,6 +18,8 @@ import db from "@/db";
 import { eventAttendees, events, locations, userInfo } from "@/db/schema";
 import getUserSession from "@/utils/auth/get-user-session";
 
+export const dynamic = "force-dynamic";
+
 function toMinutes(t: string): number {
   const [h, m] = t.split(":").map(Number);
   return h * 60 + m;

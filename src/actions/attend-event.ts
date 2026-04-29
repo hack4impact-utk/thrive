@@ -1,6 +1,6 @@
 "use server";
 
-import { count, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
@@ -30,26 +30,44 @@ export async function attendEvent(eventId: string): Promise<void> {
     throw new Error("Event not found");
   }
 
-  await db.transaction(async (tx) => {
-    const [{ liveCount }] = await tx
-      .select({ liveCount: count() })
-      .from(eventAttendees)
-      .where(eq(eventAttendees.eventId, eventId));
+  const [{ preCount }] = await db
+    .select({ preCount: count() })
+    .from(eventAttendees)
+    .where(eq(eventAttendees.eventId, eventId));
 
-    if (event.capacity !== null && liveCount >= event.capacity) {
-      throw new Error("Event capacity reached");
-    }
+  if (event.capacity !== null && preCount >= event.capacity) {
+    throw new Error("Event capacity reached");
+  }
 
-    await tx
-      .insert(eventAttendees)
-      .values({ eventId, userId: session.user.id })
-      .onConflictDoNothing();
+  const inserted = await db
+    .insert(eventAttendees)
+    .values({ eventId, userId: session.user.id })
+    .onConflictDoNothing()
+    .returning();
 
-    await tx
-      .update(events)
-      .set({ registeredUsers: liveCount + 1 })
-      .where(eq(events.id, eventId));
-  });
+  if (inserted.length === 0) return;
+
+  const [{ liveCount }] = await db
+    .select({ liveCount: count() })
+    .from(eventAttendees)
+    .where(eq(eventAttendees.eventId, eventId));
+
+  if (event.capacity !== null && liveCount > event.capacity) {
+    await db
+      .delete(eventAttendees)
+      .where(
+        and(
+          eq(eventAttendees.eventId, eventId),
+          eq(eventAttendees.userId, session.user.id),
+        ),
+      );
+    throw new Error("Event capacity reached");
+  }
+
+  await db
+    .update(events)
+    .set({ registeredUsers: liveCount })
+    .where(eq(events.id, eventId));
 
   const info = await db.query.userInfo.findFirst({
     where: eq(userInfo.userId, session.user.id),

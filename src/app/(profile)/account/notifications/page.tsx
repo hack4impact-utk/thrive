@@ -8,6 +8,8 @@ import getUserSession from "@/utils/auth/get-user-session";
 
 import NotificationsForm from "./NotificationsForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function NotificationsPage(): Promise<React.ReactElement> {
   const session = await getUserSession();
 

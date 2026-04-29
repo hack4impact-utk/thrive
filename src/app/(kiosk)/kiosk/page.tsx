@@ -10,6 +10,8 @@ import getUserSession from "@/utils/auth/get-user-session";
 
 import KioskEventCard from "./KioskEventCard";
 
+export const dynamic = "force-dynamic";
+
 export default async function KioskPage(): Promise<React.ReactElement> {
   const session = await getUserSession();
 
