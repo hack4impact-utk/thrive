@@ -244,7 +244,7 @@ export default function RecurringEventCreationForm(): React.ReactElement {
           onChange={handleChange}
           InputLabelProps={{ shrink: true }}
           error={!!errors.endDate}
-          helperText={errors.endDate ?? "Leave blank for no end date"}
+          helperText={errors.endDate}
         />
       </Box>
 
