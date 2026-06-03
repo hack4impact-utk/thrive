@@ -189,11 +189,12 @@ export default async function EventAttendeesPage({
 }): Promise<React.ReactElement> {
   const session = await auth();
 
-  if (session?.user?.role !== "admin") {
+  const role = session?.user?.role;
+  if (role !== "admin" && role !== "manager") {
     redirect("/dashboard");
   }
 
-  const accentColor = ROLE_COLORS.admin;
+  const accentColor = ROLE_COLORS[role as "admin" | "manager"];
 
   const { eventId } = await params;
   const [event, attendees] = await Promise.all([
