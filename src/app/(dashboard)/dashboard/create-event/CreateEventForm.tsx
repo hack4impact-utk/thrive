@@ -1,5 +1,6 @@
 "use client";
 
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import {
   Box,
   Checkbox,
@@ -10,6 +11,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -19,6 +21,7 @@ import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import FormLayout from "@/components/layout/FormLayout";
+import { updateEvent } from "@/actions/update-event";
 import { useSnackbar } from "@/providers/snackbar-provider";
 
 type Location = {
@@ -44,28 +47,45 @@ type FormErrors = Partial<
   Record<keyof CreateEventFormState | "capacity", string>
 >;
 
+type InitialValues = {
+  id: string;
+  title: string;
+  eventDate: string;
+  startTime: string;
+  endTime: string;
+  capacity: number | null;
+  locationId: string;
+  description: string;
+};
+
 type Props = {
   managerLocationId: string | null;
   managerLocationName: string | null;
+  initialValues?: InitialValues;
 };
 
 export default function CreateEventForm({
   managerLocationId,
   managerLocationName,
+  initialValues,
 }: Props): React.ReactElement {
   const isManager = managerLocationId !== null;
+  const isEditMode = initialValues !== undefined;
 
   const [form, setForm] = React.useState<CreateEventFormState>({
-    title: "",
-    eventDate: "",
-    startTime: "",
-    endTime: "",
-    capacity: "",
-    locationId: managerLocationId ?? "",
-    description: "",
+    title: initialValues?.title ?? "",
+    eventDate: initialValues?.eventDate ?? "",
+    startTime: initialValues?.startTime ?? "",
+    endTime: initialValues?.endTime ?? "",
+    capacity:
+      initialValues?.capacity != null ? String(initialValues.capacity) : "",
+    locationId: initialValues?.locationId ?? managerLocationId ?? "",
+    description: initialValues?.description ?? "",
   });
 
-  const [unlimitedCapacity, setUnlimitedCapacity] = React.useState(false);
+  const [unlimitedCapacity, setUnlimitedCapacity] = React.useState(
+    isEditMode ? initialValues!.capacity === null : false,
+  );
   const [locationOptions, setLocationOptions] = React.useState<Location[]>([]);
   const [errors, setErrors] = React.useState<FormErrors>({});
 
@@ -77,7 +97,7 @@ export default function CreateEventForm({
       fetch("/api/locations")
         .then((r) => r.json())
         .then(setLocationOptions)
-        .catch(console.error);
+        .catch(() => {});
     }
   }, [isManager]);
 
@@ -98,15 +118,35 @@ export default function CreateEventForm({
     if (!form.title.trim()) newErrors.title = "Title is required";
     if (!form.description.trim())
       newErrors.description = "Description is required";
-    if (!form.locationId) newErrors.locationId = "Location is required";
-    if (!form.eventDate) newErrors.eventDate = "Event date is required";
-    if (!form.startTime) newErrors.startTime = "Start time is required";
-    if (!form.endTime) newErrors.endTime = "End time is required";
+    if (!isEditMode && !form.locationId)
+      newErrors.locationId = "Location is required";
+    if (!isEditMode && !form.eventDate)
+      newErrors.eventDate = "Event date is required";
+    if (!isEditMode && !form.startTime)
+      newErrors.startTime = "Start time is required";
+    if (!isEditMode && !form.endTime)
+      newErrors.endTime = "End time is required";
     if (!unlimitedCapacity && !form.capacity)
       newErrors.capacity = "Enter a capacity or check Unlimited capacity";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      return;
+    }
+
+    if (isEditMode) {
+      try {
+        await updateEvent({
+          id: initialValues!.id,
+          title: form.title,
+          description: form.description,
+          capacity: unlimitedCapacity ? null : Number(form.capacity),
+        });
+        showSnackbar("Event updated successfully!", "success");
+        router.back();
+      } catch {
+        showSnackbar("Failed to update event", "error");
+      }
       return;
     }
 
@@ -133,7 +173,6 @@ export default function CreateEventForm({
 
     showSnackbar("Event created successfully!", "success");
     router.push("/");
-
     setForm({
       title: "",
       eventDate: "",
@@ -149,9 +188,9 @@ export default function CreateEventForm({
 
   return (
     <FormLayout
-      title="Create Event"
+      title={isEditMode ? "Update Event" : "Create Event"}
       description="* indicates required field"
-      submitLabel="Create Event"
+      submitLabel={isEditMode ? "Update Event" : "Create Event"}
       onSubmit={handleSubmit}
     >
       <TextField
@@ -178,6 +217,22 @@ export default function CreateEventForm({
         helperText={errors.description}
       />
 
+      {isEditMode && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.75,
+            color: "text.disabled",
+          }}
+        >
+          <LockOutlinedIcon sx={{ fontSize: 14 }} />
+          <Typography variant="caption">
+            Date, time, and location cannot be changed after creation.
+          </Typography>
+        </Box>
+      )}
+
       {isManager ? (
         <TextField
           label="Location"
@@ -187,7 +242,7 @@ export default function CreateEventForm({
           InputLabelProps={{ shrink: true }}
         />
       ) : (
-        <FormControl fullWidth required error={!!errors.locationId}>
+        <FormControl fullWidth required={!isEditMode} error={!!errors.locationId} disabled={isEditMode}>
           <InputLabel id="location-label">Location</InputLabel>
           <Select
             labelId="location-label"
@@ -226,11 +281,12 @@ export default function CreateEventForm({
         name="eventDate"
         type="date"
         label="Event Date"
-        required
+        required={!isEditMode}
         fullWidth
         value={form.eventDate}
         onChange={handleChange}
         InputLabelProps={{ shrink: true }}
+        disabled={isEditMode}
         error={!!errors.eventDate}
         helperText={errors.eventDate}
       />
@@ -240,6 +296,7 @@ export default function CreateEventForm({
           <TimePicker
             label="Start Time *"
             minutesStep={5}
+            disabled={isEditMode}
             value={
               form.startTime ? dayjs(`2000-01-01T${form.startTime}`) : null
             }
@@ -261,6 +318,7 @@ export default function CreateEventForm({
           <TimePicker
             label="End Time *"
             minutesStep={5}
+            disabled={isEditMode}
             value={form.endTime ? dayjs(`2000-01-01T${form.endTime}`) : null}
             onChange={(v: Dayjs | null) => {
               setForm((prev) => ({

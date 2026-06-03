@@ -67,6 +67,7 @@ export default function RoleCell({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const isReadOnly = callerRole === "manager" && currentRole === "admin";
   const availableRoles = callerRole === "admin" ? ALL_ROLES : MANAGER_ROLES;
   const showLocationPicker =
     callerRole === "admin" &&
@@ -76,6 +77,7 @@ export default function RoleCell({
   const handleButtonClick = (
     event: React.MouseEvent<HTMLButtonElement>,
   ): void => {
+    if (isReadOnly) return;
     setMenuAnchor(event.currentTarget);
   };
 
@@ -128,12 +130,14 @@ export default function RoleCell({
           gap: 0.25,
           background: "none",
           border: "none",
-          cursor: "pointer",
+          cursor: isReadOnly ? "default" : "pointer",
           p: 0,
           color: "text.secondary",
           fontFamily: "inherit",
-          "&:hover .role-label": { color: "primary.main" },
-          "&:hover .role-arrow": { color: "primary.main" },
+          ...(!isReadOnly && {
+            "&:hover .role-label": { color: "primary.main" },
+            "&:hover .role-arrow": { color: "primary.main" },
+          }),
         }}
       >
         <Typography
@@ -143,14 +147,16 @@ export default function RoleCell({
         >
           {formatRole(role)}
         </Typography>
-        <ArrowDropDownRoundedIcon
-          className="role-arrow"
-          sx={{
-            fontSize: 18,
-            color: "text.disabled",
-            transition: "color 0.15s",
-          }}
-        />
+        {!isReadOnly && (
+          <ArrowDropDownRoundedIcon
+            className="role-arrow"
+            sx={{
+              fontSize: 18,
+              color: "text.disabled",
+              transition: "color 0.15s",
+            }}
+          />
+        )}
       </Box>
 
       <Menu

@@ -1,7 +1,10 @@
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import DeleteEventButton from "./DeleteEventButton";
 import {
   alpha,
   Box,
+  IconButton,
   Paper,
   Stack,
   Table,
@@ -28,6 +31,7 @@ import { ROLE_COLORS } from "@/lib/role-colors";
 type EventDetails = {
   id: string;
   title: string;
+  description: string;
   eventDate: string;
   startTime: string;
   endTime: string;
@@ -151,6 +155,7 @@ async function getEventDetails(
     .select({
       id: events.id,
       title: events.title,
+      description: events.description,
       eventDate: events.eventDate,
       startTime: events.startTime,
       endTime: events.endTime,
@@ -225,12 +230,27 @@ export default async function EventAttendeesPage({
         </Box>
 
         <Box>
-          <Typography variant="h5" fontWeight={700} sx={{ color: accentColor }}>
-            {event.title}
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="h5" fontWeight={700} sx={{ color: accentColor }}>
+              {event.title}
+            </Typography>
+            <Tooltip title="Edit event" arrow>
+              <Link href={`/dashboard/events-library/${eventId}/edit`}>
+                <IconButton size="small" sx={{ color: accentColor }}>
+                  <EditRoundedIcon fontSize="small" />
+                </IconButton>
+              </Link>
+            </Tooltip>
+            <DeleteEventButton eventId={eventId} accentColor={accentColor} />
+          </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             {formatSubtitle(event)}
           </Typography>
+          {event.description && (
+            <Typography variant="body2" sx={{ mt: 1.5 }}>
+              {event.description}
+            </Typography>
+          )}
         </Box>
 
         <TableContainer

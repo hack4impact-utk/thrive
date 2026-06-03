@@ -29,6 +29,16 @@ export async function updateUserRole(
     throw new Error("Managers cannot promote users to admin");
   }
 
+  if (callerRole === "manager") {
+    const [target] = await db
+      .select({ role: users.role })
+      .from(users)
+      .where(eq(users.id, targetUserId));
+    if (target?.role === "admin") {
+      throw new Error("Managers cannot edit admin users");
+    }
+  }
+
   if (!ALLOWED_ROLES.has(newRole)) {
     throw new Error("Invalid role");
   }
