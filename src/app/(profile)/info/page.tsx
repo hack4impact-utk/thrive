@@ -390,6 +390,8 @@ export default function BasicInfoForm(): React.ReactElement {
           <MenuItem value="small">Small</MenuItem>
           <MenuItem value="medium">Medium</MenuItem>
           <MenuItem value="large">Large</MenuItem>
+          <MenuItem value="x-large">X-Large</MenuItem>
+          <MenuItem value="xx-large">XX-Large</MenuItem>
         </Select>
       </FormControl>
 
