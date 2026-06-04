@@ -1,7 +1,6 @@
-import { MenuItem } from "@mui/material";
+import { Avatar, MenuItem } from "@mui/material";
 import Box from "@mui/material/Box";
 import Popover from "@mui/material/Popover";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useRef, useState } from "react";
@@ -47,15 +46,20 @@ export default function ProfileDropdown(): React.ReactElement {
           },
         }}
       >
-        {session?.user?.image && (
-          <Image
-            src={session.user.image}
-            width={32}
-            height={32}
-            alt="User avatar"
-            draggable={false}
-          />
-        )}
+        <Avatar
+          src={session?.user?.image ?? undefined}
+          sx={{
+            width: 32,
+            height: 32,
+            bgcolor: "white",
+            color: "primary.main",
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          {!session?.user?.image &&
+            `${session?.user?.name?.split(" ")[0]?.[0] ?? ""}${session?.user?.name?.split(" ")[1]?.[0] ?? ""}`.toUpperCase()}
+        </Avatar>
       </Box>
       <Popover
         open={open}
