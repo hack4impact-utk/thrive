@@ -63,9 +63,9 @@ export function buildEmailHtml(content: string): string {
                 The Thrive Team
               </p>
               <p style="margin:0;font-size:12px;">
-                <a href="mailto:volunteer@thrivelonsdale.com"
+                <a href="mailto:volunteer@helpusthrive.com"
                    style="color:${GREEN};text-decoration:none;">
-                  volunteer@thrivelonsdale.com
+                  volunteer@helpusthrive.com
                 </a>
               </p>
             </td>

@@ -36,7 +36,7 @@ export default function WelcomeCard(): React.ReactElement {
             "Sign Up" beside an opportunity below that interests you. You can
             filter the schedule using the category drop-down below this message
             on the left. Questions? If you have any questions, please email us
-            at volunteer@thrivelonsdale.com.
+            at volunteer@helpusthrive.com.
           </Typography>
 
           <Typography

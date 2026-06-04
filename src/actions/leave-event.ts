@@ -5,7 +5,7 @@ import { and, count, eq } from "drizzle-orm";
 import db from "@/db";
 import { eventAttendees, events } from "@/db/schema";
 import { userInfo } from "@/db/schema/user-info";
-import { buildEmailHtml, sendEmail } from "@/lib/email";
+import { buildEmailHtml, formatEmailDate, sendEmail } from "@/lib/email";
 import getUserSession from "@/utils/auth/get-user-session";
 
 export async function leaveEvent(eventId: string): Promise<void> {
@@ -66,8 +66,11 @@ export async function leaveEvent(eventId: string): Promise<void> {
                style="background:#fdf7f7;border-left:4px solid #d9534f;border-radius:4px;padding:20px;margin-bottom:24px;">
           <tr>
             <td>
-              <p style="margin:0;font-size:18px;font-weight:700;color:#22305B;">
+              <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#22305B;">
                 ${event.title}
+              </p>
+              <p style="margin:0;font-size:14px;color:#555555;">
+                <strong style="color:#22305B;">Date:</strong>&nbsp;${formatEmailDate(event.eventDate)}
               </p>
             </td>
           </tr>

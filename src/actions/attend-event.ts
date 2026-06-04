@@ -3,7 +3,7 @@
 import { and, count, eq } from "drizzle-orm";
 
 import db from "@/db";
-import { eventAttendees, events } from "@/db/schema";
+import { eventAttendees, events, locations } from "@/db/schema";
 import { userInfo } from "@/db/schema/user-info";
 import {
   buildEmailHtml,
@@ -20,11 +20,15 @@ export async function attendEvent(eventId: string): Promise<void> {
     throw new Error("Unauthorized");
   }
 
-  const event = await db
+  const result = await db
     .select()
     .from(events)
+    .leftJoin(locations, eq(events.locationId, locations.id))
     .where(eq(events.id, eventId))
     .then((res) => res[0]);
+
+  const event = result?.events;
+  const location = result?.locations;
 
   if (!event) {
     throw new Error("Event not found");
@@ -96,9 +100,12 @@ export async function attendEvent(eventId: string): Promise<void> {
               <p style="margin:0 0 6px;font-size:14px;color:#555555;">
                 <strong style="color:#22305B;">Date:</strong>&nbsp;${formatEmailDate(event.eventDate)}
               </p>
-              <p style="margin:0;font-size:14px;color:#555555;">
+              <p style="margin:0 0 6px;font-size:14px;color:#555555;">
                 <strong style="color:#22305B;">Time:</strong>&nbsp;${formatEmailTime(event.startTime)} – ${formatEmailTime(event.endTime)}
               </p>
+              ${location ? `<p style="margin:0;font-size:14px;color:#555555;">
+                <strong style="color:#22305B;">Location:</strong>&nbsp;${location.streetLine}, ${location.city}, ${location.state} ${location.postalCode}
+              </p>` : ""}
             </td>
           </tr>
         </table>
