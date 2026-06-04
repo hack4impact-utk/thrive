@@ -20,8 +20,8 @@ import dayjs, { type Dayjs } from "dayjs";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 
-import FormLayout from "@/components/layout/FormLayout";
 import { updateEvent } from "@/actions/update-event";
+import FormLayout from "@/components/layout/FormLayout";
 import { useSnackbar } from "@/providers/snackbar-provider";
 
 type Location = {
@@ -78,7 +78,7 @@ export default function CreateEventForm({
     startTime: initialValues?.startTime ?? "",
     endTime: initialValues?.endTime ?? "",
     capacity:
-      initialValues?.capacity != null ? String(initialValues.capacity) : "",
+      initialValues?.capacity == null ? "" : String(initialValues.capacity),
     locationId: initialValues?.locationId ?? managerLocationId ?? "",
     description: initialValues?.description ?? "",
   });
@@ -97,7 +97,7 @@ export default function CreateEventForm({
       fetch("/api/locations")
         .then((r) => r.json())
         .then(setLocationOptions)
-        .catch(() => {});
+        .catch(Boolean);
     }
   }, [isManager]);
 
@@ -242,7 +242,12 @@ export default function CreateEventForm({
           InputLabelProps={{ shrink: true }}
         />
       ) : (
-        <FormControl fullWidth required={!isEditMode} error={!!errors.locationId} disabled={isEditMode}>
+        <FormControl
+          fullWidth
+          required={!isEditMode}
+          error={!!errors.locationId}
+          disabled={isEditMode}
+        >
           <InputLabel id="location-label">Location</InputLabel>
           <Select
             labelId="location-label"

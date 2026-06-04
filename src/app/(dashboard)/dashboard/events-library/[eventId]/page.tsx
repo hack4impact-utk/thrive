@@ -1,6 +1,5 @@
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
-import DeleteEventButton from "./DeleteEventButton";
 import {
   alpha,
   Box,
@@ -27,6 +26,8 @@ import { eventAttendees, events, userInfo, users } from "@/db/schema";
 import { locations } from "@/db/schema/locations";
 import { auth } from "@/lib/auth";
 import { ROLE_COLORS } from "@/lib/role-colors";
+
+import DeleteEventButton from "./DeleteEventButton";
 
 type EventDetails = {
   id: string;
@@ -231,7 +232,11 @@ export default async function EventAttendeesPage({
 
         <Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography variant="h5" fontWeight={700} sx={{ color: accentColor }}>
+            <Typography
+              variant="h5"
+              fontWeight={700}
+              sx={{ color: accentColor }}
+            >
               {event.title}
             </Typography>
             <Tooltip title="Edit event" arrow>

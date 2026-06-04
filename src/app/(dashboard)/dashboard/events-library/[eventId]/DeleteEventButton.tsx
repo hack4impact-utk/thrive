@@ -24,7 +24,6 @@ type Props = {
 
 export default function DeleteEventButton({
   eventId,
-  accentColor,
 }: Props): React.ReactElement {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);

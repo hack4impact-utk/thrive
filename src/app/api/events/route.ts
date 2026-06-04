@@ -114,7 +114,15 @@ export async function PATCH(req: Request): Promise<Response> {
 
     await db
       .update(events)
-      .set({ title, eventDate, startTime, endTime, capacity: capacity ?? null, locationId, description })
+      .set({
+        title,
+        eventDate,
+        startTime,
+        endTime,
+        capacity: capacity ?? null,
+        locationId,
+        description,
+      })
       .where(eq(events.id, id));
 
     return NextResponse.json({ ok: true });
