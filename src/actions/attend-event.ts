@@ -103,9 +103,13 @@ export async function attendEvent(eventId: string): Promise<void> {
               <p style="margin:0 0 6px;font-size:14px;color:#555555;">
                 <strong style="color:#22305B;">Time:</strong>&nbsp;${formatEmailTime(event.startTime)} – ${formatEmailTime(event.endTime)}
               </p>
-              ${location ? `<p style="margin:0;font-size:14px;color:#555555;">
+              ${
+                location
+                  ? `<p style="margin:0;font-size:14px;color:#555555;">
                 <strong style="color:#22305B;">Location:</strong>&nbsp;${location.streetLine}, ${location.city}, ${location.state} ${location.postalCode}
-              </p>` : ""}
+              </p>`
+                  : ""
+              }
             </td>
           </tr>
         </table>
