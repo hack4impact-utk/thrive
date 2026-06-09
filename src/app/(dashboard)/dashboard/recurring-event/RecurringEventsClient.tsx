@@ -45,6 +45,11 @@ type RecurringEventRow = {
   id: string;
   title: string;
   frequency: string;
+  daysOfWeek: number[] | null;
+  weekdaysOnly: boolean;
+  monthlyType: string | null;
+  monthlyNth: number | null;
+  monthlyWeekday: number | null;
   startDate: string;
   endDate: string | null;
   active: boolean;
@@ -57,12 +62,71 @@ type Props = {
   showLocationFilter?: boolean;
 };
 
-const FREQUENCY_LABELS: Record<string, string> = {
-  daily: "Daily",
-  weekly: "Weekly",
-  biweekly: "Every 2 weeks",
-  monthly: "Monthly",
+const SHORT_DAY = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] as const;
+const FULL_DAY = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+] as const;
+const NTH_LABEL: Record<number, string> = {
+  1: "1st",
+  2: "2nd",
+  3: "3rd",
+  4: "4th",
+  [-1]: "Last",
 };
+
+function ordinal(n: number): string {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] ?? s[v] ?? s[0]);
+}
+
+function formatRecurrence(p: RecurringEventRow): string {
+  switch (p.frequency) {
+    case "daily":
+      return p.weekdaysOnly ? "Weekdays (Mon\u2013Fri)" : "Every day";
+
+    case "weekly": {
+      if (p.daysOfWeek && p.daysOfWeek.length > 0) {
+        const days = [...p.daysOfWeek]
+          .sort((a, b) => a - b)
+          .map((d) => SHORT_DAY[d])
+          .join(", ");
+        return `Weekly on ${days}`;
+      }
+      return "Weekly";
+    }
+
+    case "biweekly": {
+      if (p.daysOfWeek && p.daysOfWeek.length > 0) {
+        return `Every other ${FULL_DAY[p.daysOfWeek[0]]}`;
+      }
+      return "Every 2 weeks";
+    }
+
+    case "monthly": {
+      if (
+        p.monthlyType === "nth-weekday" &&
+        p.monthlyNth !== null &&
+        p.monthlyWeekday !== null
+      ) {
+        const nth = NTH_LABEL[p.monthlyNth] ?? String(p.monthlyNth);
+        return `Monthly \u2014 ${nth} ${FULL_DAY[p.monthlyWeekday]}`;
+      }
+      // day-of-month (derive from startDate)
+      const day = new Date(p.startDate + "T00:00:00Z").getUTCDate();
+      return `Monthly on the ${ordinal(day)}`;
+    }
+
+    default:
+      return p.frequency;
+  }
+}
 
 const headerCellSx = (accentColor: string): SxProps => ({
   fontWeight: 700,
@@ -349,8 +413,6 @@ export default function RecurringEventsClient({
     return patterns.filter((p) => {
       if (!showStopped && !p.active) return false;
       if (location && p.locationName !== location) return false;
-      // Date range overlap: pattern overlaps [dateFrom, dateTo] if
-      // pattern.startDate <= dateTo AND (pattern.endDate is null OR pattern.endDate >= dateFrom)
       if (dateTo && p.startDate > dateTo) return false;
       if (dateFrom && p.endDate && p.endDate < dateFrom) return false;
       return true;
@@ -466,17 +528,17 @@ export default function RecurringEventsClient({
                   </TableCell>
                   <TableCell sx={{ py: 1.5 }}>
                     <Typography variant="body2" color="text.secondary">
-                      {FREQUENCY_LABELS[pattern.frequency] ?? pattern.frequency}
+                      {formatRecurrence(pattern)}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ py: 1.5 }}>
                     <Typography variant="body2" color="text.secondary">
-                      {pattern.locationName ?? "—"}
+                      {pattern.locationName ?? "\u2014"}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ py: 1.5 }}>
                     <Typography variant="body2" color="text.secondary">
-                      {formatDate(pattern.startDate)} —{" "}
+                      {formatDate(pattern.startDate)} {"\u2014"}{" "}
                       {pattern.endDate ? formatDate(pattern.endDate) : "No end"}
                     </Typography>
                   </TableCell>

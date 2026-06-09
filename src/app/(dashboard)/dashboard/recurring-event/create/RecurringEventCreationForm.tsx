@@ -8,8 +8,13 @@ import {
   FormHelperText,
   InputLabel,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,6 +26,49 @@ import * as React from "react";
 import FormLayout from "@/components/layout/FormLayout";
 import { useSnackbar } from "@/providers/snackbar-provider";
 
+// ── Constants ─────────────────────────────────────────────────────────────────
+
+const DAY_LABELS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] as const;
+const DAY_FULL = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+] as const;
+
+const NTH_OPTIONS = [
+  { value: 1, label: "1st" },
+  { value: 2, label: "2nd" },
+  { value: 3, label: "3rd" },
+  { value: 4, label: "4th" },
+  { value: -1, label: "Last" },
+];
+
+const FREQUENCY_OPTIONS = [
+  { value: "daily", label: "Daily" },
+  { value: "weekly", label: "Weekly" },
+  { value: "biweekly", label: "Every 2 weeks" },
+  { value: "monthly", label: "Monthly" },
+];
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function ordinal(n: number): string {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] ?? s[v] ?? s[0]);
+}
+
+function dayOfMonthFromDate(dateStr: string): number | null {
+  if (!dateStr) return null;
+  return new Date(dateStr + "T00:00:00Z").getUTCDate();
+}
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
 type Location = {
   id: string;
   name: string;
@@ -30,7 +78,7 @@ type Location = {
   postalCode: string;
 };
 
-type RecurringEventFormState = {
+type FormState = {
   title: string;
   frequency: string;
   startDate: string;
@@ -43,20 +91,15 @@ type RecurringEventFormState = {
 };
 
 type FormErrors = Partial<
-  Record<keyof RecurringEventFormState | "capacity", string>
+  Record<keyof FormState | "capacity" | "daysOfWeek", string>
 >;
-
-const FREQUENCY_OPTIONS = [
-  { value: "daily", label: "Daily" },
-  { value: "weekly", label: "Weekly" },
-  { value: "biweekly", label: "Every 2 weeks" },
-  { value: "monthly", label: "Monthly" },
-];
 
 type Props = {
   managerLocationId: string | null;
   managerLocationName: string | null;
 };
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function RecurringEventCreationForm({
   managerLocationId,
@@ -64,7 +107,8 @@ export default function RecurringEventCreationForm({
 }: Props): React.ReactElement {
   const isManager = managerLocationId !== null;
 
-  const [form, setForm] = React.useState<RecurringEventFormState>({
+  // ── Core form state ─────────────────────────────────────────────────────────
+  const [form, setForm] = React.useState<FormState>({
     title: "",
     frequency: "",
     startDate: "",
@@ -80,8 +124,30 @@ export default function RecurringEventCreationForm({
   const [locationOptions, setLocationOptions] = React.useState<Location[]>([]);
   const [errors, setErrors] = React.useState<FormErrors>({});
 
+  // ── Recurrence sub-state ────────────────────────────────────────────────────
+  // weekly: which days (multi-select)
+  const [weeklyDays, setWeeklyDays] = React.useState<number[]>([]);
+  // biweekly: which single day
+  const [biweeklyDay, setBiweeklyDay] = React.useState<number>(1); // Mon default
+  // daily: weekdays only?
+  const [weekdaysOnly, setWeekdaysOnly] = React.useState(false);
+  // monthly: 'day-of-month' or 'nth-weekday'
+  const [monthlyType, setMonthlyType] = React.useState<
+    "day-of-month" | "nth-weekday"
+  >("day-of-month");
+  const [monthlyNth, setMonthlyNth] = React.useState<number>(1);
+  const [monthlyWeekday, setMonthlyWeekday] = React.useState<number>(1); // Mon
+
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
+
+  // When switching to biweekly (or while on it and changing startDate),
+  // default the selected day to whatever day the start date falls on.
+  React.useEffect(() => {
+    if (form.frequency === "biweekly" && form.startDate) {
+      setBiweeklyDay(new Date(form.startDate + "T00:00:00Z").getUTCDay());
+    }
+  }, [form.frequency, form.startDate]);
 
   React.useEffect(() => {
     if (!isManager) {
@@ -91,6 +157,7 @@ export default function RecurringEventCreationForm({
     }
   }, [isManager]);
 
+  // ── Handlers ─────────────────────────────────────────────────────────────────
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ): void {
@@ -118,10 +185,18 @@ export default function RecurringEventCreationForm({
     if (!unlimitedCapacity && !form.capacity)
       newErrors.capacity = "Enter a capacity or check Unlimited capacity";
 
+    if (form.frequency === "weekly" && weeklyDays.length === 0)
+      newErrors.daysOfWeek = "Select at least one day";
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
+
+    // Build recurrence payload
+    let daysOfWeek: number[] | undefined;
+    if (form.frequency === "weekly") daysOfWeek = weeklyDays;
+    if (form.frequency === "biweekly") daysOfWeek = [biweeklyDay];
 
     const res = await fetch("/api/recurring-events", {
       method: "POST",
@@ -137,6 +212,18 @@ export default function RecurringEventCreationForm({
         unlimitedCapacity,
         locationId: form.locationId,
         description: form.description,
+        daysOfWeek,
+        weekdaysOnly: form.frequency === "daily" ? weekdaysOnly : undefined,
+        monthlyType:
+          form.frequency === "monthly" ? monthlyType : undefined,
+        monthlyNth:
+          form.frequency === "monthly" && monthlyType === "nth-weekday"
+            ? monthlyNth
+            : undefined,
+        monthlyWeekday:
+          form.frequency === "monthly" && monthlyType === "nth-weekday"
+            ? monthlyWeekday
+            : undefined,
       }),
     });
 
@@ -152,6 +239,10 @@ export default function RecurringEventCreationForm({
     router.push("/dashboard/recurring-event");
   }
 
+  // ── Derived values ────────────────────────────────────────────────────────────
+  const monthlyDayOfMonth = dayOfMonthFromDate(form.startDate);
+
+  // ── Render ────────────────────────────────────────────────────────────────────
   return (
     <FormLayout
       title="Create Recurring Event"
@@ -227,6 +318,7 @@ export default function RecurringEventCreationForm({
         </FormControl>
       )}
 
+      {/* ── Frequency ── */}
       <FormControl fullWidth required error={!!errors.frequency}>
         <InputLabel id="frequency-label">Frequency</InputLabel>
         <Select
@@ -235,7 +327,11 @@ export default function RecurringEventCreationForm({
           label="Frequency"
           onChange={(e) => {
             setForm((prev) => ({ ...prev, frequency: e.target.value }));
-            setErrors((prev) => ({ ...prev, frequency: undefined }));
+            setErrors((prev) => ({
+              ...prev,
+              frequency: undefined,
+              daysOfWeek: undefined,
+            }));
           }}
         >
           <MenuItem value="">
@@ -252,6 +348,169 @@ export default function RecurringEventCreationForm({
         )}
       </FormControl>
 
+      {/* ── Daily: weekdays only ── */}
+      {form.frequency === "daily" && (
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={weekdaysOnly}
+              onChange={(e) => setWeekdaysOnly(e.target.checked)}
+            />
+          }
+          label="Weekdays only (Monday – Friday)"
+        />
+      )}
+
+      {/* ── Weekly: multi-day picker ── */}
+      {form.frequency === "weekly" && (
+        <Box>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            Repeat on <span style={{ color: "inherit" }}>*</span>
+          </Typography>
+          <ToggleButtonGroup
+            value={weeklyDays}
+            onChange={(_, newDays: number[]) => {
+              if (newDays.length > 0) {
+                setWeeklyDays(newDays);
+                setErrors((prev) => ({ ...prev, daysOfWeek: undefined }));
+              }
+            }}
+            aria-label="days of week"
+            sx={{ flexWrap: "wrap", gap: 0.5 }}
+          >
+            {DAY_LABELS.map((label, idx) => (
+              <ToggleButton
+                key={idx}
+                value={idx}
+                aria-label={DAY_FULL[idx]}
+                sx={{ width: 44, height: 44, p: 0, borderRadius: "50% !important" }}
+              >
+                {label}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          {errors.daysOfWeek && (
+            <FormHelperText error sx={{ mt: 0.5 }}>
+              {errors.daysOfWeek}
+            </FormHelperText>
+          )}
+        </Box>
+      )}
+
+      {/* ── Biweekly: single-day picker ── */}
+      {form.frequency === "biweekly" && (
+        <Box>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            Repeats every other
+          </Typography>
+          <ToggleButtonGroup
+            exclusive
+            value={biweeklyDay}
+            onChange={(_, day: number | null) => {
+              if (day !== null) setBiweeklyDay(day);
+            }}
+            aria-label="day of week"
+            sx={{ flexWrap: "wrap", gap: 0.5 }}
+          >
+            {DAY_LABELS.map((label, idx) => (
+              <ToggleButton
+                key={idx}
+                value={idx}
+                aria-label={DAY_FULL[idx]}
+                sx={{ width: 44, height: 44, p: 0, borderRadius: "50% !important" }}
+              >
+                {label}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.75, display: "block" }}>
+            The every-other-week cadence is anchored to your start date.
+          </Typography>
+        </Box>
+      )}
+
+      {/* ── Monthly: day-of-month vs nth-weekday ── */}
+      {form.frequency === "monthly" && (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+          <RadioGroup
+            value={monthlyType}
+            onChange={(e) =>
+              setMonthlyType(e.target.value as "day-of-month" | "nth-weekday")
+            }
+          >
+            <FormControlLabel
+              value="day-of-month"
+              control={<Radio size="small" />}
+              label="Day of the month"
+            />
+            {monthlyType === "day-of-month" && monthlyDayOfMonth && (
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ ml: 4, mt: -0.5, mb: 0.5, display: "block" }}
+              >
+                Recurs on the{" "}
+                <strong>{ordinal(monthlyDayOfMonth)}</strong> of each month.
+                {monthlyDayOfMonth >= 29 && (
+                  <> Months without a {ordinal(monthlyDayOfMonth)} are skipped.</>
+                )}
+              </Typography>
+            )}
+
+            <FormControlLabel
+              value="nth-weekday"
+              control={<Radio size="small" />}
+              label="Day of the week"
+            />
+          </RadioGroup>
+
+          {monthlyType === "nth-weekday" && (
+            <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", ml: 3.5 }}>
+              <FormControl size="small" sx={{ minWidth: 100 }}>
+                <InputLabel id="monthly-nth-label">Occurrence</InputLabel>
+                <Select
+                  labelId="monthly-nth-label"
+                  value={monthlyNth}
+                  label="Occurrence"
+                  onChange={(e) => setMonthlyNth(Number(e.target.value))}
+                >
+                  {NTH_OPTIONS.map((o) => (
+                    <MenuItem key={o.value} value={o.value}>
+                      {o.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl size="small" sx={{ minWidth: 130 }}>
+                <InputLabel id="monthly-weekday-label">Weekday</InputLabel>
+                <Select
+                  labelId="monthly-weekday-label"
+                  value={monthlyWeekday}
+                  label="Weekday"
+                  onChange={(e) => setMonthlyWeekday(Number(e.target.value))}
+                >
+                  {DAY_FULL.map((day, idx) => (
+                    <MenuItem key={idx} value={idx}>
+                      {day}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ alignSelf: "center" }}
+              >
+                {`The ${NTH_OPTIONS.find((o) => o.value === monthlyNth)?.label ?? ""} ${DAY_FULL[monthlyWeekday]} of every month`}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      )}
+
+      {/* ── Dates ── */}
       <Box sx={{ display: "flex", gap: 2 }}>
         <TextField
           name="startDate"
@@ -274,10 +533,14 @@ export default function RecurringEventCreationForm({
           onChange={handleChange}
           InputLabelProps={{ shrink: true }}
           error={!!errors.endDate}
-          helperText={errors.endDate}
+          helperText={
+            errors.endDate ??
+            "Events are created on the end date (inclusive)."
+          }
         />
       </Box>
 
+      {/* ── Times ── */}
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Box sx={{ display: "flex", gap: 2 }}>
           <TimePicker
@@ -323,6 +586,7 @@ export default function RecurringEventCreationForm({
         </Box>
       </LocalizationProvider>
 
+      {/* ── Capacity ── */}
       <Box>
         <TextField
           name="capacity"

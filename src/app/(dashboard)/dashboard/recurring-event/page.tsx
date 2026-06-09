@@ -13,6 +13,11 @@ type RecurringEventRow = {
   id: string;
   title: string;
   frequency: string;
+  daysOfWeek: number[] | null;
+  weekdaysOnly: boolean;
+  monthlyType: string | null;
+  monthlyNth: number | null;
+  monthlyWeekday: number | null;
   startDate: string;
   endDate: string | null;
   active: boolean;
@@ -27,6 +32,11 @@ async function getRecurringEvents(
       id: recurringEvents.id,
       title: recurringEvents.title,
       frequency: recurringEvents.frequency,
+      daysOfWeek: recurringEvents.daysOfWeek,
+      weekdaysOnly: recurringEvents.weekdaysOnly,
+      monthlyType: recurringEvents.monthlyType,
+      monthlyNth: recurringEvents.monthlyNth,
+      monthlyWeekday: recurringEvents.monthlyWeekday,
       startDate: recurringEvents.startDate,
       endDate: recurringEvents.endDate,
       active: recurringEvents.active,
