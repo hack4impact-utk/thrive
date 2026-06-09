@@ -62,7 +62,7 @@ export async function POST(req: Request): Promise<Response> {
       );
     }
 
-    if (!VALID_FREQUENCIES.includes(frequency)) {
+    if (!VALID_FREQUENCIES.includes(frequency as (typeof VALID_FREQUENCIES)[number])) {
       return NextResponse.json({ error: "Invalid frequency" }, { status: 400 });
     }
 
