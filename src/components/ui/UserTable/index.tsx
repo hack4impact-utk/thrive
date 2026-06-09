@@ -169,7 +169,7 @@ function UserRow({
         />
       </TableCell>
 
-      <TableCell sx={{ py: 1.5 }}>
+      <TableCell sx={{ py: 1.5, maxWidth: 160, overflow: "hidden" }}>
         <LocationCell
           userId={user.id}
           currentLocationId={user.locationId}
@@ -179,7 +179,7 @@ function UserRow({
         />
       </TableCell>
 
-      <TableCell sx={{ py: 1.5 }}>
+      <TableCell sx={{ py: 1.5, whiteSpace: "nowrap" }}>
         <Typography variant="body2" color="text.secondary">
           {user.preferredNeighborhood ?? "—"}
         </Typography>

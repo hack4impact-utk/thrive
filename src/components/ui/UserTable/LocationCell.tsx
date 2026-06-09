@@ -45,7 +45,7 @@ export default function LocationCell({
 
   if (callerRole !== "admin") {
     return (
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="text.secondary" noWrap>
         {locationName ?? "—"}
       </Typography>
     );
@@ -92,6 +92,8 @@ export default function LocationCell({
           p: 0,
           color: "text.secondary",
           fontFamily: "inherit",
+          maxWidth: "100%",
+          overflow: "hidden",
           "&:hover .loc-label": { color: "primary.main" },
           "&:hover .loc-arrow": { color: "primary.main" },
         }}
@@ -99,6 +101,7 @@ export default function LocationCell({
         <Typography
           className="loc-label"
           variant="body2"
+          noWrap
           sx={{ transition: "color 0.15s" }}
         >
           {locationName ?? "—"}
