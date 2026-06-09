@@ -13,5 +13,5 @@ export default async function handler(): Promise<void> {
 }
 
 export const config: Config = {
-  schedule: "0 0 * * *",
+  schedule: "0 6 * * *",
 };

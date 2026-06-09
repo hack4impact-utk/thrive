@@ -102,7 +102,9 @@ export async function POST(request: Request): Promise<Response> {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const today = new Date().toISOString().slice(0, 10);
+    const tomorrow = new Date();
+    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+    const targetDate = tomorrow.toISOString().slice(0, 10);
 
     const patterns = await db
       .select()
@@ -110,10 +112,10 @@ export async function POST(request: Request): Promise<Response> {
       .where(
         and(
           eq(recurringEvents.active, true),
-          lte(recurringEvents.startDate, today),
+          lte(recurringEvents.startDate, targetDate),
           or(
             isNull(recurringEvents.endDate),
-            gte(recurringEvents.endDate, today),
+            gte(recurringEvents.endDate, targetDate),
           ),
         ),
       );
@@ -121,7 +123,7 @@ export async function POST(request: Request): Promise<Response> {
     let created = 0;
 
     for (const pattern of patterns) {
-      if (!occursOnDate(pattern, today)) continue;
+      if (!occursOnDate(pattern, targetDate)) continue;
 
       const existing = await db
         .select({ id: events.id })
@@ -129,7 +131,7 @@ export async function POST(request: Request): Promise<Response> {
         .where(
           and(
             eq(events.recurringEventId, pattern.id),
-            eq(events.eventDate, today),
+            eq(events.eventDate, targetDate),
           ),
         )
         .limit(1);
@@ -138,7 +140,7 @@ export async function POST(request: Request): Promise<Response> {
 
       await db.insert(events).values({
         title: pattern.title,
-        eventDate: today,
+        eventDate: targetDate,
         startTime: pattern.startTime,
         endTime: pattern.endTime,
         capacity: pattern.capacity,
