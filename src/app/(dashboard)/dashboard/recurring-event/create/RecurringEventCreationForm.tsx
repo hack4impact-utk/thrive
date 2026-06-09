@@ -214,8 +214,7 @@ export default function RecurringEventCreationForm({
         description: form.description,
         daysOfWeek,
         weekdaysOnly: form.frequency === "daily" ? weekdaysOnly : undefined,
-        monthlyType:
-          form.frequency === "monthly" ? monthlyType : undefined,
+        monthlyType: form.frequency === "monthly" ? monthlyType : undefined,
         monthlyNth:
           form.frequency === "monthly" && monthlyType === "nth-weekday"
             ? monthlyNth
@@ -383,7 +382,12 @@ export default function RecurringEventCreationForm({
                 key={idx}
                 value={idx}
                 aria-label={DAY_FULL[idx]}
-                sx={{ width: 44, height: 44, p: 0, borderRadius: "50% !important" }}
+                sx={{
+                  width: 44,
+                  height: 44,
+                  p: 0,
+                  borderRadius: "50% !important",
+                }}
               >
                 {label}
               </ToggleButton>
@@ -417,13 +421,22 @@ export default function RecurringEventCreationForm({
                 key={idx}
                 value={idx}
                 aria-label={DAY_FULL[idx]}
-                sx={{ width: 44, height: 44, p: 0, borderRadius: "50% !important" }}
+                sx={{
+                  width: 44,
+                  height: 44,
+                  p: 0,
+                  borderRadius: "50% !important",
+                }}
               >
                 {label}
               </ToggleButton>
             ))}
           </ToggleButtonGroup>
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.75, display: "block" }}>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ mt: 0.75, display: "block" }}
+          >
             The every-other-week cadence is anchored to your start date.
           </Typography>
         </Box>
@@ -449,10 +462,13 @@ export default function RecurringEventCreationForm({
                 color="text.secondary"
                 sx={{ ml: 4, mt: -0.5, mb: 0.5, display: "block" }}
               >
-                Recurs on the{" "}
-                <strong>{ordinal(monthlyDayOfMonth)}</strong> of each month.
+                Recurs on the <strong>{ordinal(monthlyDayOfMonth)}</strong> of
+                each month.
                 {monthlyDayOfMonth >= 29 && (
-                  <> Months without a {ordinal(monthlyDayOfMonth)} are skipped.</>
+                  <>
+                    {" "}
+                    Months without a {ordinal(monthlyDayOfMonth)} are skipped.
+                  </>
                 )}
               </Typography>
             )}
@@ -534,8 +550,7 @@ export default function RecurringEventCreationForm({
           InputLabelProps={{ shrink: true }}
           error={!!errors.endDate}
           helperText={
-            errors.endDate ??
-            "Events are created on the end date (inclusive)."
+            errors.endDate ?? "Events are created on the end date (inclusive)."
           }
         />
       </Box>

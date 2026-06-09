@@ -88,8 +88,9 @@ function ordinal(n: number): string {
 
 function formatRecurrence(p: RecurringEventRow): string {
   switch (p.frequency) {
-    case "daily":
+    case "daily": {
       return p.weekdaysOnly ? "Weekdays (Mon\u2013Fri)" : "Every day";
+    }
 
     case "weekly": {
       if (p.daysOfWeek && p.daysOfWeek.length > 0) {
@@ -123,8 +124,9 @@ function formatRecurrence(p: RecurringEventRow): string {
       return `Monthly on the ${ordinal(day)}`;
     }
 
-    default:
+    default: {
       return p.frequency;
+    }
   }
 }
 

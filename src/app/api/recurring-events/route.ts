@@ -62,7 +62,11 @@ export async function POST(req: Request): Promise<Response> {
       );
     }
 
-    if (!VALID_FREQUENCIES.includes(frequency as (typeof VALID_FREQUENCIES)[number])) {
+    if (
+      !VALID_FREQUENCIES.includes(
+        frequency as (typeof VALID_FREQUENCIES)[number],
+      )
+    ) {
       return NextResponse.json({ error: "Invalid frequency" }, { status: 400 });
     }
 
@@ -101,7 +105,10 @@ export async function POST(req: Request): Promise<Response> {
     if (
       frequency === "monthly" &&
       monthlyType === "nth-weekday" &&
-      (monthlyNth === undefined || monthlyNth === null || monthlyWeekday === undefined || monthlyWeekday === null)
+      (monthlyNth === undefined ||
+        monthlyNth === null ||
+        monthlyWeekday === undefined ||
+        monthlyWeekday === null)
     ) {
       return NextResponse.json(
         { error: "Monthly nth-weekday requires both nth and weekday" },
@@ -111,7 +118,9 @@ export async function POST(req: Request): Promise<Response> {
 
     if (
       monthlyType !== undefined &&
-      !VALID_MONTHLY_TYPES.includes(monthlyType as (typeof VALID_MONTHLY_TYPES)[number])
+      !VALID_MONTHLY_TYPES.includes(
+        monthlyType as (typeof VALID_MONTHLY_TYPES)[number],
+      )
     ) {
       return NextResponse.json(
         { error: "Invalid monthlyType" },
