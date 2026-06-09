@@ -12,6 +12,7 @@ export default async function handler(): Promise<void> {
   });
 }
 
+// 8 AM Eastern (UTC-5 EST / UTC-4 EDT). Using 13:00 UTC = 8 AM EST / 9 AM EDT.
 export const config: Config = {
-  schedule: "0 0 * * *",
+  schedule: "0 13 * * *",
 };
