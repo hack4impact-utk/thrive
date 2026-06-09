@@ -29,6 +29,21 @@ export const recurringEvents = pgTable("recurring_events", {
   // 'daily' | 'weekly' | 'biweekly' | 'monthly'
   frequency: varchar("frequency", { length: 32 }).notNull(),
 
+  // weekly / biweekly: day indices [0=Sun … 6=Sat]. null = derive from startDate (legacy).
+  daysOfWeek: integer("days_of_week").array(),
+
+  // daily: if true, only Mon–Fri
+  weekdaysOnly: boolean("weekdays_only").default(false).notNull(),
+
+  // monthly: 'day-of-month' | 'nth-weekday'. null = 'day-of-month' (legacy).
+  monthlyType: varchar("monthly_type", { length: 32 }),
+
+  // monthly nth-weekday: which occurrence (1–4 or -1 for last)
+  monthlyNth: integer("monthly_nth"),
+
+  // monthly nth-weekday: day of week (0=Sun … 6=Sat)
+  monthlyWeekday: integer("monthly_weekday"),
+
   startDate: date("start_date", { mode: "string" }).notNull(),
   endDate: date("end_date", { mode: "string" }),
 
