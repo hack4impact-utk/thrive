@@ -155,6 +155,54 @@ export async function POST(req: Request): Promise<Response> {
   }
 }
 
+export async function PUT(req: Request): Promise<Response> {
+  try {
+    const { id, title, description, capacity, endDate } =
+      (await req.json()) as {
+        id: string;
+        title?: string;
+        description?: string;
+        capacity?: number | null;
+        endDate?: string | null;
+      };
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    }
+
+    if (title !== undefined && !title.trim()) {
+      return NextResponse.json(
+        { error: "Title cannot be empty" },
+        { status: 400 },
+      );
+    }
+
+    if (description !== undefined && !description.trim()) {
+      return NextResponse.json(
+        { error: "Description cannot be empty" },
+        { status: 400 },
+      );
+    }
+
+    await db
+      .update(recurringEvents)
+      .set({
+        ...(title !== undefined && { title: title.trim() }),
+        ...(description !== undefined && { description: description.trim() }),
+        ...(capacity !== undefined && { capacity: capacity ?? null }),
+        ...(endDate !== undefined && { endDate: endDate || null }),
+      })
+      .where(eq(recurringEvents.id, id));
+
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
 export async function PATCH(req: Request): Promise<Response> {
   try {
     const { id } = await req.json();

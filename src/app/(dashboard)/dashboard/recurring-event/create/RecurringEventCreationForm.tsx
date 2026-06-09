@@ -1,5 +1,6 @@
 "use client";
 
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import {
   Box,
   Checkbox,
@@ -94,9 +95,28 @@ type FormErrors = Partial<
   Record<keyof FormState | "capacity" | "daysOfWeek", string>
 >;
 
+type InitialValues = {
+  id: string;
+  title: string;
+  description: string;
+  capacity: number | null;
+  frequency: string;
+  startDate: string;
+  endDate: string | null;
+  startTime: string;
+  endTime: string;
+  locationId: string;
+  daysOfWeek: number[] | null;
+  weekdaysOnly: boolean;
+  monthlyType: string | null;
+  monthlyNth: number | null;
+  monthlyWeekday: number | null;
+};
+
 type Props = {
   managerLocationId: string | null;
   managerLocationName: string | null;
+  initialValues?: InitialValues;
 };
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -104,39 +124,57 @@ type Props = {
 export default function RecurringEventCreationForm({
   managerLocationId,
   managerLocationName,
+  initialValues,
 }: Props): React.ReactElement {
   const isManager = managerLocationId !== null;
+  const isEditMode = initialValues !== undefined;
 
   // ── Core form state ─────────────────────────────────────────────────────────
   const [form, setForm] = React.useState<FormState>({
-    title: "",
-    frequency: "",
-    startDate: "",
-    endDate: "",
-    startTime: "",
-    endTime: "",
-    capacity: "",
-    locationId: managerLocationId ?? "",
-    description: "",
+    title: initialValues?.title ?? "",
+    frequency: initialValues?.frequency ?? "",
+    startDate: initialValues?.startDate ?? "",
+    endDate: initialValues?.endDate ?? "",
+    startTime: initialValues?.startTime ?? "",
+    endTime: initialValues?.endTime ?? "",
+    capacity:
+      initialValues?.capacity == null ? "" : String(initialValues.capacity),
+    locationId: initialValues?.locationId ?? managerLocationId ?? "",
+    description: initialValues?.description ?? "",
   });
 
-  const [unlimitedCapacity, setUnlimitedCapacity] = React.useState(false);
+  const [unlimitedCapacity, setUnlimitedCapacity] = React.useState(
+    isEditMode ? initialValues!.capacity === null : false,
+  );
   const [locationOptions, setLocationOptions] = React.useState<Location[]>([]);
   const [errors, setErrors] = React.useState<FormErrors>({});
 
   // ── Recurrence sub-state ────────────────────────────────────────────────────
   // weekly: which days (multi-select)
-  const [weeklyDays, setWeeklyDays] = React.useState<number[]>([]);
+  const [weeklyDays, setWeeklyDays] = React.useState<number[]>(
+    initialValues?.daysOfWeek ?? [],
+  );
   // biweekly: which single day
-  const [biweeklyDay, setBiweeklyDay] = React.useState<number>(1); // Mon default
+  const [biweeklyDay, setBiweeklyDay] = React.useState<number>(
+    initialValues?.daysOfWeek?.[0] ?? 1,
+  );
   // daily: weekdays only?
-  const [weekdaysOnly, setWeekdaysOnly] = React.useState(false);
+  const [weekdaysOnly, setWeekdaysOnly] = React.useState(
+    initialValues?.weekdaysOnly ?? false,
+  );
   // monthly: 'day-of-month' or 'nth-weekday'
   const [monthlyType, setMonthlyType] = React.useState<
     "day-of-month" | "nth-weekday"
-  >("day-of-month");
-  const [monthlyNth, setMonthlyNth] = React.useState<number>(1);
-  const [monthlyWeekday, setMonthlyWeekday] = React.useState<number>(1); // Mon
+  >(
+    (initialValues?.monthlyType as "day-of-month" | "nth-weekday") ??
+      "day-of-month",
+  );
+  const [monthlyNth, setMonthlyNth] = React.useState<number>(
+    initialValues?.monthlyNth ?? 1,
+  );
+  const [monthlyWeekday, setMonthlyWeekday] = React.useState<number>(
+    initialValues?.monthlyWeekday ?? 1,
+  );
 
   const router = useRouter();
   const { showSnackbar } = useSnackbar();
@@ -193,6 +231,33 @@ export default function RecurringEventCreationForm({
       return;
     }
 
+    // ── Edit mode: only update mutable fields ──────────────────────────────
+    if (isEditMode) {
+      const res = await fetch("/api/recurring-events", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: initialValues!.id,
+          title: form.title,
+          description: form.description,
+          capacity: unlimitedCapacity ? null : Number(form.capacity),
+          endDate: form.endDate || null,
+        }),
+      });
+
+      if (!res.ok) {
+        showSnackbar(
+          "Failed to update recurring event. Please try again.",
+          "error",
+        );
+        return;
+      }
+
+      showSnackbar("Recurring event updated successfully!", "success");
+      router.push("/dashboard/recurring-event");
+      return;
+    }
+
     // Build recurrence payload
     let daysOfWeek: number[] | undefined;
     if (form.frequency === "weekly") daysOfWeek = weeklyDays;
@@ -244,9 +309,9 @@ export default function RecurringEventCreationForm({
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
     <FormLayout
-      title="Create Recurring Event"
+      title={isEditMode ? "Edit Recurring Event" : "Create Recurring Event"}
       description="* indicates required field"
-      submitLabel="Create Recurring Event"
+      submitLabel={isEditMode ? "Save Changes" : "Create Recurring Event"}
       onSubmit={handleSubmit}
     >
       <TextField
@@ -273,6 +338,23 @@ export default function RecurringEventCreationForm({
         helperText={errors.description}
       />
 
+      {isEditMode && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.75,
+            color: "text.disabled",
+          }}
+        >
+          <LockOutlinedIcon sx={{ fontSize: 14 }} />
+          <Typography variant="caption">
+            Frequency, schedule, and location cannot be changed after creation.
+            Changes here apply to future instances only.
+          </Typography>
+        </Box>
+      )}
+
       {isManager ? (
         <TextField
           label="Location"
@@ -282,7 +364,12 @@ export default function RecurringEventCreationForm({
           InputLabelProps={{ shrink: true }}
         />
       ) : (
-        <FormControl fullWidth required error={!!errors.locationId}>
+        <FormControl
+          fullWidth
+          required={!isEditMode}
+          error={!!errors.locationId}
+          disabled={isEditMode}
+        >
           <InputLabel id="location-label">Location</InputLabel>
           <Select
             labelId="location-label"
@@ -318,7 +405,12 @@ export default function RecurringEventCreationForm({
       )}
 
       {/* ── Frequency ── */}
-      <FormControl fullWidth required error={!!errors.frequency}>
+      <FormControl
+        fullWidth
+        required={!isEditMode}
+        error={!!errors.frequency}
+        disabled={isEditMode}
+      >
         <InputLabel id="frequency-label">Frequency</InputLabel>
         <Select
           labelId="frequency-label"
@@ -353,6 +445,7 @@ export default function RecurringEventCreationForm({
           control={
             <Checkbox
               checked={weekdaysOnly}
+              disabled={isEditMode}
               onChange={(e) => setWeekdaysOnly(e.target.checked)}
             />
           }
@@ -369,7 +462,7 @@ export default function RecurringEventCreationForm({
           <ToggleButtonGroup
             value={weeklyDays}
             onChange={(_, newDays: number[]) => {
-              if (newDays.length > 0) {
+              if (!isEditMode && newDays.length > 0) {
                 setWeeklyDays(newDays);
                 setErrors((prev) => ({ ...prev, daysOfWeek: undefined }));
               }
@@ -411,7 +504,7 @@ export default function RecurringEventCreationForm({
             exclusive
             value={biweeklyDay}
             onChange={(_, day: number | null) => {
-              if (day !== null) setBiweeklyDay(day);
+              if (!isEditMode && day !== null) setBiweeklyDay(day);
             }}
             aria-label="day of week"
             sx={{ flexWrap: "wrap", gap: 0.5 }}
@@ -447,9 +540,12 @@ export default function RecurringEventCreationForm({
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
           <RadioGroup
             value={monthlyType}
-            onChange={(e) =>
-              setMonthlyType(e.target.value as "day-of-month" | "nth-weekday")
-            }
+            onChange={(e) => {
+              if (!isEditMode)
+                setMonthlyType(
+                  e.target.value as "day-of-month" | "nth-weekday",
+                );
+            }}
           >
             <FormControlLabel
               value="day-of-month"
@@ -482,7 +578,11 @@ export default function RecurringEventCreationForm({
 
           {monthlyType === "nth-weekday" && (
             <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", ml: 3.5 }}>
-              <FormControl size="small" sx={{ minWidth: 100 }}>
+              <FormControl
+                size="small"
+                sx={{ minWidth: 100 }}
+                disabled={isEditMode}
+              >
                 <InputLabel id="monthly-nth-label">Occurrence</InputLabel>
                 <Select
                   labelId="monthly-nth-label"
@@ -498,7 +598,11 @@ export default function RecurringEventCreationForm({
                 </Select>
               </FormControl>
 
-              <FormControl size="small" sx={{ minWidth: 130 }}>
+              <FormControl
+                size="small"
+                sx={{ minWidth: 130 }}
+                disabled={isEditMode}
+              >
                 <InputLabel id="monthly-weekday-label">Weekday</InputLabel>
                 <Select
                   labelId="monthly-weekday-label"
@@ -532,8 +636,9 @@ export default function RecurringEventCreationForm({
           name="startDate"
           type="date"
           label="Start Date"
-          required
+          required={!isEditMode}
           fullWidth
+          disabled={isEditMode}
           value={form.startDate}
           onChange={handleChange}
           InputLabelProps={{ shrink: true }}
@@ -561,6 +666,7 @@ export default function RecurringEventCreationForm({
           <TimePicker
             label="Start Time *"
             minutesStep={5}
+            disabled={isEditMode}
             value={
               form.startTime ? dayjs(`2000-01-01T${form.startTime}`) : null
             }
@@ -582,6 +688,7 @@ export default function RecurringEventCreationForm({
           <TimePicker
             label="End Time *"
             minutesStep={5}
+            disabled={isEditMode}
             value={form.endTime ? dayjs(`2000-01-01T${form.endTime}`) : null}
             onChange={(v: Dayjs | null) => {
               setForm((prev) => ({

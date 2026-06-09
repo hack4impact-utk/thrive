@@ -12,6 +12,8 @@ import RecurringEventsClient from "./RecurringEventsClient";
 type RecurringEventRow = {
   id: string;
   title: string;
+  description: string;
+  capacity: number | null;
   frequency: string;
   daysOfWeek: number[] | null;
   weekdaysOnly: boolean;
@@ -31,6 +33,8 @@ async function getRecurringEvents(
     .select({
       id: recurringEvents.id,
       title: recurringEvents.title,
+      description: recurringEvents.description,
+      capacity: recurringEvents.capacity,
       frequency: recurringEvents.frequency,
       daysOfWeek: recurringEvents.daysOfWeek,
       weekdaysOnly: recurringEvents.weekdaysOnly,

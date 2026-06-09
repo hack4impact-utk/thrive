@@ -2,6 +2,7 @@
 
 import AutoModeIcon from "@mui/icons-material/AutoMode";
 import BlockIcon from "@mui/icons-material/Block";
+import EditIcon from "@mui/icons-material/Edit";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   alpha,
@@ -44,6 +45,8 @@ import { useSnackbar } from "@/providers/snackbar-provider";
 type RecurringEventRow = {
   id: string;
   title: string;
+  description: string;
+  capacity: number | null;
   frequency: string;
   daysOfWeek: number[] | null;
   weekdaysOnly: boolean;
@@ -507,7 +510,7 @@ export default function RecurringEventsClient({
                 ),
               )}
               <TableCell
-                sx={{ ...headerCellSx(accentColor), width: 48, p: 0 }}
+                sx={{ ...headerCellSx(accentColor), width: 88, p: 0 }}
               />
             </TableRow>
           </TableHead>
@@ -553,9 +556,26 @@ export default function RecurringEventsClient({
                     />
                   </TableCell>
                   <TableCell
-                    sx={{ width: 48, p: 0, pr: 1, textAlign: "right" }}
+                    sx={{ width: 88, p: 0, pr: 1, textAlign: "right" }}
                   >
-                    {pattern.active && <StopPatternButton pattern={pattern} />}
+                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                      <Tooltip title="Edit template" arrow>
+                        <IconButton
+                          component={Link}
+                          href={`/dashboard/recurring-event/${pattern.id}/edit`}
+                          size="small"
+                          sx={{
+                            color: "text.secondary",
+                            "&:hover": { color: "primary.main" },
+                          }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      {pattern.active && (
+                        <StopPatternButton pattern={pattern} />
+                      )}
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))
