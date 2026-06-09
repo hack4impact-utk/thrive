@@ -28,6 +28,7 @@ export default async function EditRecurringEventPage({
     .where(eq(recurringEvents.id, id));
 
   if (!pattern) notFound();
+  if (!pattern.active) redirect("/dashboard/recurring-event");
 
   let managerLocationId: string | null = null;
   let managerLocationName: string | null = null;

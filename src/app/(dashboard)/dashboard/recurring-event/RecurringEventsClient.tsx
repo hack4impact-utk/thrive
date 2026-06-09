@@ -559,21 +559,23 @@ export default function RecurringEventsClient({
                     sx={{ width: 88, p: 0, pr: 1, textAlign: "right" }}
                   >
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                      <Tooltip title="Edit template" arrow>
-                        <IconButton
-                          component={Link}
-                          href={`/dashboard/recurring-event/${pattern.id}/edit`}
-                          size="small"
-                          sx={{
-                            color: "text.secondary",
-                            "&:hover": { color: "primary.main" },
-                          }}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
                       {pattern.active && (
-                        <StopPatternButton pattern={pattern} />
+                        <>
+                          <Tooltip title="Edit template" arrow>
+                            <IconButton
+                              component={Link}
+                              href={`/dashboard/recurring-event/${pattern.id}/edit`}
+                              size="small"
+                              sx={{
+                                color: "text.secondary",
+                                "&:hover": { color: "primary.main" },
+                              }}
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <StopPatternButton pattern={pattern} />
+                        </>
                       )}
                     </Box>
                   </TableCell>
