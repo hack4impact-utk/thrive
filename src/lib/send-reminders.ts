@@ -1,9 +1,14 @@
 import { and, eq } from "drizzle-orm";
 
 import db from "@/db";
-import { eventAttendees, events, users } from "@/db/schema";
+import { eventAttendees, events, locations, users } from "@/db/schema";
 import { userInfo } from "@/db/schema/user-info";
-import { buildEmailHtml, formatEmailTime, sendEmail } from "@/lib/email";
+import {
+  buildEmailHtml,
+  formatEmailDate,
+  formatEmailTime,
+  sendEmail,
+} from "@/lib/email";
 
 export async function sendDailyReminders(): Promise<{
   sent: number;
@@ -16,14 +21,20 @@ export async function sendDailyReminders(): Promise<{
       userName: users.name,
       userEmail: users.email,
       eventTitle: events.title,
+      eventDate: events.eventDate,
       startTime: events.startTime,
       endTime: events.endTime,
       emailDayOfReminder: userInfo.emailDayOfReminder,
+      locationStreetLine: locations.streetLine,
+      locationCity: locations.city,
+      locationState: locations.state,
+      locationPostalCode: locations.postalCode,
     })
     .from(eventAttendees)
     .innerJoin(events, eq(eventAttendees.eventId, events.id))
     .innerJoin(users, eq(eventAttendees.userId, users.id))
     .leftJoin(userInfo, eq(userInfo.userId, users.id))
+    .leftJoin(locations, eq(events.locationId, locations.id))
     .where(and(eq(events.eventDate, today), eq(events.deleted, false)));
 
   const eligible = registrations.filter(
@@ -52,9 +63,19 @@ export async function sendDailyReminders(): Promise<{
                 <p style="margin:0 0 12px;font-size:18px;font-weight:700;color:#22305B;">
                   ${r.eventTitle}
                 </p>
-                <p style="margin:0;font-size:14px;color:#555555;">
+                <p style="margin:0 0 6px;font-size:14px;color:#555555;">
+                  <strong style="color:#22305B;">Date:</strong>&nbsp;${formatEmailDate(r.eventDate)}
+                </p>
+                <p style="margin:0 0 6px;font-size:14px;color:#555555;">
                   <strong style="color:#22305B;">Time:</strong>&nbsp;${formatEmailTime(r.startTime)} – ${formatEmailTime(r.endTime)}
                 </p>
+                ${
+                  r.locationStreetLine
+                    ? `<p style="margin:0;font-size:14px;color:#555555;">
+                  <strong style="color:#22305B;">Location:</strong>&nbsp;${r.locationStreetLine}, ${r.locationCity}, ${r.locationState} ${r.locationPostalCode}
+                </p>`
+                    : ""
+                }
               </td>
             </tr>
           </table>
