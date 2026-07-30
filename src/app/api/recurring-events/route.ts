@@ -3,9 +3,16 @@ import { NextResponse } from "next/server";
 
 import db from "@/db";
 import { recurringEvents } from "@/db/schema/recurring-events";
+import { materializeRecurringEvent } from "@/lib/materialize-recurring-event";
+import { addDays, formatDateOnly } from "@/lib/recurrence";
 
 const VALID_FREQUENCIES = ["daily", "weekly", "biweekly", "monthly"] as const;
 const VALID_MONTHLY_TYPES = ["day-of-month", "nth-weekday"] as const;
+const VALID_MONTHLY_NTH = new Set([1, 2, 3, 4, -1]);
+
+function isWeekdayIndex(value: number): boolean {
+  return Number.isInteger(value) && value >= 0 && value <= 6;
+}
 
 export async function POST(req: Request): Promise<Response> {
   try {
@@ -94,10 +101,35 @@ export async function POST(req: Request): Promise<Response> {
     // ── Recurrence-specific validation ───────────────────────────────────────
     if (
       (frequency === "weekly" || frequency === "biweekly") &&
-      (!daysOfWeek || daysOfWeek.length === 0)
+      (!Array.isArray(daysOfWeek) || daysOfWeek.length === 0)
     ) {
       return NextResponse.json(
         { error: "Select at least one day for weekly / biweekly events" },
+        { status: 400 },
+      );
+    }
+
+    if (
+      daysOfWeek !== undefined &&
+      (!Array.isArray(daysOfWeek) ||
+        daysOfWeek.some((day) => !isWeekdayIndex(day)) ||
+        (frequency === "biweekly" && daysOfWeek.length !== 1))
+    ) {
+      return NextResponse.json(
+        { error: "Invalid daysOfWeek" },
+        { status: 400 },
+      );
+    }
+
+    if (
+      frequency === "monthly" &&
+      (monthlyType === undefined ||
+        !VALID_MONTHLY_TYPES.includes(
+          monthlyType as (typeof VALID_MONTHLY_TYPES)[number],
+        ))
+    ) {
+      return NextResponse.json(
+        { error: "Invalid monthlyType" },
         { status: 400 },
       );
     }
@@ -117,6 +149,17 @@ export async function POST(req: Request): Promise<Response> {
     }
 
     if (
+      frequency === "monthly" &&
+      monthlyType === "nth-weekday" &&
+      (!VALID_MONTHLY_NTH.has(monthlyNth!) || !isWeekdayIndex(monthlyWeekday!))
+    ) {
+      return NextResponse.json(
+        { error: "Invalid monthly nth-weekday options" },
+        { status: 400 },
+      );
+    }
+
+    if (
       monthlyType !== undefined &&
       !VALID_MONTHLY_TYPES.includes(
         monthlyType as (typeof VALID_MONTHLY_TYPES)[number],
@@ -129,22 +172,38 @@ export async function POST(req: Request): Promise<Response> {
     }
 
     // ── Persist ───────────────────────────────────────────────────────────────
-    await db.insert(recurringEvents).values({
-      title,
-      startTime,
-      endTime,
-      capacity: capacity ?? null,
-      locationId,
-      description,
-      frequency,
-      startDate,
-      endDate: endDate || null,
-      daysOfWeek: daysOfWeek ?? null,
-      weekdaysOnly: weekdaysOnly ?? false,
-      monthlyType: monthlyType ?? null,
-      monthlyNth: monthlyNth ?? null,
-      monthlyWeekday: monthlyWeekday ?? null,
-    });
+    const [pattern] = await db
+      .insert(recurringEvents)
+      .values({
+        title,
+        startTime,
+        endTime,
+        capacity: capacity ?? null,
+        locationId,
+        description,
+        frequency,
+        startDate,
+        endDate: endDate || null,
+        daysOfWeek:
+          frequency === "weekly" || frequency === "biweekly"
+            ? daysOfWeek
+            : null,
+        weekdaysOnly: frequency === "daily" ? (weekdaysOnly ?? false) : false,
+        monthlyType: frequency === "monthly" ? monthlyType : null,
+        monthlyNth:
+          frequency === "monthly" && monthlyType === "nth-weekday"
+            ? monthlyNth
+            : null,
+        monthlyWeekday:
+          frequency === "monthly" && monthlyType === "nth-weekday"
+            ? monthlyWeekday
+            : null,
+      })
+      .returning();
+
+    const today = formatDateOnly(new Date());
+    const tomorrow = addDays(today, 1);
+    await materializeRecurringEvent(pattern, today, tomorrow);
 
     return NextResponse.json({ ok: true }, { status: 201 });
   } catch {

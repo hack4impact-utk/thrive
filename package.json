@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "test": "tsx --test src/lib/recurrence.test.ts",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "check": "concurrently --kill-others-on-fail 'pnpm lint' 'tsc --noEmit'"
