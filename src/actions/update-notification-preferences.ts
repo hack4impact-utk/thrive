@@ -10,6 +10,8 @@ type Payload = {
   emailRegistrationReminder: boolean;
   emailUnregistrationReminder: boolean;
   emailDayOfReminder: boolean;
+  emailStaffRegistrationNotifications: boolean;
+  emailStaffUnregistrationNotifications: boolean;
 };
 
 export async function updateNotificationPreferences(
@@ -21,8 +23,18 @@ export async function updateNotificationPreferences(
     throw new Error("Unauthorized");
   }
 
+  const isStaff =
+    session.user.role === "admin" || session.user.role === "manager";
+  const preferences = isStaff
+    ? data
+    : {
+        emailRegistrationReminder: data.emailRegistrationReminder,
+        emailUnregistrationReminder: data.emailUnregistrationReminder,
+        emailDayOfReminder: data.emailDayOfReminder,
+      };
+
   await db
     .update(userInfo)
-    .set(data)
+    .set(preferences)
     .where(eq(userInfo.userId, session.user.id));
 }

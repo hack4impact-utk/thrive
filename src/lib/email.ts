@@ -4,6 +4,15 @@ const LOGO_URL = "https://thrive.utkh4i.com/logo.png";
 const NAVY = "#22305B";
 const GREEN = "#22A27E";
 
+export function escapeEmailHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 export function formatEmailDate(dateStr: string): string {
   const [year, month, day] = dateStr.split("-").map(Number);
   return new Date(year, month - 1, day).toLocaleDateString("en-US", {

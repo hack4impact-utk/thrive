@@ -31,7 +31,12 @@ export default async function NotificationsPage(): Promise<React.ReactElement> {
         emailRegistrationReminder: info.emailRegistrationReminder,
         emailUnregistrationReminder: info.emailUnregistrationReminder,
         emailDayOfReminder: info.emailDayOfReminder,
+        emailStaffRegistrationNotifications:
+          info.emailStaffRegistrationNotifications,
+        emailStaffUnregistrationNotifications:
+          info.emailStaffUnregistrationNotifications,
       }}
+      isStaff={session.user.role === "admin" || session.user.role === "manager"}
     />
   );
 }

@@ -1,0 +1,2 @@
+ALTER TABLE "user_info" ADD COLUMN "email_staff_registration_notifications" boolean DEFAULT true NOT NULL;--> statement-breakpoint
+ALTER TABLE "user_info" ADD COLUMN "email_staff_unregistration_notifications" boolean DEFAULT true NOT NULL;

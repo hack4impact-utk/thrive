@@ -55,4 +55,14 @@ export const userInfo = pgTable("user_info", {
     .notNull()
     .default(true),
   emailDayOfReminder: boolean("email_day_of_reminder").notNull().default(true),
+  emailStaffRegistrationNotifications: boolean(
+    "email_staff_registration_notifications",
+  )
+    .notNull()
+    .default(true),
+  emailStaffUnregistrationNotifications: boolean(
+    "email_staff_unregistration_notifications",
+  )
+    .notNull()
+    .default(true),
 });
