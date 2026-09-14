@@ -37,6 +37,7 @@ type EventDetails = {
   startTime: string;
   endTime: string;
   locationName: string | null;
+  recurringEventId: string | null;
 };
 
 type AttendeeRecord = {
@@ -161,6 +162,7 @@ async function getEventDetails(
       startTime: events.startTime,
       endTime: events.endTime,
       locationName: locations.name,
+      recurringEventId: events.recurringEventId,
     })
     .from(events)
     .leftJoin(locations, eq(locations.id, events.locationId))
@@ -246,7 +248,11 @@ export default async function EventAttendeesPage({
                 </IconButton>
               </Link>
             </Tooltip>
-            <DeleteEventButton eventId={eventId} accentColor={accentColor} />
+            <DeleteEventButton
+              eventId={eventId}
+              accentColor={accentColor}
+              isRecurring={event.recurringEventId !== null}
+            />
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             {formatSubtitle(event)}

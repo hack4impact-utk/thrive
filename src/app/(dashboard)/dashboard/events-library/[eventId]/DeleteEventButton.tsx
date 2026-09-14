@@ -20,10 +20,12 @@ import { useSnackbar } from "@/providers/snackbar-provider";
 type Props = {
   eventId: string;
   accentColor: string;
+  isRecurring?: boolean;
 };
 
 export default function DeleteEventButton({
   eventId,
+  isRecurring = false,
 }: Props): React.ReactElement {
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -34,7 +36,12 @@ export default function DeleteEventButton({
     setLoading(true);
     try {
       await deleteEvent(eventId);
-      showSnackbar("Event deleted successfully.", "success");
+      showSnackbar(
+        isRecurring
+          ? "Event and its upcoming recurrences were deleted successfully."
+          : "Event deleted successfully.",
+        "success",
+      );
       router.push("/dashboard/events-library");
     } catch {
       showSnackbar("Failed to delete event.", "error");
@@ -63,7 +70,9 @@ export default function DeleteEventButton({
         <DialogTitle sx={{ fontWeight: 700 }}>Delete event?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            This action cannot be undone. The event will be permanently removed.
+            {isRecurring
+              ? "This action cannot be undone. This event and all of its upcoming recurring occurrences will be permanently removed."
+              : "This action cannot be undone. The event will be permanently removed."}
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>

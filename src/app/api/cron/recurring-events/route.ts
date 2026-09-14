@@ -5,6 +5,7 @@ import db from "@/db";
 import { recurringEvents } from "@/db/schema";
 import { materializeRecurringEvent } from "@/lib/materialize-recurring-event";
 import { addDays, formatDateOnly } from "@/lib/recurrence";
+import { RECURRING_EVENTS_WINDOW_DAYS } from "@/lib/recurring-events-config";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export async function POST(request: Request): Promise<Response> {
     }
 
     const today = formatDateOnly(new Date());
-    const targetDate = addDays(today, 1);
+    const targetDate = addDays(today, RECURRING_EVENTS_WINDOW_DAYS);
 
     const patterns = await db
       .select()
