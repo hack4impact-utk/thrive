@@ -1,0 +1,1 @@
+export const RECURRING_EVENTS_WINDOW_DAYS = 30;
