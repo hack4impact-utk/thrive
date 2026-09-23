@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "background_check" boolean DEFAULT false NOT NULL;

@@ -36,6 +36,7 @@ type UserDetailRecord = {
   role: string;
   infoFilled: boolean;
   onboarded: boolean;
+  backgroundCheck: boolean;
   locationName: string | null;
   firstName: string | null;
   lastName: string | null;
@@ -290,6 +291,7 @@ async function getUserDetails(
       role: users.role,
       infoFilled: users.infoFilled,
       onboarded: users.onboarded,
+      backgroundCheck: users.backgroundCheck,
       locationName: locations.name,
       firstName: userInfo.firstName,
       lastName: userInfo.lastName,
@@ -409,6 +411,16 @@ export default async function UserProfilePanel({
             label={user.onboarded ? "Onboarded" : "Not onboarded"}
             size="small"
             color={user.onboarded ? "success" : "default"}
+            variant="outlined"
+          />
+          <Chip
+            label={
+              user.backgroundCheck
+                ? "Background check complete"
+                : "Background check incomplete"
+            }
+            size="small"
+            color={user.backgroundCheck ? "success" : "default"}
             variant="outlined"
           />
         </Stack>

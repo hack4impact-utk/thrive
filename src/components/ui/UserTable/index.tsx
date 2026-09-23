@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
+import BackgroundCheckCell from "./BackgroundCheckCell";
 import LocationCell from "./LocationCell";
 import OnboardingCell from "./OnboardingCell";
 import RoleCell, { type LocationOption } from "./RoleCell";
@@ -36,6 +37,7 @@ export type UserRecord = {
   hoursVolunteered: number | null;
   infoFilled: boolean;
   onboarded: boolean;
+  backgroundCheck: boolean;
   role: string;
   locationId: string | null;
   locationName: string | null;
@@ -160,6 +162,13 @@ function UserRow({
       </TableCell>
 
       <TableCell sx={{ py: 1.5 }}>
+        <BackgroundCheckCell
+          userId={user.id}
+          backgroundCheck={user.backgroundCheck}
+        />
+      </TableCell>
+
+      <TableCell sx={{ py: 1.5 }}>
         <RoleCell
           userId={user.id}
           currentRole={user.role}
@@ -200,6 +209,7 @@ export default function UserTable({
   const staticLeftCols = ["Name", "Email", "Phone"];
   const staticRightCols = [
     "Onboarding",
+    "Background Check",
     "Role",
     "Assigned Location",
     "Neighborhood",
@@ -294,7 +304,7 @@ export default function UserTable({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={8} sx={{ border: 0, py: 6 }}>
+              <TableCell colSpan={9} sx={{ border: 0, py: 6 }}>
                 <Stack alignItems="center" spacing={0.5}>
                   <Typography variant="body2" fontWeight={600}>
                     No users found

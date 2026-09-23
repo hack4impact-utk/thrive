@@ -14,4 +14,5 @@ export const users = pgTable("user", {
   image: text("image"),
   locationId: uuid("location_id").references(() => locations.id),
   onboarded: boolean("onboarded").notNull().default(false),
+  backgroundCheck: boolean("background_check").notNull().default(false),
 });
